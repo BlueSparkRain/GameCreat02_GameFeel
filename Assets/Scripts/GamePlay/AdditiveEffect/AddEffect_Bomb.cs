@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class AddEffect_Bomb : ICanEffect
 {
-    public void DoExcute()
+    public void DoSelfExcute()
     {
         Debug.Log("´¥·¢Õ¨µ¯");
     }

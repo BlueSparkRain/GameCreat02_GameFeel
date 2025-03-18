@@ -14,8 +14,8 @@ public class SquareAdditive : ColorSquare,ICanEffect
       selfStrategy = stretagy;
     }
 
-    public void DoExcute()
+    public void DoSelfExcute()
     {
-      selfStrategy.DoExcute();
+      selfStrategy.DoSelfExcute();
     }
 }

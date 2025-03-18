@@ -49,6 +49,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3063235298451676083}
   - component: {fileID: 795834425657270005}
+  - component: {fileID: 525332597559847871}
   m_Layer: 0
   m_Name: Square8_8Group
   m_TagString: Untagged
@@ -116,7 +117,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.39607844}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.78431374}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -126,6 +127,19 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &525332597559847871
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5507514637558252832}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b0ea1f481c24ea44855d673e88a2607, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Columns: []
 --- !u!1001 &2590844008896250116
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -258,6 +272,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 9066183502185338661}
     m_Modifications:
+    - target: {fileID: 115099083870547323, guid: aa99fb549ec0fdf499e1625b4fb82bf3, type: 3}
+      propertyPath: playerBornData.BornIndex
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 115099083870547323, guid: aa99fb549ec0fdf499e1625b4fb82bf3, type: 3}
+      propertyPath: playerBornData.IsPlayerBornColumn
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1588688977836156296, guid: aa99fb549ec0fdf499e1625b4fb82bf3, type: 3}
       propertyPath: m_Name
       value: SlotColumn (4)

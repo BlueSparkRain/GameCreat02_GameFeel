@@ -3,5 +3,5 @@
 /// </summary>
 public interface ICanEffect
 {
-    public void DoExcute();
+    public void DoSelfExcute();
 }

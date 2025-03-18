@@ -237,6 +237,7 @@ public enum E_EventType
     E_pkayerDead,
     E_sceneLoad,
     E_dataSave,
+    E_PlayerMove,
     E_Test,
 }
 

@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class AddEffect_Lightning : ICanEffect
 {
-    public void DoExcute()
+    public void DoSelfExcute()
     {
         Debug.Log("¥•∑¢…¡µÁ");
     }
