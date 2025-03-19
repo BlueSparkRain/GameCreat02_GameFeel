@@ -37,7 +37,6 @@ public class Slot : MonoBehaviour
         if (isFull)
             return;
 
-
         if (!isFull && !other.GetComponent<Square>().HasFather) 
         {
             other.transform.SetParent(transform);

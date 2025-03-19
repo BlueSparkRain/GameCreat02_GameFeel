@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class SquareRow :MonoBehaviour
@@ -15,6 +16,7 @@ public class SquareRow :MonoBehaviour
     public bool isRemoving;
 
     private float spawnInterval = 0.1f;
+
 
     /// <summary>
     /// 消除本行所有Square
@@ -39,6 +41,13 @@ public class SquareRow :MonoBehaviour
         }
     }
 
+    public void SetRowSquare(Square square,int index) 
+    {
+        rowSquares[index]=square;
+        Debug.Log(index+"初始化行更新");
+        UpdateRowFullState();
+    }
+
 
     /// <summary>
     /// 更新本行是否已满
@@ -55,6 +64,7 @@ public class SquareRow :MonoBehaviour
             RowFull = true;
         }
     }
+
 
     /// <summary>
     /// 本行开始消除任务
@@ -82,20 +92,35 @@ public class SquareRow :MonoBehaviour
         if (CheckRemoveList() != null)
             StartCoroutine(CheckAndRemoveSquares(CheckRemoveList()));
     }
-
+    int startCheckIndex;
     public List<Square> CheckRemoveList()
     {
         int num = 1;
         bool canAdd = true;
         List<Square> toRemoveSquares = new List<Square>();
 
-        if (GetComponent<SquareColumn>().isRemoving|| isRemoving || !rowSquares[0] ||!rowSquares[0].GetComponent<ColorSquare>().myData)
+        if (GetComponent<SquareColumn>().isRemoving || isRemoving)
             return null;
-        E_Color firstCor = rowSquares[0].GetComponent<ColorSquare>().myData.E_Color;
-        toRemoveSquares.Add(rowSquares[0]);
+        startCheckIndex = 0;
 
-        for (int i = 1; i < rowSquares.Count; i++)
+        for (int i = 0; i < 8;i++) 
         {
+            if (rowSquares[i]!=null && rowSquares[i].GetComponent<ColorSquare>() && rowSquares[i].GetComponent<ColorSquare>().myData)
+            {
+              startCheckIndex=i;
+              break;
+            }
+        }
+
+        E_Color firstCor = rowSquares[startCheckIndex].GetComponent<ColorSquare>().myData.E_Color;
+        toRemoveSquares.Add(rowSquares[startCheckIndex]);
+
+        for (int i = startCheckIndex + 1; i < rowSquares.Count; i++)
+        {
+            if (!rowSquares[i] ||!rowSquares[i].GetComponent<ColorSquare>())
+            {
+                continue;
+            }
 
             if (!rowSquares[i].GetComponent<ColorSquare>().myData || !rowSquares[i])
                 return null;
@@ -125,6 +150,8 @@ public class SquareRow :MonoBehaviour
                 }
             }
         }
+
+
 
         if (toRemoveSquares.Count >= 3)
             return toRemoveSquares;
@@ -194,6 +221,7 @@ public class SquareRow :MonoBehaviour
         {
             if (toRemoveSquares[i].GetComponent<PlayerController>())
             {
+                yield return toRemoveSquares[i].BeRemoved();
                 if (i + 1 >= toRemoveSquares.Count)
                     yield break;
                 i++;

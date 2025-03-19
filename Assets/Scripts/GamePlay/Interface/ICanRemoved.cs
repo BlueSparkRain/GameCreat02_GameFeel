@@ -3,5 +3,11 @@
 /// </summary>
 public interface ICanEffect
 {
-    public void DoSelfExcute();
+    public void DoSelfEffect();
+}
+
+public interface ICanSpecical 
+{
+    public void DoSelfSpecical();
+
 }

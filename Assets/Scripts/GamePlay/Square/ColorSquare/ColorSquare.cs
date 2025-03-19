@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class ColorSquare : Square
 {
-    public int hitTime = 1;
+    //public int hitTime = 1;
     public ColorSquareSO myData;
 
     public void ColorSelf()
@@ -13,12 +13,19 @@ public class ColorSquare : Square
         transform.GetComponentInChildren<TrailRenderer>().startColor = myData.SquareColor;
     }
 
+    protected override void Awake()
+    {
+        base.Awake();
+    }
+    
     public override IEnumerator BeRemoved()
     {
         yield return base.BeRemoved();
+        EventCenter.Instance.EventTrigger(E_EventType.E_ColorSquareRemove, transform);
         if (transform.GetComponent<PlayerController>())
             yield break;
 
+        DoSelfEffect();
         yield return AnimScaleReMove();
         //Debug.Log("É«¿é±»Ïû³ý");
 
@@ -44,12 +51,7 @@ public class ColorSquare : Square
         FindAnyObjectByType<SquareObjPool>().ReturnPool(this);
     }
 
-
-    public IEnumerator AnimScaleReMove()
-    {
-        yield return TweenHelper.MakeLerp(transform.localScale, new Vector3(2.0f, 1.0f, 1.6f), 0.05f, val => transform.localScale = val);
-        yield return TweenHelper.MakeLerp(transform.localScale, Vector3.one * 1.6f, 0.05f, val => transform.localScale = val);
-    }
+  
     private void OnMouseEnter()
     {
         StartCoroutine(TweenHelper.MakeLerp(transform.localScale, Vector3.one * 1.8f, 0.1f, val => transform.localScale = val));

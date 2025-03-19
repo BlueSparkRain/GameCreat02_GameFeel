@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public enum E_ControlMode
@@ -92,7 +93,7 @@ public class PlayerController : MonoBehaviour
             //Debug.Log("上移");
             targetSquare = CheckTarget(E_TargetDir.上);
             if (targetSquare)
-                StartCoroutine(Swap(targetSquare?.GetComponent<ColorSquare>()));
+                StartCoroutine(Swap(targetSquare?.GetComponent<Square>()));
         }
         else if (PlayerInputManager.Instance.MoveDown)
         {
@@ -101,7 +102,7 @@ public class PlayerController : MonoBehaviour
             //Debug.Log("下移");
             targetSquare = CheckTarget(E_TargetDir.下);
             if (targetSquare)
-                StartCoroutine(Swap(targetSquare?.GetComponent<ColorSquare>()));
+                StartCoroutine(Swap(targetSquare?.GetComponent<Square>()));
         }
         else if (PlayerInputManager.Instance.MoveLeft)
         {
@@ -110,7 +111,7 @@ public class PlayerController : MonoBehaviour
             //Debug.Log("左移");
             targetSquare = CheckTarget(E_TargetDir.左);
             if (targetSquare)
-                StartCoroutine(Swap(targetSquare?.GetComponent<ColorSquare>()));
+                StartCoroutine(Swap(targetSquare?.GetComponent<Square>()));
         }
         else if (PlayerInputManager.Instance.MoveRight)
         {
@@ -119,7 +120,7 @@ public class PlayerController : MonoBehaviour
             //Debug.Log("右移");
             targetSquare = CheckTarget(E_TargetDir.右);
             if (targetSquare)
-                StartCoroutine(Swap(targetSquare?.GetComponent<ColorSquare>()));
+                StartCoroutine(Swap(targetSquare?.GetComponent<Square>()));
         }
     }
 
@@ -134,7 +135,7 @@ public class PlayerController : MonoBehaviour
                 return;
             //Debug.Log("上吸");
             targetSquare = CheckTarget(E_TargetDir.上);
-            if (targetSquare)
+            if (targetSquare?.GetComponent<ColorSquare>())
                 Coloration(targetSquare?.GetComponent<ColorSquare>());
         }
         else if (PlayerInputManager.Instance.ColorationDown)
@@ -143,7 +144,7 @@ public class PlayerController : MonoBehaviour
                 return;
             //Debug.Log("下吸");
             targetSquare = CheckTarget(E_TargetDir.下);
-            if (targetSquare)
+            if (targetSquare?.GetComponent<ColorSquare>())
                 Coloration(targetSquare?.GetComponent<ColorSquare>());
         }
         else if (PlayerInputManager.Instance.ColorationLeft)
@@ -152,7 +153,7 @@ public class PlayerController : MonoBehaviour
                 return;
             //Debug.Log("左吸");
             targetSquare = CheckTarget(E_TargetDir.左);
-            if (targetSquare)
+            if (targetSquare?.GetComponent<ColorSquare>())
                 Coloration(targetSquare?.GetComponent<ColorSquare>());
         }
         else if (PlayerInputManager.Instance.ColorationRight)
@@ -161,7 +162,7 @@ public class PlayerController : MonoBehaviour
                 return;
             //Debug.Log("右吸");
             targetSquare = CheckTarget(E_TargetDir.右);
-            if (targetSquare)
+            if (targetSquare?.GetComponent<ColorSquare>())
                 Coloration(targetSquare?.GetComponent<ColorSquare>());
         }
     }
@@ -169,6 +170,7 @@ public class PlayerController : MonoBehaviour
 
     void Coloration(ColorSquare otherSquare)
     {
+
         canAct = false;
         square.myData = otherSquare.myData;
         square.MoveToSlot(transform.parent.position);
@@ -186,10 +188,14 @@ public class PlayerController : MonoBehaviour
     }
 
 
-    public IEnumerator Swap(ColorSquare otherSquare)
+    public IEnumerator Swap(Square otherSquare)
     {
-        if (!canswap || !otherSquare.transform.parent)
+        if (!canswap || !otherSquare.transform.parent || !otherSquare.GetComponent<Square>().canMove)
+        {
+            Debug.Log("无法交换！");
             yield break;
+        }
+
         canswap = false;
         Transform mySlot = transform.parent;
         otherSquare.HasFather = false;

@@ -234,6 +234,7 @@ public enum E_EventType
     /// <summary>
     /// ²ÎÊý£ºplayer
     /// </summary>
+    E_ColorSquareRemove,
     E_pkayerDead,
     E_sceneLoad,
     E_dataSave,

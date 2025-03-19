@@ -32,6 +32,56 @@ public class SquareColumn : MonoBehaviour
     private float removeInterval = 0.1f;
 
 
+    public int maxSpawnNum = 8;
+
+    public void AddMaxSpawnNum() 
+    {
+        maxSpawnNum++;
+    }
+
+    private void Awake()
+    {
+
+        SquareIndex = 7;
+        for (int i = 0; i < 8; i++)
+        {
+            transform.GetChild(i).gameObject.SetActive(false);
+        }
+        transform.GetChild(SquareIndex).gameObject.SetActive(true);
+
+        squareSpawner = transform.GetChild(8);
+    }
+
+    void Start()
+    {
+        for (int i = 7; i >= 0; i--)
+        {
+            if (transform.GetChild(i).childCount != 0)
+            {
+                UpdateTopSlot(i);
+                maxSpawnNum--;
+            }
+        }
+    }
+
+
+    public IEnumerator SpawnFirstColumn(SquareObjPool pool)
+    {
+        for (int i = 0; i < maxSpawnNum; i++)
+        {
+            if (playerBornData.IsPlayerBornColumn && i == playerBornData.BornIndex)
+            {
+                GameObject player = Instantiate(Resources.Load<GameObject>("Prefab/PlayerSquare"), squareSpawner.position, Quaternion.identity, null);
+                yield return player.GetComponent<Square>().LooseSelf();
+            }
+            else
+                StartCoroutine(ColumnAddOneSquare());
+
+            yield return new WaitForSeconds(removeInterval);
+        }
+    }
+
+
     /// <summary>
     /// 本列开启消除任务
     /// </summary>
@@ -96,6 +146,11 @@ public class SquareColumn : MonoBehaviour
 
         for (int i = 1; i < columnSquares.Count; i++)
         {
+            if (!columnSquares[i] || !columnSquares[i].GetComponent<ColorSquare>())
+            {
+                continue;
+            }
+
             if(!columnSquares[i].GetComponent<ColorSquare>().myData || !columnSquares[i])
                 return null;
 
@@ -131,9 +186,6 @@ public class SquareColumn : MonoBehaviour
             return null;
     }
 
- 
-  
-
     IEnumerator CheckAndRemoveSquares(List<Square> removeLists)
     {
         if (!GetComponent<SquareRow>().isRemoving &&  !isRemoving)
@@ -155,13 +207,9 @@ public class SquareColumn : MonoBehaviour
             {
                 yield return RemoveColLine3(removeLists);
             }
-
             StopColumnRemoving();
         }
     }
-
-    
-
 
     /// <summary>
     /// 连线3消：无功能，只积分
@@ -189,6 +237,7 @@ public class SquareColumn : MonoBehaviour
         {
             if (toRemoveSquares[i].GetComponent<PlayerController>())
             {
+                yield return toRemoveSquares[i].BeRemoved();
                 if (i + 1 >= toRemoveSquares.Count)
                     yield break;
                 i++;
@@ -227,21 +276,7 @@ public class SquareColumn : MonoBehaviour
         }
     }
 
-
-
-
-    void Start()
-    {
-        SquareIndex = 7;
-        for (int i = 0; i < 8; i++)
-        {
-            transform.GetChild(i).gameObject.SetActive(false);
-        }
-        transform.GetChild(SquareIndex).gameObject.SetActive(true);
-
-        squareSpawner = transform.GetChild(8);
-    }
-
+   
     /// <summary>
     /// 更新最上层的空槽索引
     /// </summary>
@@ -255,6 +290,7 @@ public class SquareColumn : MonoBehaviour
         if (FirstEmptySlotIndex == 0)
             return;
         transform.GetChild(FirstEmptySlotIndex - 1).gameObject.SetActive(true);
+        Debug.Log("hahh");
     }
 
     public IEnumerator CheckSlotEmpty() 
@@ -268,38 +304,22 @@ public class SquareColumn : MonoBehaviour
                 {
                     if (ColFull && transform.GetChild(i).childCount == 0)
                     {
-                        yield return new WaitForSeconds(0.3f);
                         StartCoroutine(ColumnAddOneSquare());
+                        yield return new WaitForSeconds(0.2f);
                     }
                 }
             }
         }
-
-
     }
 
-    public IEnumerator SpawnFirstColumn(SquareObjPool pool)
-    {
-        for (int i = 0; i < 8; i++)
-        {
-            if (playerBornData.IsPlayerBornColumn && i == playerBornData.BornIndex)
-            {
-                GameObject player = Instantiate(Resources.Load<GameObject>("Prefab/PlayerSquare"), squareSpawner.position, Quaternion.identity, null);
-                yield return  player.GetComponent<Square>().LooseSelf();
-            }
-            else
-                StartCoroutine(ColumnAddOneSquare());
 
-            yield return new WaitForSeconds(removeInterval);
-        }
-    }
+   
 
     /// <summary>
     /// 当一个槽被填满，解锁上方的一个槽
     /// </summary>
     public void ActiveNewSlot(int _SquareIndex)
     {
-
         if (_SquareIndex - 1 < 0)
             return;
         transform.GetChild(_SquareIndex - 1).gameObject.SetActive(true);

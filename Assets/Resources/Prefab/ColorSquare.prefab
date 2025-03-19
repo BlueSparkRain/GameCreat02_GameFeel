@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 7683386368675989877}
   - component: {fileID: 1533216156170067930}
   m_Layer: 8
-  m_Name: WhiteSquare
+  m_Name: ColorSquare
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -177,8 +177,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HasFather: 0
   BaseScore: 50
-  canAct: 1
-  hitTime: 1
   myData: {fileID: 0}
 --- !u!1 &7808399190054876206
 GameObject:

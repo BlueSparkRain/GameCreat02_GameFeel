@@ -98,9 +98,9 @@ public class SquareObjPool : MonoBehaviour
     public void ReturnPool(ColorSquare square) 
     {
          //Debug.Log("»Ø³Ø+1");
+         square.gameObject.SetActive(false);
          square.transform.SetParent(transform);
          square.GetComponent<SpriteRenderer>().color=Color.white;
-         square.gameObject.SetActive(false);
          square.myData = null;
          square.transform.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Kinematic;
          square.transform.localPosition = Vector3.zero;

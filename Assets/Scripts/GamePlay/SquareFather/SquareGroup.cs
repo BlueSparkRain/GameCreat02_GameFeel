@@ -78,9 +78,12 @@ public class SquareGroup : MonoBehaviour
     /// <param name="index"></param>
     public void UpdateRowSquares(Square square,int ColIndex, int index)
     {
+        if (Rows.Count < 8)
+            return;
         Rows[index].rowSquares[ColIndex] =square;
         Rows[index].UpdateRowFullState();
     }
+
 
     /// <summary>
     /// 清除目标全列

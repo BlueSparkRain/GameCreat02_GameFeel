@@ -8,7 +8,7 @@ public class SquareKiller : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.GetComponent<Square>())
+        if (other.gameObject.GetComponent<ColorSquare>())
         {
             //Debug.Log("ТЉЭјжЎгу");
             other.gameObject.GetComponent<Square>().BeRemoved();

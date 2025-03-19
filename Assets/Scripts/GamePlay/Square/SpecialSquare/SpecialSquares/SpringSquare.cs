@@ -1,0 +1,7 @@
+/// <summary>
+/// µØª…£®Ãÿ ‚£©∑ΩøÈ
+/// </summary>
+public class SpringSquare : SpecicalSquare
+{
+
+}
