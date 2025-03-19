@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO.IsolatedStorage;
 using UnityEngine;
 using UnityEngine.UIElements.Experimental;
 
@@ -126,7 +127,27 @@ public class SquareColumn : MonoBehaviour
     {
         if (ColFull)
            RemoveSquares();
+
+
+        //if (!isRemoving && canColCheck && ColFull && FirstEmptySlotIndex ==1  && SquareNum == 7)
+        //{
+        //    ColFull = false;
+        //    canColCheck = true;
+        //    timer = 0.5f;
+        //    StartCoroutine(ColumnAddOneSquare());
+        //}
+
+        //if (timer >= 0)
+        //    timer -= Time.deltaTime;
+        //else
+        //{
+        //  canColCheck = true;
+        //}
     }
+
+    bool canColCheck;
+    float timer;
+
 
     public void RemoveSquares()
     {
@@ -191,6 +212,9 @@ public class SquareColumn : MonoBehaviour
         if (!GetComponent<SquareRow>().isRemoving &&  !isRemoving)
         {
             IsColumnRemoving();
+
+            //yield return new WaitForSeconds(2);
+
             if (removeLists.Count <= 2)
             {
             }
@@ -295,6 +319,9 @@ public class SquareColumn : MonoBehaviour
 
     public IEnumerator CheckSlotEmpty() 
     {
+
+        //yield break;
+
         if (!isRemoving && !GetComponent<SquareRow>().isRemoving && ColFull )
         {
             if (FirstEmptySlotIndex != 0)
@@ -305,11 +332,13 @@ public class SquareColumn : MonoBehaviour
                     if (ColFull && transform.GetChild(i).childCount == 0)
                     {
                         StartCoroutine(ColumnAddOneSquare());
-                        yield return new WaitForSeconds(0.2f);
+                        yield return new WaitForSeconds(0.1f);
                     }
                 }
             }
         }
+
+       
     }
 
 

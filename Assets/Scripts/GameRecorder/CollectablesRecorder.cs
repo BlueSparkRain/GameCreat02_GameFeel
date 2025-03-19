@@ -20,7 +20,7 @@ public class CollectablesRecorder : MonoBehaviour
 
     private void Awake()
     {
-        UIObjPrefab = Resources.Load<GameObject>("Prefab/UIPanel/TargetColletableObj");
+        UIObjPrefab = Resources.Load<GameObject>("Prefab/UIPanel/UIElement/TargetColletableObj");
 
         for (int i = 0; i < collectableTargetList.Count; i++)
         {
@@ -29,7 +29,6 @@ public class CollectablesRecorder : MonoBehaviour
         }
     }
 
-    // Start is called before the first frame update
     void Start()
     {
         foreach (var item in collectDic)

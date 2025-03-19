@@ -1,10 +1,21 @@
 using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SettingPanel : BasePanel
 {
+    [Header("返回主菜单按钮")]
+    public Button ReturnToMenuButton;
+    [Header("输入映射按钮")]
+    public Button InputButton;
+    [Header("音量设置按钮")]
+    public Button AudioSettingButton;
+    //[Header("返回主菜单按钮")]
+    //public Button ReturnToMenuButton;
+    //[Header("返回主菜单按钮")]
+    //public Button ReturnToMenuButton;
+
+
     public override void HidePanel()
     {
         base.HidePanel();
@@ -12,7 +23,7 @@ public class SettingPanel : BasePanel
 
     public override IEnumerator HidePanelTweenEffect()
     {
-       yield return null;
+        yield return null;
     }
 
     public override void ShowPanel()

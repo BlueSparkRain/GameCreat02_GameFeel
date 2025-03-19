@@ -71,6 +71,8 @@ public class Square : MonoBehaviour,ICanEffect
     {
         yield return null;
         Debug.Log("·½¿é±»Ïû³ý");
+        PitchTest.Instance.DingDong();
+
     }
 
     /// <summary>

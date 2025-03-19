@@ -1,21 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
-public class MenuPanel : BasePanel
+public class AudioPanel : BasePanel
 {
-    [Header("游玩按钮")]
-    public Button PlayButton;
-    [Header("图鉴按钮")]
-    public Button BookButton;
-    [Header("设置按钮")]
-    public Button SettingButton;
-    [Header("鸣谢按钮")]
-    public Button ThankYouButton;
-    [Header("退出按钮")]
-    public Button QuitButton;
-
     public override void HidePanel()
     {
         base.HidePanel();
@@ -23,7 +11,7 @@ public class MenuPanel : BasePanel
 
     public override IEnumerator HidePanelTweenEffect()
     {
-        yield return null;
+        throw new System.NotImplementedException();
     }
 
     public override void ShowPanel()
@@ -33,7 +21,7 @@ public class MenuPanel : BasePanel
 
     public override IEnumerator ShowPanelTweenEffect()
     {
-        yield return null;
+        throw new System.NotImplementedException();
     }
 
     protected override void Init()

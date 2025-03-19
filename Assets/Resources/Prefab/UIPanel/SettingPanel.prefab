@@ -704,7 +704,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4733747250787300028, guid: 74afb4ab73d574047a2d745cd7bb8718, type: 3}
       propertyPath: m_Name
-      value: SettingButton (1)
+      value: InputMapSettingButton
       objectReference: {fileID: 0}
     - target: {fileID: 4945888224417511535, guid: 74afb4ab73d574047a2d745cd7bb8718, type: 3}
       propertyPath: m_text
@@ -815,7 +815,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4733747250787300028, guid: 74afb4ab73d574047a2d745cd7bb8718, type: 3}
       propertyPath: m_Name
-      value: SettingButton (2)
+      value: AudioSettingButton
+      objectReference: {fileID: 0}
+    - target: {fileID: 4945888224417511535, guid: 74afb4ab73d574047a2d745cd7bb8718, type: 3}
+      propertyPath: m_text
+      value: Audio Setting
       objectReference: {fileID: 0}
     - target: {fileID: 6713813348139229665, guid: 74afb4ab73d574047a2d745cd7bb8718, type: 3}
       propertyPath: m_Pivot.x
@@ -917,7 +921,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4733747250787300028, guid: 74afb4ab73d574047a2d745cd7bb8718, type: 3}
       propertyPath: m_Name
-      value: SettingButton
+      value: ReturnToMenuButton
+      objectReference: {fileID: 0}
+    - target: {fileID: 4945888224417511535, guid: 74afb4ab73d574047a2d745cd7bb8718, type: 3}
+      propertyPath: m_text
+      value: Return to Menu
       objectReference: {fileID: 0}
     - target: {fileID: 6713813348139229665, guid: 74afb4ab73d574047a2d745cd7bb8718, type: 3}
       propertyPath: m_Pivot.x

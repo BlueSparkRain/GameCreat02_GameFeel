@@ -164,6 +164,9 @@ public class SquareRow :MonoBehaviour
         if (!GetComponent<SquareColumn>().isRemoving && !isRemoving)
         {
             IsRowRemoving();
+
+            //yield return new WaitForSeconds(2);
+
             if (removeLists.Count <= 2)
             {
             }
