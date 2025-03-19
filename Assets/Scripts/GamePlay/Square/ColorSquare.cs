@@ -32,7 +32,7 @@ public class ColorSquare : Square
                 {
                     if (upSlot.childCount != 0)
                     {
-                        yield return upSlot.GetComponent<Slot>().ThrowSquare();//上方块松掉
+                        yield return upSlot.GetComponent<Slot>().ThrowSquare();//上方块先松掉
                     }
                 }
             }

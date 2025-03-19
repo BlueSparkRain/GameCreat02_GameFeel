@@ -5,12 +5,11 @@ using UnityEngine;
 public class SquarePartical : MonoBehaviour
 {
     private ParticleSystem particle;
-    private void Awake()
-    {
-    }
-    private void Start()
-    {
-    }
+
+    /// <summary>
+    /// ÖÆÔì±¬Õ¨Á£×Ó
+    /// </summary>
+    /// <param name="sprite"></param>
    public void StartPlay(Sprite sprite) 
    {
         particle = transform.GetComponent<ParticleSystem>();
@@ -24,7 +23,6 @@ public class SquarePartical : MonoBehaviour
     IEnumerator DestorySelf() 
     {
         yield return new WaitForSeconds(1f);
-        Debug.Log("shahshaha");
         DestroyImmediate(transform.gameObject);
 
     }

@@ -8,21 +8,20 @@ public class SquareRow :MonoBehaviour
 
     public int SquareIndex { get; private set; }
     [Header("本行方块")]
-    public int SquareNum;
+    int SquareNum;//尚未使用 未来可期
 
     public bool RowFull;
 
     public bool isRemoving;
-    private List<Square> toRemoveSquares = new List<Square>();
 
-    private float spawnInterval = 0.15f;
+    private float spawnInterval = 0.1f;
 
     /// <summary>
-    /// 消除目标行Square
+    /// 消除本行所有Square
     /// </summary>
     /// <param name="RowIndex"></param>
     /// <returns></returns>
-    public IEnumerator  RemoveWholeRow() 
+    public IEnumerator RemoveWholeRow() 
     {
         for (int i = 0; i <rowSquares.Count; i++)
         {
@@ -40,7 +39,11 @@ public class SquareRow :MonoBehaviour
         }
     }
 
-    public void UpdateRowSquareList() 
+
+    /// <summary>
+    /// 更新本行是否已满
+    /// </summary>
+    public void UpdateRowFullState() 
     {
         for (int i = 0;i < rowSquares.Count; i++) 
         {
@@ -51,37 +54,59 @@ public class SquareRow :MonoBehaviour
             }
             RowFull = true;
         }
-
-        if (!RowFull)
-            return;
-        CheckRowCanRemove();
     }
 
-    public void CheckRowCanRemove()
+    /// <summary>
+    /// 本行开始消除任务
+    /// </summary>
+    void IsRowRemoving() 
     {
-       
-        if (GetComponent<SquareColumn>().isRemoving||!rowSquares[rowSquares.Count-1] || isRemoving)
-            return;
+        isRemoving = true;
+    }
+    /// <summary>
+    /// 本行完成消除任务
+    /// </summary>
+    void StopRowRemoving() 
+    {
+        isRemoving = false;
+    }
+
+    private void Update()
+    {
+        if (RowFull)
+            RemoveSquares();
+    }
+
+    public void RemoveSquares()
+    {
+        if (CheckRemoveList() != null)
+            StartCoroutine(CheckAndRemoveSquares(CheckRemoveList()));
+    }
+
+    public List<Square> CheckRemoveList()
+    {
         int num = 1;
         bool canAdd = true;
+        List<Square> toRemoveSquares = new List<Square>();
 
-        toRemoveSquares.Clear();
-
+        if (GetComponent<SquareColumn>().isRemoving|| isRemoving || !rowSquares[0] ||!rowSquares[0].GetComponent<ColorSquare>().myData)
+            return null;
         E_Color firstCor = rowSquares[0].GetComponent<ColorSquare>().myData.E_Color;
         toRemoveSquares.Add(rowSquares[0]);
 
-
-        for (int i = 1; i <rowSquares.Count; i++)
+        for (int i = 1; i < rowSquares.Count; i++)
         {
-            if (rowSquares[i]!=null && rowSquares[i].GetComponent<ColorSquare>() && rowSquares[i].GetComponent<ColorSquare>().myData.E_Color == firstCor && canAdd)
+
+            if (!rowSquares[i].GetComponent<ColorSquare>().myData || !rowSquares[i])
+                return null;
+
+            if (rowSquares[i] != null && rowSquares[i].GetComponent<ColorSquare>() && rowSquares[i].GetComponent<ColorSquare>().myData.E_Color == firstCor && canAdd)
             {
-                    if (!toRemoveSquares.Contains(rowSquares[i]))
-                    {
-                        num++;
-                        toRemoveSquares.Add(rowSquares[i]);
-                    }
-        
-                //Debug.Log(firstCor + "同色" + num);
+                if (!toRemoveSquares.Contains(rowSquares[i]))
+                {
+                    num++;
+                    toRemoveSquares.Add(rowSquares[i]);
+                }
             }
             else
             {
@@ -89,7 +114,6 @@ public class SquareRow :MonoBehaviour
                 {
                     firstCor = rowSquares[i].GetComponent<ColorSquare>().myData.E_Color;
                     toRemoveSquares.Clear();
-                    //Debug.Log("异色-改色" + firstCor);
                     num = 1;
                     canAdd = true;
                     toRemoveSquares.Add(rowSquares[i]);
@@ -101,100 +125,71 @@ public class SquareRow :MonoBehaviour
                 }
             }
         }
-        //Debug.Log("本行最多:" + firstCor.ToString() + num);
-        //遍历完整列，执行组合消除
 
-        StartCoroutine(RemoveSquares(num));
+        if (toRemoveSquares.Count >= 3)
+            return toRemoveSquares;
+        else
+            return null;
     }
 
-    IEnumerator RemoveSquares(int num)
+    IEnumerator CheckAndRemoveSquares(List<Square> removeLists)
     {
-        //if (!RowFull)
-        //    yield break;
-
-        if (!isRemoving )
+        if (!GetComponent<SquareColumn>().isRemoving && !isRemoving)
         {
-
-            isRemoving = true;
-            if (num <= 2)
+            IsRowRemoving();
+            if (removeLists.Count <= 2)
             {
-
             }
-            else if (num >= 5)
+            else if (removeLists.Count >= 5)
             {
-                yield return RemoveColLine5();
+                yield return RemoveColLine5(removeLists);
             }
-            else if (num >= 4)
+            else if (removeLists.Count >= 4)
             {
-                yield return RemoveColLine4();
+                yield return RemoveColLine4(removeLists);
             }
 
-            else if (num >= 3)
+            else if (removeLists.Count >= 3)
             {
-                yield return RemoveColLine3();
+                yield return RemoveColLine3(removeLists);
             }
-            //yield return new WaitForSeconds(0.2f);
-            //transform.parent.parent.GetComponent<SquareGroup>().isRemoving = false;
-            isRemoving = false;
+            StopRowRemoving();
         }
     }
+
 
     /// <summary>
     /// 连线3消：无功能，只积分
     /// </summary>
-    public IEnumerator RemoveColLine3()
+    public IEnumerator RemoveColLine3(List<Square> toRemoveSquares)
     {
-        Debug.Log("完成3消");
-
-
-        for (int i = 0; i < toRemoveSquares .Count; i++)
-        {
-            if (toRemoveSquares[i].GetComponent<PlayerController>())
-            {
-                if (i + 1 >= toRemoveSquares.Count)
-                    yield break;
-                i++;
-            }
-
-            if (toRemoveSquares[i].transform.parent!= null)
-            {
-                Transform targetCol = toRemoveSquares[i].transform?.parent.parent;
-                yield return toRemoveSquares[i].BeRemoved();
-                yield return targetCol?.GetComponent<SquareColumn>().ColumnAddOneSquare();
-                yield return new WaitForSeconds(spawnInterval);
-            }
-        }
+        //Debug.Log("完成列3消");
+        yield return RemoveRowLine(toRemoveSquares);
+        //3消机制
     }
 
     /// <summary>
     /// 连线4消：消除+生成1个整列炸弹色块
     /// </summary>
-    public IEnumerator RemoveColLine4()
+    public IEnumerator RemoveColLine4(List<Square> toRemoveSquares)
     {
-        for (int i = 0; i < toRemoveSquares.Count; i++)
-        {
-            if (toRemoveSquares[i].GetComponent<PlayerController>())
-            {
-                if (i + 1 >= toRemoveSquares.Count)
-                    yield break;
-                i++;
-            }
-            if (toRemoveSquares[i].transform.parent != null)
-            {
-                Transform targetCol = toRemoveSquares[i].transform?.parent.parent;
-                yield return toRemoveSquares[i].BeRemoved();
-                yield return targetCol?.GetComponent<SquareColumn>().ColumnAddOneSquare();
-                yield return new WaitForSeconds(spawnInterval);
-            }
-        }
+        //Debug.Log("完成列4消");
+        yield return RemoveRowLine(toRemoveSquares);
+        //4消机制
     }
 
     /// <summary>
     /// 连线5消：消除+生成色块闪电：清除所有相同颜色色块
     /// </summary>
-    public IEnumerator RemoveColLine5()
+    public IEnumerator RemoveColLine5(List<Square> toRemoveSquares)
     {
-        Debug.Log("完成5消");
+        //Debug.Log("完成列5消");
+        yield return RemoveRowLine(toRemoveSquares);
+        //5消机制
+    }
+
+    IEnumerator RemoveRowLine(List<Square> toRemoveSquares) 
+    {
         for (int i = 0; i < toRemoveSquares.Count; i++)
         {
             if (toRemoveSquares[i].GetComponent<PlayerController>())
@@ -207,9 +202,11 @@ public class SquareRow :MonoBehaviour
             if (toRemoveSquares[i].transform.parent != null)
             {
                 Transform targetCol = toRemoveSquares[i].transform?.parent.parent;
+                targetCol?.GetComponent<SquareColumn>().IsColumnRemoving();
                 yield return toRemoveSquares[i].BeRemoved();
                 yield return targetCol?.GetComponent<SquareColumn>().ColumnAddOneSquare();
                 yield return new WaitForSeconds(spawnInterval);
+                targetCol?.GetComponent<SquareColumn>().StopColumnRemoving();
             }
         }
     }

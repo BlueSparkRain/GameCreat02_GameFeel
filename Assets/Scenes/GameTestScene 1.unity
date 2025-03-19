@@ -471,7 +471,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scoreText: {fileID: 1732447604}
   playerCurrentScore: 0
-  gameDuration: 60
+  gameDuration: 120
   gameTimerText: {fileID: 1148198908}
   gameTimerFillment: {fileID: 1392110661}
   GameOverScore: 4000
@@ -963,7 +963,7 @@ MonoBehaviour:
     m_DissipationMode: 2
     m_DissipationDistance: 100
     m_PropagationSpeed: 343
-  m_DefaultVelocity: {x: 0, y: -0.2, z: 0}
+  m_DefaultVelocity: {x: -0.2, y: 0, z: 0}
 --- !u!1 &856413625
 GameObject:
   m_ObjectHideFlags: 0

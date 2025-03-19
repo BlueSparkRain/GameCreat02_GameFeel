@@ -68,7 +68,7 @@ public class PlayerFeelManager : MonoSingleton<PlayerFeelManager>
     void ExcuteCameraShake(string resName) 
     {
         CameraShakeManager.Instance.ExcuteCameraShake(resName, GetComponentInChildren<CinemachineImpulseSource>());
-        Debug.Log("Õð£¡£¡");
+        //Debug.Log("ÊÖ±úÕð¶¯£¡");
     }
 
     void OnDisable()

@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using UnityEngine;
 
@@ -30,7 +29,7 @@ public class PlayerController : MonoBehaviour
     Rigidbody2D rb;
 
 
-    bool canswap=true;
+    bool canswap = true;
     void Start()
     {
         square = GetComponent<ColorSquare>();
@@ -87,28 +86,28 @@ public class PlayerController : MonoBehaviour
 
         if (PlayerInputManager.Instance.MoveUp)
         {
-            if ( transform.parent==null || transform.parent.parent.GetComponent<SquareColumn>().isRemoving || transform.parent.parent.GetComponent<SquareRow>().isRemoving)
+            if (transform.parent == null || transform.parent.parent.GetComponent<SquareColumn>().isRemoving || transform.parent.parent.GetComponent<SquareRow>().isRemoving)
                 return;
 
-            Debug.Log("ÉÏÒÆ");
+            //Debug.Log("ÉÏÒÆ");
             targetSquare = CheckTarget(E_TargetDir.ÉÏ);
             if (targetSquare)
                 StartCoroutine(Swap(targetSquare?.GetComponent<ColorSquare>()));
         }
-        else if (PlayerInputManager.Instance.MoveDown )
+        else if (PlayerInputManager.Instance.MoveDown)
         {
             if (transform.parent == null || transform.parent.parent.GetComponent<SquareColumn>().isRemoving || transform.parent.parent.GetComponent<SquareRow>().isRemoving)
                 return;
-            Debug.Log("ÏÂÒÆ");
+            //Debug.Log("ÏÂÒÆ");
             targetSquare = CheckTarget(E_TargetDir.ÏÂ);
             if (targetSquare)
                 StartCoroutine(Swap(targetSquare?.GetComponent<ColorSquare>()));
         }
-        else if (PlayerInputManager.Instance.MoveLeft )
+        else if (PlayerInputManager.Instance.MoveLeft)
         {
             if (transform.parent == null || transform.parent.parent.GetComponent<SquareColumn>().isRemoving || transform.parent.parent.GetComponent<SquareRow>().isRemoving)
                 return;
-            Debug.Log("×óÒÆ");
+            //Debug.Log("×óÒÆ");
             targetSquare = CheckTarget(E_TargetDir.×ó);
             if (targetSquare)
                 StartCoroutine(Swap(targetSquare?.GetComponent<ColorSquare>()));
@@ -117,7 +116,7 @@ public class PlayerController : MonoBehaviour
         {
             if (transform.parent == null || transform.parent.parent.GetComponent<SquareColumn>().isRemoving || transform.parent.parent.GetComponent<SquareRow>().isRemoving)
                 return;
-            Debug.Log("ÓÒÒÆ");
+            //Debug.Log("ÓÒÒÆ");
             targetSquare = CheckTarget(E_TargetDir.ÓÒ);
             if (targetSquare)
                 StartCoroutine(Swap(targetSquare?.GetComponent<ColorSquare>()));
@@ -133,7 +132,7 @@ public class PlayerController : MonoBehaviour
         {
             if (transform.parent == null || transform.parent.parent.GetComponent<SquareColumn>().isRemoving || transform.parent.parent.GetComponent<SquareRow>().isRemoving)
                 return;
-            Debug.Log("ÉÏÎü");
+            //Debug.Log("ÉÏÎü");
             targetSquare = CheckTarget(E_TargetDir.ÉÏ);
             if (targetSquare)
                 Coloration(targetSquare?.GetComponent<ColorSquare>());
@@ -142,7 +141,7 @@ public class PlayerController : MonoBehaviour
         {
             if (transform.parent == null || transform.parent.parent.GetComponent<SquareColumn>().isRemoving || transform.parent.parent.GetComponent<SquareRow>().isRemoving)
                 return;
-            Debug.Log("ÏÂÎü");
+            //Debug.Log("ÏÂÎü");
             targetSquare = CheckTarget(E_TargetDir.ÏÂ);
             if (targetSquare)
                 Coloration(targetSquare?.GetComponent<ColorSquare>());
@@ -151,7 +150,7 @@ public class PlayerController : MonoBehaviour
         {
             if (transform.parent == null || transform.parent.parent.GetComponent<SquareColumn>().isRemoving || transform.parent.parent.GetComponent<SquareRow>().isRemoving)
                 return;
-            Debug.Log("×óÎü");
+            //Debug.Log("×óÎü");
             targetSquare = CheckTarget(E_TargetDir.×ó);
             if (targetSquare)
                 Coloration(targetSquare?.GetComponent<ColorSquare>());
@@ -160,7 +159,7 @@ public class PlayerController : MonoBehaviour
         {
             if (transform.parent == null || transform.parent.parent.GetComponent<SquareColumn>().isRemoving || transform.parent.parent.GetComponent<SquareRow>().isRemoving)
                 return;
-            Debug.Log("ÓÒÎü");
+            //Debug.Log("ÓÒÎü");
             targetSquare = CheckTarget(E_TargetDir.ÓÒ);
             if (targetSquare)
                 Coloration(targetSquare?.GetComponent<ColorSquare>());
@@ -172,7 +171,6 @@ public class PlayerController : MonoBehaviour
     {
         canAct = false;
         square.myData = otherSquare.myData;
-        //StartCoroutine(square.MoveToSlot(transform.parent.position));
         square.MoveToSlot(transform.parent.position);
 
         if (transform.parent.GetComponent<Slot>())
@@ -190,37 +188,38 @@ public class PlayerController : MonoBehaviour
 
     public IEnumerator Swap(ColorSquare otherSquare)
     {
-        if(!canswap)
-        yield break;
-        canswap=false;
+        if (!canswap || !otherSquare.transform.parent)
+            yield break;
+        canswap = false;
         Transform mySlot = transform.parent;
         otherSquare.HasFather = false;
         square.HasFather = false;
         transform.SetParent(otherSquare.transform.parent);
         otherSquare.transform.SetParent(mySlot);
         if (transform.parent != null && transform.parent.GetComponent<Slot>())
-            //StartCoroutine(square.MoveToSlot(transform.parent.position));
             square.MoveToSlot(transform.parent.position);
 
         if (otherSquare != null && mySlot != null)
         {
-            //StartCoroutine(otherSquare.MoveToSlot(mySlot.position));
             otherSquare.MoveToSlot(mySlot.position);
         }
         if (transform.parent != null)
+        {
             StartCoroutine(PlayerMove(transform.position, transform.parent.position, 0.1f));
 
-        if (transform.parent.GetComponent<Slot>())
-        {
-            Slot slot = transform.parent.GetComponent<Slot>();
-            slot.transform.parent.GetComponent<SquareColumn>().UpdateColumnSquares(square, slot.transform.GetSiblingIndex());
-            FindAnyObjectByType<SquareGroup>().UpdateRowSquares(transform.GetComponentInChildren<Square>(), slot.transform.parent.GetSiblingIndex(), slot.transform.GetSiblingIndex());
+            if (transform.parent.GetComponent<Slot>())
+            {
+                Slot slot = transform.parent.GetComponent<Slot>();
+                slot.transform.parent.GetComponent<SquareColumn>().UpdateColumnSquares(square, slot.transform.GetSiblingIndex());
+                FindAnyObjectByType<SquareGroup>().UpdateRowSquares(transform.GetComponentInChildren<Square>(), slot.transform.parent.GetSiblingIndex(), slot.transform.GetSiblingIndex());
+            }
+            StartCoroutine(square.AnimScaleReMove());
+            //yield return new WaitForSeconds(0.1f);
+            canAct = false;
+            timer = actInterval;
+            canswap = true;
+
         }
-        StartCoroutine(square.AnimScaleReMove());
-        yield return  new WaitForSeconds(0.1f);
-        canAct = false;
-        timer = actInterval;
-        canswap = true;
 
     }
 

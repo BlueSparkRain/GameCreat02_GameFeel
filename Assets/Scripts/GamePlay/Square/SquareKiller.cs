@@ -12,31 +12,7 @@ public class SquareKiller : MonoBehaviour
         {
             //Debug.Log("Â©ÍøÖ®Óã");
             other.gameObject.GetComponent<Square>().BeRemoved();
-            FindAnyObjectByType<SquareObjPool>().ReturnPool(other.gameObject.GetComponent<ColorSquare>());
-
-            //if (transform.parent.GetComponent<SquareColumn>())
-            //{
-                SquareColumn col = transform.parent.GetComponent<SquareColumn>();
-
-                if (col.ColFull)
-                {
-                    if (col.SquareNum != 8 || col.FirstEmptySlotIndex != 0)
-                    {
-                        for (int i = 0; i < col.FirstEmptySlotIndex; i++)
-                            StartCoroutine(col.ColumnAddOneSquare());
-                    }
-
-                    if (col.SquareNum != 8 && col.FirstEmptySlotIndex != 0)
-                    //if (col.FirstEmptySlotIndex != 0)
-                    {
-                        for (int i = 0; i < col.FirstEmptySlotIndex; i++)
-                            StartCoroutine(col.ColumnAddOneSquare());
-            
-                    }
-
-                }
-            }
-
-        //}
+            FindAnyObjectByType<SquareObjPool>().ReturnPool(other.gameObject.GetComponent<ColorSquare>()); 
+        }
     }
 }

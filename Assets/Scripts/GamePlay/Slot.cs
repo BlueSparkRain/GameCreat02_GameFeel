@@ -16,19 +16,10 @@ public class Slot : MonoBehaviour
             isFull = true;
     }
 
-
     private void Update()
     {
         if (transform.childCount == 0)
             isFull=false;
-
-        //if (!isFull && transform.parent.GetComponent<SquareColumn>().FirstEmptySlotIndex!=0)
-        //{
-        //   if(transform.GetSiblingIndex() - 1 >=0 && transform.parent.GetChild(transform.GetSiblingIndex() - 1).childCount!=0)
-        //    StartCoroutine(transform.parent.GetChild(transform.GetSiblingIndex()-1).GetComponent<Slot>().ThrowSquare());
-        //}
-
-
         //时刻检测本槽下方是否有空位，有空位则松掉本槽内方块
         if (isFull &&  transform.GetSiblingIndex()<=6)
         {
@@ -46,16 +37,15 @@ public class Slot : MonoBehaviour
         if (isFull)
             return;
 
+
         if (!isFull && !other.GetComponent<Square>().HasFather) 
         {
             other.transform.SetParent(transform);
             currentSquare = other.GetComponent<Square>();
 
             if (!isFull &&currentSquare != null && other.GetComponent<Square>())
-            {
-               //StartCoroutine(other.GetComponent<Square>().MoveToSlot(transform.position));
                other.GetComponent<Square>().MoveToSlot(transform.position);
-            }
+            
             isFull = true;
 
             transform.parent.GetComponentInParent<SquareColumn>().UpdateTopSlot(transform.GetSiblingIndex());
@@ -63,7 +53,7 @@ public class Slot : MonoBehaviour
     }
   
     /// <summary>
-    /// 抛出槽内方块
+    /// 抛出当前槽内方块
     /// </summary>
     public IEnumerator ThrowSquare()
     {

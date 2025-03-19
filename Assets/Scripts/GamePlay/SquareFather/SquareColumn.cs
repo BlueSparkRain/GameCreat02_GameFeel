@@ -16,15 +16,37 @@ public class SquareColumn : MonoBehaviour
     public PlayerBornData playerBornData;
 
     public List<Square> columnSquares = new List<Square>();
-    public int FirstEmptySlotIndex;
 
-    private List<Square> toRemoveSquares = new List<Square>();
+    /// <summary>
+    /// 本列中容纳方块的最上层槽的序列索引
+    /// </summary>
+    public int FirstEmptySlotIndex;
 
     public bool ColFull;
 
     public bool isRemoving;
 
-    private float spawnInterval = 0.15f;
+    /// <summary>
+    /// 方块的消除间隔
+    /// </summary>
+    private float removeInterval = 0.1f;
+
+
+    /// <summary>
+    /// 本列开启消除任务
+    /// </summary>
+    public void IsColumnRemoving() 
+    {
+    isRemoving = true;
+    }
+
+    /// <summary>
+    /// 本列完成消除任务
+    /// </summary>
+    public void StopColumnRemoving() 
+    {
+        isRemoving = false;
+    }
 
     /// <summary>
     /// 更新本列方块
@@ -33,6 +55,7 @@ public class SquareColumn : MonoBehaviour
     /// <param name="index"></param>
     public void UpdateColumnSquares(Square square, int index)
     {
+
         columnSquares[index] = square;
 
         for (int i = 0; i < columnSquares.Count; i++)
@@ -45,55 +68,45 @@ public class SquareColumn : MonoBehaviour
             ColFull = true;
         }
 
-
         if (!ColFull)
             return;
-
-        if (SquareNum == 8 && FirstEmptySlotIndex != 0)
-        {
-            for (int i = 0; i < FirstEmptySlotIndex; i++)
-                StartCoroutine(ColumnAddOneSquare());
-        }
-
-        for (int i = 1; i < columnSquares.Count; i++)
-        {
-            if (!columnSquares[i] || !columnSquares[i].GetComponent<ColorSquare>())
-                return;
-        }
-        CheckColCanRemove();
-
     }
     bool canCheck=true;
     private void Update()
     {
-
-    
+        if (ColFull)
+           RemoveSquares();
     }
 
-    public void CheckColCanRemove()
+    public void RemoveSquares()
     {
-        if (GetComponent<SquareRow>().isRemoving || !columnSquares[0]|| isRemoving)
-            return;
-
+        if (CheckRemoveList() != null)
+            StartCoroutine(CheckAndRemoveSquares(CheckRemoveList()));
+    }
+    public List<Square> CheckRemoveList()
+    {
         int num = 1;
-        bool canAdd=true;
-        toRemoveSquares.Clear();
+        bool canAdd = true;
 
+        List<Square> toRemoveSquares = new List<Square>();
+        if (GetComponent<SquareRow>().isRemoving || isRemoving || !columnSquares[0] || !columnSquares[0].GetComponent<ColorSquare>().myData)
+            return null;
         E_Color firstCor = columnSquares[0].GetComponent<ColorSquare>().myData.E_Color;
         toRemoveSquares.Add(columnSquares[0]);
 
         for (int i = 1; i < columnSquares.Count; i++)
         {
+            if(!columnSquares[i].GetComponent<ColorSquare>().myData || !columnSquares[i])
+                return null;
+
             if (columnSquares[i] && columnSquares[i].GetComponent<ColorSquare>() && columnSquares[i].GetComponent<ColorSquare>().myData.E_Color == firstCor && canAdd)
             {
-               
+
                 if (!toRemoveSquares.Contains(columnSquares[i]))
                 {
                     num++;
                     toRemoveSquares.Add(columnSquares[i]);
                 }
-               
-                //Debug.Log(firstCor + "同色" + num);
             }
             else
             {
@@ -112,67 +125,66 @@ public class SquareColumn : MonoBehaviour
                 }
             }
         }
-        //Debug.Log("本行最多:"+ firstCor.ToString()+num);
-        //遍历完整列，执行组合消除
-
-        StartCoroutine(RemoveSquares(num));
+        if (toRemoveSquares.Count >= 3)
+            return toRemoveSquares;
+        else
+            return null;
     }
 
-    IEnumerator RemoveSquares(int num)
+ 
+  
+
+    IEnumerator CheckAndRemoveSquares(List<Square> removeLists)
     {
-        if (!isRemoving)
+        if (!GetComponent<SquareRow>().isRemoving &&  !isRemoving)
         {
-            isRemoving = true;
-            if (num <= 2)
+            IsColumnRemoving();
+            if (removeLists.Count <= 2)
             {
+            }
+            else if (removeLists.Count >= 5)
+            {
+                yield return RemoveColLine5(removeLists);
+            }
+            else if (removeLists.Count >= 4)
+            {
+                yield return RemoveColLine4(removeLists);
+            }
 
-            }
-            else if (num >= 5)
+            else if (removeLists.Count >= 3)
             {
-                yield return RemoveColLine5();
-            }
-            else if (num >= 4)
-            {
-                yield return RemoveColLine4();
+                yield return RemoveColLine3(removeLists);
             }
 
-            else if (num >= 3)
-            {
-                yield return RemoveColLine3();
-            }
-            //yield return new  WaitForSeconds(0.2f);
-            isRemoving = false;
+            StopColumnRemoving();
         }
     }
+
+    
+
 
     /// <summary>
     /// 连线3消：无功能，只积分
     /// </summary>
-    public IEnumerator RemoveColLine3()
+    public IEnumerator RemoveColLine3(List<Square> toRemoveSquares)
     {
         Debug.Log("完成3消");
-
-        for (int i = 0; i < toRemoveSquares.Count; i++)
-        {
-            if (toRemoveSquares[i].GetComponent<PlayerController>())
-            {
-                if (i + 1 >= toRemoveSquares.Count)
-                    yield break;
-                i++;
-            }
-            yield return toRemoveSquares[i].BeRemoved();
-            yield return ColumnAddOneSquare();
-            yield return new WaitForSeconds(spawnInterval);
-        }
-
+        yield return RemoveLine(toRemoveSquares);
+ 
     }
 
     /// <summary>
     /// 连线4消：消除+生成1个整列炸弹色块
     /// </summary>
-    public IEnumerator RemoveColLine4()
+    public IEnumerator RemoveColLine4(List<Square> toRemoveSquares)
     {
         Debug.Log("完成4消");
+        yield return RemoveLine(toRemoveSquares);
+    
+    }
+
+     IEnumerator RemoveLine(List<Square> toRemoveSquares) 
+    {
         for (int i = 0; i < toRemoveSquares.Count; i++)
         {
             if (toRemoveSquares[i].GetComponent<PlayerController>())
@@ -183,30 +195,17 @@ public class SquareColumn : MonoBehaviour
             }
             yield return toRemoveSquares[i].BeRemoved();
             yield return ColumnAddOneSquare();
-            yield return new WaitForSeconds(spawnInterval);
+            yield return new WaitForSeconds(removeInterval);
         }
-
     }
 
     /// <summary>
     /// 连线5消：消除+生成色块闪电：清除所有相同颜色色块
     /// </summary>
-    public IEnumerator RemoveColLine5()
+    public IEnumerator RemoveColLine5(List<Square> toRemoveSquares)
     {
         Debug.Log("完成5消");
-        for (int i = 0; i < toRemoveSquares.Count; i++)
-        {
-            if (toRemoveSquares[i].GetComponent<PlayerController>())
-            {
-                if (i + 1 >= toRemoveSquares.Count)
-                    yield break;
-                i++;
-            }
-            yield return toRemoveSquares[i].BeRemoved();
-            yield return ColumnAddOneSquare();
-            yield return new WaitForSeconds(spawnInterval);
-        }
-
+        yield return RemoveLine(toRemoveSquares);
     }
 
     /// <summary>
@@ -251,31 +250,33 @@ public class SquareColumn : MonoBehaviour
     {
         GetOneSquare();
         FirstEmptySlotIndex = index;
-
-        if (ColFull && FirstEmptySlotIndex > 0 && SquareNum <= 8)
-        {
-            int toBorn = FirstEmptySlotIndex;
-            for (int i = 0; i < toBorn; i++)
-            {
-                if (ColFull && transform.GetChild(i).childCount == 0 && columnSquares[i] == null)
-                {
-                    StartCoroutine(ColumnAddOneSquare());
-                }
-            }
-        }
-
-        if (ColFull && SquareNum == 8 && FirstEmptySlotIndex != 0)
-        {
-            for (int i = 0; i < FirstEmptySlotIndex; i++)
-                StartCoroutine(ColumnAddOneSquare());
-        }
-
+        StartCoroutine(CheckSlotEmpty());///
 
         if (FirstEmptySlotIndex == 0)
             return;
         transform.GetChild(FirstEmptySlotIndex - 1).gameObject.SetActive(true);
     }
 
+    public IEnumerator CheckSlotEmpty() 
+    {
+        if (!isRemoving && !GetComponent<SquareRow>().isRemoving && ColFull )
+        {
+            if (FirstEmptySlotIndex != 0)
+            {
+                int toBorn = FirstEmptySlotIndex;
+                for (int i = 0; i < toBorn; i++)
+                {
+                    if (ColFull && transform.GetChild(i).childCount == 0)
+                    {
+                        yield return new WaitForSeconds(0.3f);
+                        StartCoroutine(ColumnAddOneSquare());
+                    }
+                }
+            }
+        }
+
+
+    }
 
     public IEnumerator SpawnFirstColumn(SquareObjPool pool)
     {
@@ -289,7 +290,7 @@ public class SquareColumn : MonoBehaviour
             else
                 StartCoroutine(ColumnAddOneSquare());
 
-            yield return new WaitForSeconds(spawnInterval);
+            yield return new WaitForSeconds(removeInterval);
         }
     }
 
@@ -336,8 +337,6 @@ public class SquareColumn : MonoBehaviour
             StartCoroutine(FallNewSquare(newSquare));
             yield return null;
         }
-        
-
     }
 
     IEnumerator FallNewSquare(GameObject square)

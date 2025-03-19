@@ -97,11 +97,11 @@ public class SquareObjPool : MonoBehaviour
     /// </summary>
     public void ReturnPool(ColorSquare square) 
     {
-         square.myData = null;
-         square.GetComponent<SpriteRenderer>().color=Color.white;
-         Debug.Log("指学+1");
+         //Debug.Log("指学+1");
          square.transform.SetParent(transform);
+         square.GetComponent<SpriteRenderer>().color=Color.white;
          square.gameObject.SetActive(false);
+         square.myData = null;
          square.transform.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Kinematic;
          square.transform.localPosition = Vector3.zero;
          square.transform.localRotation = Quaternion.identity;

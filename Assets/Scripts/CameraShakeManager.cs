@@ -20,10 +20,6 @@ public class CameraShakeManager : MonoSingleton<CameraShakeManager>
         base.InitSelf();
         impulseListener=FindAnyObjectByType<CinemachineImpulseListener>();
     }
-    //public void GetCurrentCamListener(CinemachineImpulseListener impulseListener)
-    //{
-    //    this.impulseListener = impulseListener;
-    //}
 
     /// <summary>
     /// 在游戏开始后，所有具有ShakeSource的对象都会初始化先调用此方法自动向CameraShakeManager登记自身的profile
@@ -33,7 +29,7 @@ public class CameraShakeManager : MonoSingleton<CameraShakeManager>
         if (!sourecDic.ContainsKey(sourceName))
         {
             sourecDic.Add(sourceName, source);
-            Debug.Log("添加" + source.name);
+            //Debug.Log("添加" + source.name);
         }
     }
 

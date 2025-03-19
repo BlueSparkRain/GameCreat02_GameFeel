@@ -89,21 +89,21 @@ public class ComboRecorder : MonoBehaviour
             }
             yield return null;
         }
-        Debug.Log("空拍+重置连击"); 
+        //Debug.Log("空拍+重置连击"); 
         combo = 0;//超出连击计时时间，重置连击数
         ComboNumText.text = combo.ToString();
     }
 
     IEnumerator DisturbCheck()
     {
-        Debug.Log("检测误输入");
+        //Debug.Log("检测误输入");
         while (disturbTimer >= 0)
         {
             disturbTimer -= Time.deltaTime;
 
             if (canDistrub  && PlayerInputManager.Instance.AnyAct)
             {
-                Debug.Log("误操作+重置连击");
+                //Debug.Log("误操作+重置连击");
                 combo = 0;//超出连击计时时间，重置连击数
                 ComboNumText.text = combo.ToString();
                 canDistrub = false;//已扰乱

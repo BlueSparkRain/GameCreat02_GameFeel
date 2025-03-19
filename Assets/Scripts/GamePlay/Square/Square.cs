@@ -12,18 +12,16 @@ public class Square : MonoBehaviour,ICanEffect
 
     private GameObject particalPrefab => Resources.Load<GameObject>("Prefab/SquarePartical");
 
-    public bool canAct = true;
 
     protected virtual void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
     }
 
- 
-
-    protected virtual void Start()
-    {
-    }
+    /// <summary>
+    /// 使本方块移动至目标槽位置
+    /// </summary>
+    /// <param name="slotPos"></param>
     public virtual void MoveToSlot(Vector3 slotPos)
     {
         HasFather = true;
@@ -39,7 +37,6 @@ public class Square : MonoBehaviour,ICanEffect
                 transform.parent.parent.GetComponent<SquareColumn>().UpdateColumnSquares(this, transform.parent.GetSiblingIndex());
                 FindAnyObjectByType<SquareGroup>().UpdateRowSquares(transform.GetComponentInChildren<Square>(), slot.transform.parent.GetSiblingIndex(), slot.transform.GetSiblingIndex());
             }
-            //yield return TweenHelper.MakeLerp(transform.position, truePos, 0.15f, val => transform.position = val);
             StartCoroutine(TweenHelper.MakeLerp(transform.position, truePos, 0.15f, val => transform.position = val));
         }
     }
@@ -60,6 +57,9 @@ public class Square : MonoBehaviour,ICanEffect
         DoSelfExcute();
     }
 
+    /// <summary>
+    /// 执行方块技能逻辑（加分or其他）
+    /// </summary>
     public virtual void DoSelfExcute()
     {
         //加分
@@ -68,7 +68,7 @@ public class Square : MonoBehaviour,ICanEffect
     }
 
     /// <summary>
-    /// 自身被去除时的爆炸效果
+    /// 方块自身被去除时的爆炸效果
     /// </summary>
     protected virtual void ExplodeEffect() 
     {
