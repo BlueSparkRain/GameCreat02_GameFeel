@@ -78,7 +78,7 @@ public class SquareColumn : MonoBehaviour
             else
                 StartCoroutine(ColumnAddOneSquare());
 
-            yield return new WaitForSeconds(removeInterval);
+            yield return new WaitForSeconds(0.15f);
         }
     }
 
@@ -131,25 +131,25 @@ public class SquareColumn : MonoBehaviour
             canColCheck = false;
             yield return new WaitForSeconds(0.4f);
 
-            //if (!isRemoving)
-            if (FirstEmptySlotIndex != 0 &&!isRemoving)
+            if (!isRemoving)
+                //if (FirstEmptySlotIndex != 0 &&!isRemoving)
             {
-                //if (FirstEmptySlotIndex != 0 || SquareNum != 8)
+                if (FirstEmptySlotIndex != 0 || SquareNum != 8)
                 {
                     yield return new WaitForSeconds(0.2f);
 
-                    if (FirstEmptySlotIndex != 0 &&!isRemoving)
-                    //if (!isRemoving)
+                    //if (FirstEmptySlotIndex != 0 &&!isRemoving)
+                    if (!isRemoving)
                     {
-                        //if (FirstEmptySlotIndex != 0 || SquareNum != 8)
-                        //{
+                        if (FirstEmptySlotIndex != 0 || SquareNum != 8)
+                        {
                             ColFull = false;
                             StartCoroutine(ColumnAddOneSquare());
                             yield return new WaitForSeconds(0.1f);
                             canColCheck = true;
                             canCheck = true;
                             yield break;
-                        //}
+                        }
 
                     }
                 }
@@ -179,6 +179,7 @@ public class SquareColumn : MonoBehaviour
                 canCheck = false;
                 StartCoroutine(CanColCheck());
             }
+        
         }
 
         //if (timer >= 0)
@@ -256,8 +257,6 @@ public class SquareColumn : MonoBehaviour
         if (!GetComponent<SquareRow>().isRemoving &&  !isRemoving)
         {
             IsColumnRemoving();
-
-            //yield return new WaitForSeconds(2);
 
             if (removeLists.Count <= 2)
             {
@@ -351,8 +350,6 @@ public class SquareColumn : MonoBehaviour
     /// <param name="index"></param>
     public void UpdateTopSlot(int index)
     {
-        //if (FirstEmptySlotIndex < index)
-            //return;
         GetOneSquare();
         FirstEmptySlotIndex = index;
         if(ColFull)

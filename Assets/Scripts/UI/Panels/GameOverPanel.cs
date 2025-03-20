@@ -20,7 +20,8 @@ public class GameOverPanel : BasePanel
 
      void OnClickRePlayButton()
     {
-        SceneManager.LoadScene(0);
+
+        SceneManager.LoadScene(1);
         Debug.Log("重新加载游戏");
         UIManager.Instance.HidePanel<GameOverPanel>();
     }

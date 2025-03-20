@@ -27,7 +27,7 @@ public class CollectableSquare : SpecicalSquare
     /// <param name="square"></param>
     void CheckSelf(Transform square) 
     {
-        Debug.Log(Vector2.Distance(square.position, transform.position));
+        //Debug.Log(Vector2.Distance(square.position, transform.position));
         if (canTrigger && Vector2.Distance(square.position, transform.position) <= 3)
         {
             canTrigger = false;

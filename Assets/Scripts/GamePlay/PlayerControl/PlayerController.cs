@@ -1,3 +1,4 @@
+using Cinemachine;
 using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -33,10 +34,13 @@ public class PlayerController : MonoBehaviour
 
 
     bool canswap = true;
+
+    Transform VCam;
     void Start()
     {
         square = GetComponent<ColorSquare>();
         rb = GetComponent<Rigidbody2D>();
+        VCam = FindAnyObjectByType<CinemachineVirtualCamera>().transform;
     }
 
     void Update()
@@ -89,43 +93,43 @@ public class PlayerController : MonoBehaviour
 
         if (PlayerInputManager.Instance.MoveUp)
         {
-            //if (transform.parent == null || transform.parent.parent.GetComponent<SquareColumn>().isRemoving)
-                if (transform.parent == null)
+            //if (transform.parent == null|| transform.parent.parent.GetComponent<SquareColumn>().isRemoving)
+            if (transform.parent == null)
                 return;
 
             //Debug.Log("ÉÏÒÆ");
             targetSquare = CheckTarget(E_TargetDir.ÉÏ);
-            if (targetSquare)
+            if (targetSquare && targetSquare.transform.parent?.GetComponent<Slot>())
                 StartCoroutine(Swap(targetSquare?.GetComponent<Square>()));
         }
         else if (PlayerInputManager.Instance.MoveDown)
         {
-            //if (transform.parent == null || transform.parent.parent.GetComponent<SquareColumn>().isRemoving)
+                //if (transform.parent == null ||transform.parent.parent.GetComponent<SquareColumn>().isRemoving)
                 if (transform.parent == null)
-                    return;
+                return;
             //Debug.Log("ÏÂÒÆ");
             targetSquare = CheckTarget(E_TargetDir.ÏÂ);
-            if (targetSquare)
+            if (targetSquare && targetSquare.transform.parent?.GetComponent<Slot>())
                 StartCoroutine(Swap(targetSquare?.GetComponent<Square>()));
         }
-        else if (PlayerInputManager.Instance.MoveLeft)
+        else if (PlayerInputManager.Instance.MoveLeft )
         {
-            //if (transform.parent == null  || transform.parent.parent.GetComponent<SquareRow>().isRemoving)
+                //if (transform.parent == null || transform.parent.parent.GetComponent<SquareRow>().isRemoving)
                 if (transform.parent == null)
                     return;
             //Debug.Log("×óÒÆ");
             targetSquare = CheckTarget(E_TargetDir.×ó);
-            if (targetSquare)
+            if (targetSquare && targetSquare.transform.parent?.GetComponent<Slot>())
                 StartCoroutine(Swap(targetSquare?.GetComponent<Square>()));
         }
         else if (PlayerInputManager.Instance.MoveRight)
         {
-            //if (transform.parent == null ||transform.parent.parent.GetComponent<SquareRow>().isRemoving)
+                //if (transform.parent == null || transform.parent.parent.GetComponent<SquareRow>().isRemoving)
                 if (transform.parent == null)
                 return;
             //Debug.Log("ÓÒÒÆ");
             targetSquare = CheckTarget(E_TargetDir.ÓÒ);
-            if (targetSquare)
+            if (targetSquare && targetSquare.transform.parent?.GetComponent<Slot>())
                 StartCoroutine(Swap(targetSquare?.GetComponent<Square>()));
         }
     }
@@ -137,7 +141,6 @@ public class PlayerController : MonoBehaviour
 
         if (PlayerInputManager.Instance.ColorationUp)
         {
-            //if (transform.parent == null || transform.parent.parent.GetComponent<SquareColumn>().isRemoving || transform.parent.parent.GetComponent<SquareRow>().isRemoving)
                 if (transform.parent == null)
                 return;
             //Debug.Log("ÉÏÎü");
@@ -147,7 +150,6 @@ public class PlayerController : MonoBehaviour
         }
         else if (PlayerInputManager.Instance.ColorationDown)
         {
-            //if (transform.parent == null || transform.parent.parent.GetComponent<SquareColumn>().isRemoving || transform.parent.parent.GetComponent<SquareRow>().isRemoving)
                 if (transform.parent == null)
                 return;
             //Debug.Log("ÏÂÎü");
@@ -157,7 +159,6 @@ public class PlayerController : MonoBehaviour
         }
         else if (PlayerInputManager.Instance.ColorationLeft)
         {
-            //if (transform.parent == null || transform.parent.parent.GetComponent<SquareColumn>().isRemoving || transform.parent.parent.GetComponent<SquareRow>().isRemoving)
                 if (transform.parent == null)
                 return;
             //Debug.Log("×óÎü");
@@ -167,7 +168,6 @@ public class PlayerController : MonoBehaviour
         }
         else if (PlayerInputManager.Instance.ColorationRight)
         {
-            //if (transform.parent == null || transform.parent.parent.GetComponent<SquareColumn>().isRemoving || transform.parent.parent.GetComponent<SquareRow>().isRemoving)
                 if (transform.parent == null)
                 return;
             //Debug.Log("ÓÒÎü");
@@ -181,9 +181,13 @@ public class PlayerController : MonoBehaviour
     void Coloration(ColorSquare otherSquare)
     {
 
+        if (VCam)
+            StartCoroutine(Shake());
+
         canAct = false;
         square.myData = otherSquare.myData;
         square.MoveToSlot(transform.parent.position);
+        MusicManager.Instance.PlaySound("coloration");
 
         if (transform.parent.GetComponent<Slot>())
         {
@@ -206,6 +210,7 @@ public class PlayerController : MonoBehaviour
             yield break;
         }
         isSwaping=true;
+        MusicManager.Instance.PlaySound("swap");
 
         canswap = false;
         Transform mySlot = transform.parent;
@@ -230,19 +235,26 @@ public class PlayerController : MonoBehaviour
                 slot.transform.parent.GetComponent<SquareColumn>().UpdateColumnSquares(square, slot.transform.GetSiblingIndex());
                 FindAnyObjectByType<SquareGroup>().UpdateRowSquares(transform.GetComponentInChildren<Square>(), slot.transform.parent.GetSiblingIndex(), slot.transform.GetSiblingIndex());
             }
-            StartCoroutine(square.AnimMoveScale());
             //yield return new WaitForSeconds(0.1f);
             canAct = false;
             timer = actInterval;
             canswap = true;
+            //StartCoroutine(square.AnimMoveScale());
+            yield return square.AnimMoveScale();
+            isSwaping = false;
 
         }
 
-        isSwaping = true;
     }
 
     IEnumerator PlayerMove(Vector3 startPos, Vector3 targetPos, float duration)
     {
+
+        if (VCam) 
+            StartCoroutine(Shake());
+            //Debug.Log("ÊÖ±úÕð¶¯£¡");
+        
+
         float timer = 0;
         while (timer <= duration)
         {
@@ -256,5 +268,14 @@ public class PlayerController : MonoBehaviour
     {
         yield return TweenHelper.MakeLerp(transform.localScale, Vector3.one * 2.5f, 0.05f, val => transform.localScale = val);
         yield return TweenHelper.MakeLerp(transform.localScale, Vector3.one * 1.6f, 0.05f, val => transform.localScale = val);
+    }
+
+
+    IEnumerator Shake()
+    {
+        Debug.Log(VCam);
+        yield return TweenHelper.MakeLerp(Vector3.zero, new Vector3(0, 0, 0.8f), 0.08f, val => VCam.eulerAngles = val);
+        yield return TweenHelper.MakeLerp(new Vector3(0, 0, 0.8f), new Vector3(0, 0, -0.8f), 0.08f, val => VCam.eulerAngles = val);
+        yield return TweenHelper.MakeLerp(new Vector3(0, 0, -0.8f), Vector3.zero, 0.08f, val => VCam.eulerAngles = val);
     }
 }

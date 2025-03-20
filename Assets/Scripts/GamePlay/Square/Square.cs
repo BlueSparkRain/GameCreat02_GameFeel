@@ -55,10 +55,15 @@ public class Square : MonoBehaviour,ICanEffect
     /// </summary>
     public virtual IEnumerator LooseSelf()
     {
+        if(GetComponent<PlayerController>()!=null && GetComponent<PlayerController>().isSwaping)
+            yield break;
+
         transform.SetParent(null);
-        yield return null;
-        rb.velocity = new Vector3(0, -80);
         HasFather = false;
+        yield return null;
+        if (GetComponent<PlayerController>() != null && GetComponent<PlayerController>().isSwaping)
+            yield break;
+        rb.velocity = new Vector3(0, -60);
     }
 
     public virtual IEnumerator AnimMoveScale()

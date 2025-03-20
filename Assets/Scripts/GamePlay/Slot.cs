@@ -36,11 +36,27 @@ public class Slot : MonoBehaviour
     /// <param name="collision"></param>
     private void OnTriggerEnter2D(Collider2D other)
     {
-        //if (isFull && transform.GetSiblingIndex()==0 && other.GetComponent<ColorSquare>() && !other.GetComponent<PlayerController>())
-        //{
-        //    other.gameObject.SetActive(false);
-        //    return;
-        //}
+        if (transform.childCount > 1)
+            StartCoroutine(transform.GetChild(0).GetComponent<Square>().LooseSelf());
+
+
+        if (transform.parent.GetComponent<SquareColumn>().ColFull && !other.GetComponent<Square>().HasFather && !isFull )
+        {
+            if (transform.GetSiblingIndex() + 1 <= 7 && !transform.parent.GetChild(transform.GetSiblingIndex() + 1).GetComponent<Slot>().isFull && (transform.GetSiblingIndex() - 1) >= 0 && transform.parent.GetChild(transform.GetSiblingIndex() - 1).GetComponent<Slot>().isFull)
+            {
+                Debug.Log("½øÍËÁ½ÄÑ");
+                other.transform.SetParent(transform);
+                currentSquare = other.GetComponent<Square>();
+
+                if (!isFull && currentSquare != null && other.GetComponent<Square>())
+                    other.GetComponent<Square>().MoveToSlot(transform.position);
+                isFull = false;
+                transform.parent.GetComponentInParent<SquareColumn>().UpdateTopSlot(transform.GetSiblingIndex());
+                StartCoroutine(ThrowSquare());
+            }
+
+        }
+
         if (isFull)
             return;
 
@@ -62,6 +78,9 @@ public class Slot : MonoBehaviour
     /// </summary>
     public IEnumerator ThrowSquare()
     {
+        if (currentSquare && currentSquare.GetComponent<PlayerController>() && currentSquare.GetComponent<PlayerController>().isSwaping)
+            yield break;
+
         currentSquare = null;
         isFull = false;
         transform.parent.GetComponent<SquareColumn>().LooseOneSquare();

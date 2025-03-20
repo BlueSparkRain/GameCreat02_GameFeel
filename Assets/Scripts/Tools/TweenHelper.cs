@@ -34,6 +34,9 @@ public static class TweenHelper
             float t = elapsedTime / lerpTime; // 计算插值因子
             Vector3 currentPosition = Vector3.Lerp(startPosition, targetPosition, t);
 
+            if (updatePosition == null)
+                yield break;
+
             updatePosition?.Invoke(currentPosition); // 更新位置
             elapsedTime += Time.deltaTime;
             yield return null; // 等待下一帧

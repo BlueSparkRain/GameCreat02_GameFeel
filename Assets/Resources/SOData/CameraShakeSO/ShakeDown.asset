@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: ShakeDown
   m_EditorClassIdentifier: 
   impactTime: 0.5
-  imapctForce: 1
-  impactVelocity: {x: 0, y: -0.2, z: 0}
+  imapctForce: 1.5
+  impactVelocity: {x: 0, y: -0.3, z: 0}
   impactCurve:
     serializedVersion: 2
     m_Curve:

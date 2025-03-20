@@ -20,6 +20,8 @@ public class PlayerFeelManager : MonoSingleton<PlayerFeelManager>
     [Header("染色-震动时长")]
     public float ColorationDuration = 0.3f;
 
+  
+
     void Start()
     {
         // 订阅输入事件
@@ -68,11 +70,17 @@ public class PlayerFeelManager : MonoSingleton<PlayerFeelManager>
     void ExcuteCameraShake(string resName) 
     {
         CameraShakeManager.Instance.ExcuteCameraShake(resName, GetComponentInChildren<CinemachineImpulseSource>());
-        //Debug.Log("手柄震动！");
+        //EventCenter.Instance.EventTrigger(E_EventType.E_ColorSquareRemove);
+       
     }
+
+  
 
     void OnDisable()
     {
+
+        StopAllCoroutines();
+
         // 取消订阅输入事件
         PlayerInputManager.Instance.playerInput.GamePlay.LeftMove.started -= ctx => GamepadVibrate(MoveLowSpeed, MoveHighSpeed, MoveDuration);
         PlayerInputManager.Instance.playerInput.GamePlay.RightMove.started -= ctx => GamepadVibrate(MoveLowSpeed, MoveHighSpeed, MoveDuration);
@@ -99,5 +107,7 @@ public class PlayerFeelManager : MonoSingleton<PlayerFeelManager>
     {
     
     }
+
+   
 
 }

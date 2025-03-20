@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.EventSystems;
 [RequireComponent(typeof(CanvasGroup))]
 public abstract class BasePanel : MonoBehaviour
 {
@@ -42,6 +43,10 @@ public abstract class BasePanel : MonoBehaviour
     /// </summary>
     public abstract IEnumerator HidePanelTweenEffect();
 
-    protected virtual void Init() { }
+    protected virtual void Init()
+    { 
+     if(FirstSelectButton)
+            EventSystem.current.SetSelectedGameObject(FirstSelectButton);
+    }
 
 }

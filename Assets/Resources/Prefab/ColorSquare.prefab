@@ -134,7 +134,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.9354538, y: 0.85648024}
+  m_Size: {x: 0.91171384, y: 0.8727175}
   m_EdgeRadius: 0
 --- !u!50 &7683386368675989877
 Rigidbody2D:
@@ -177,6 +177,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HasFather: 0
   BaseScore: 50
+  canMove: 1
   myData: {fileID: 0}
 --- !u!1 &7808399190054876206
 GameObject:

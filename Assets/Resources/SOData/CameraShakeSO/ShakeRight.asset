@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: ShakeRight
   m_EditorClassIdentifier: 
   impactTime: 0.5
-  imapctForce: 1
-  impactVelocity: {x: -0.2, y: 0, z: 0}
+  imapctForce: 1.5
+  impactVelocity: {x: -0.2, y: -0.1, z: 0}
   impactCurve:
     serializedVersion: 2
     m_Curve:

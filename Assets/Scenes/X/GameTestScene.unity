@@ -713,9 +713,9 @@ MonoBehaviour:
   m_UseCameraSpace: 1
   m_ReactionSettings:
     m_SecondaryNoise: {fileID: 0}
-    m_AmplitudeGain: 0.5
+    m_AmplitudeGain: 1
     m_FrequencyGain: 2
-    m_Duration: 0.5
+    m_Duration: 1
     m_NoiseOffsets: {x: 0, y: 0, z: 0}
 --- !u!114 &495072104
 MonoBehaviour:
@@ -764,7 +764,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 495072102}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -34.24871}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1380,7 +1380,7 @@ MonoBehaviour:
     m_DissipationMode: 2
     m_DissipationDistance: 100
     m_PropagationSpeed: 343
-  m_DefaultVelocity: {x: -0.2, y: 0, z: 0}
+  m_DefaultVelocity: {x: 0.2, y: -0.1, z: 0}
 --- !u!1 &856413625
 GameObject:
   m_ObjectHideFlags: 0
@@ -2081,6 +2081,55 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dd80cfe03ee17f14d90f4cd5fdc11a96, type: 3}
+--- !u!1 &1204932971
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1204932973}
+  - component: {fileID: 1204932972}
+  m_Layer: 6
+  m_Name: Volume
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1204932972
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1204932971}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b9a305e18de0c04dbd257a21cd47087, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sharedProfile: {fileID: 11400000, guid: e7b824d4ecc3c38448069da2524db917, type: 2}
+  isGlobal: 1
+  blendDistance: 0
+  weight: 1
+  priority: 0
+--- !u!4 &1204932973
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1204932971}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -12.730418, y: 1.0459409, z: 1986.6245}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1233778249
 GameObject:
   m_ObjectHideFlags: 0
@@ -3265,10 +3314,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e0bd51e035feea04bb3bff061443f374, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  comboInterval: 0.8
-  comboDuration: 0.3
+  comboInterval: 0.5
+  comboDuration: 0.2
   combo: 0
-  disturbCheckDuration: 0.5
+  disturbCheckDuration: 0.3
   ComboNumText: {fileID: 1478683455}
   ComboUIFather: {fileID: 2041204632}
   BigPrefab: {fileID: 4950170927426305871, guid: bb86b0f4d3f536a4d9d9009433cd8b49, type: 3}
@@ -3489,6 +3538,7 @@ GameObject:
   - component: {fileID: 1810411348}
   - component: {fileID: 1810411351}
   - component: {fileID: 1810411352}
+  - component: {fileID: 1810411353}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -3569,7 +3619,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0.16}
 --- !u!114 &1810411351
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3618,6 +3668,66 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cPitch: 1
   interval: 0.2
+--- !u!114 &1810411353
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1810411347}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 948f4100a11a5c24981795d21301da5c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  volumeTrigger: {fileID: 1810411350}
+  volumeLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  stopNaNPropagation: 1
+  finalBlitToCameraTarget: 0
+  antialiasingMode: 0
+  temporalAntialiasing:
+    jitterSpread: 0.75
+    sharpness: 0.25
+    stationaryBlending: 0.95
+    motionBlending: 0.85
+  subpixelMorphologicalAntialiasing:
+    quality: 2
+  fastApproximateAntialiasing:
+    fastMode: 0
+    keepAlpha: 0
+  fog:
+    enabled: 1
+    excludeSkybox: 1
+  debugLayer:
+    lightMeter:
+      width: 512
+      height: 256
+      showCurves: 1
+    histogram:
+      width: 512
+      height: 256
+      channel: 3
+    waveform:
+      exposure: 0.12
+      height: 256
+    vectorscope:
+      size: 256
+      exposure: 0.12
+    overlaySettings:
+      linearDepth: 0
+      motionColorIntensity: 4
+      motionGridSize: 64
+      colorBlindnessType: 0
+      colorBlindnessStrength: 1
+  m_Resources: {fileID: 11400000, guid: d82512f9c8e5d4a4d938b575d47f88d4, type: 2}
+  m_ShowToolkit: 0
+  m_ShowCustomSorter: 0
+  breakBeforeColorGrading: 0
+  m_BeforeTransparentBundles: []
+  m_BeforeStackBundles: []
+  m_AfterStackBundles: []
 --- !u!1 &1822469948
 GameObject:
   m_ObjectHideFlags: 3
@@ -3944,7 +4054,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: -3
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 0.16981131, g: 0.16981131, b: 0.16981131, a: 0.93333334}
+  m_Color: {r: 0.21383637, g: 0.21383637, b: 0.21383637, a: 0.93333334}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -4082,6 +4192,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4226389763353816032, guid: 3bdd87c869ef3cc4eb1c12cc9a3f9292, type: 3}
+      propertyPath: playerBornData.BornIndex
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5507514637558252832, guid: 3bdd87c869ef3cc4eb1c12cc9a3f9292, type: 3}
       propertyPath: m_Name
       value: Square8*8Group
@@ -4131,7 +4245,8 @@ SceneRoots:
   - {fileID: 1233778252}
   - {fileID: 1508569245}
   - {fileID: 794206654}
-  - {fileID: 495072105}
   - {fileID: 258213722}
   - {fileID: 856413627}
   - {fileID: 2139939732}
+  - {fileID: 1204932973}
+  - {fileID: 495072105}

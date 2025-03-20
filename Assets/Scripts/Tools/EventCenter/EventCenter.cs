@@ -234,6 +234,7 @@ public enum E_EventType
     E_dataSave,
     E_PlayerMove,
     E_Test,
+    E_CamShake
 }
 
 

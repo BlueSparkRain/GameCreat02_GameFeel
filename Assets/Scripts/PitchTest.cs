@@ -10,13 +10,19 @@ public class PitchTest : MonoSingleton<PitchTest>
     public  float interval = 0.5f;
 
 
+    private void Start()
+    {
+        MusicManager.Instance.PlayBKMusic("BK1");
+    }
+
+
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            cPitch += 0.1f;
-            MusicManager.Instance.PlaySound("Broke",cPitch);
-        }
+        //if (Input.GetKeyDown(KeyCode.Space))
+        //{
+        //    cPitch += 0.2f;
+        //    MusicManager.Instance.PlaySound("do",cPitch);
+        //}
 
         if (timer > 0)
         {
@@ -25,15 +31,22 @@ public class PitchTest : MonoSingleton<PitchTest>
         else
         {
             timer = interval;
-            if(cPitch>1)
-            cPitch -= 0.1f;
+            if (cPitch > 1)
+                cPitch -= 0.1f;
         }
+
+
+        if (Input.GetKeyDown(KeyCode.Space)) 
+        {
+            UIManager.Instance.ShowPanel<SettingPanel>(null);
+        }
+
     }
 
     public void DingDong() 
     {
         cPitch += 0.1f;
-        MusicManager.Instance.PlaySound("Broke", cPitch);
+        MusicManager.Instance.PlaySound("do", cPitch);
     }
 
 }
