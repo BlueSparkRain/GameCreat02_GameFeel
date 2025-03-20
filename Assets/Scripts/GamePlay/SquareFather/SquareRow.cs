@@ -1,9 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
-public class SquareRow :MonoBehaviour
+public class SquareRow : MonoBehaviour
 {
     public List<Square> rowSquares = new List<Square>();
 
@@ -23,9 +22,9 @@ public class SquareRow :MonoBehaviour
     /// </summary>
     /// <param name="RowIndex"></param>
     /// <returns></returns>
-    public IEnumerator RemoveWholeRow() 
+    public IEnumerator RemoveWholeRow()
     {
-        for (int i = 0; i <rowSquares.Count; i++)
+        for (int i = 0; i < rowSquares.Count; i++)
         {
             if (rowSquares[i].GetComponent<PlayerController>())
             {
@@ -41,10 +40,10 @@ public class SquareRow :MonoBehaviour
         }
     }
 
-    public void SetRowSquare(Square square,int index) 
+    public void SetRowSquare(Square square, int index)
     {
-        rowSquares[index]=square;
-        Debug.Log(index+"初始化行更新");
+        rowSquares[index] = square;
+        Debug.Log(index + "初始化行更新");
         UpdateRowFullState();
     }
 
@@ -52,9 +51,9 @@ public class SquareRow :MonoBehaviour
     /// <summary>
     /// 更新本行是否已满
     /// </summary>
-    public void UpdateRowFullState() 
+    public void UpdateRowFullState()
     {
-        for (int i = 0;i < rowSquares.Count; i++) 
+        for (int i = 0; i < rowSquares.Count; i++)
         {
             if (!rowSquares[i])
             {
@@ -69,14 +68,14 @@ public class SquareRow :MonoBehaviour
     /// <summary>
     /// 本行开始消除任务
     /// </summary>
-    void IsRowRemoving() 
+    void IsRowRemoving()
     {
         isRemoving = true;
     }
     /// <summary>
     /// 本行完成消除任务
     /// </summary>
-    void StopRowRemoving() 
+    void StopRowRemoving()
     {
         isRemoving = false;
     }
@@ -103,12 +102,12 @@ public class SquareRow :MonoBehaviour
             return null;
         startCheckIndex = 0;
 
-        for (int i = 0; i < 8;i++) 
+        for (int i = 0; i < 8; i++)
         {
-            if (rowSquares[i]!=null && rowSquares[i].GetComponent<ColorSquare>() && rowSquares[i].GetComponent<ColorSquare>().myData)
+            if (rowSquares[i] != null && rowSquares[i].GetComponent<ColorSquare>() && rowSquares[i].GetComponent<ColorSquare>().myData)
             {
-              startCheckIndex=i;
-              break;
+                startCheckIndex = i;
+                break;
             }
         }
 
@@ -117,7 +116,7 @@ public class SquareRow :MonoBehaviour
 
         for (int i = startCheckIndex + 1; i < rowSquares.Count; i++)
         {
-            if (!rowSquares[i] ||!rowSquares[i].GetComponent<ColorSquare>())
+            if (!rowSquares[i] || !rowSquares[i].GetComponent<ColorSquare>())
             {
                 continue;
             }
@@ -218,7 +217,7 @@ public class SquareRow :MonoBehaviour
         //5消机制
     }
 
-    IEnumerator RemoveRowLine(List<Square> toRemoveSquares) 
+    IEnumerator RemoveRowLine(List<Square> toRemoveSquares)
     {
         for (int i = 0; i < toRemoveSquares.Count; i++)
         {

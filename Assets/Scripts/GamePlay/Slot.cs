@@ -21,10 +21,12 @@ public class Slot : MonoBehaviour
         if (transform.childCount == 0)
             isFull=false;
         //时刻检测本槽下方是否有空位，有空位则松掉本槽内方块
-        if (isFull &&  transform.GetSiblingIndex()<=6)
+        if (isFull && transform.GetSiblingIndex()<=6)
         {
-            if (!transform.parent.GetChild(transform.GetSiblingIndex() + 1).GetComponent<PlayerController>()&&!transform.parent.GetChild(transform.GetSiblingIndex() + 1).GetComponent<Slot>().isFull)
+            if (!transform.parent.GetChild(transform.GetSiblingIndex() + 1).GetComponent<PlayerController>() && !transform.parent.GetChild(transform.GetSiblingIndex() + 1).GetComponent<Slot>().isFull)
+            {
                 StartCoroutine(ThrowSquare());
+            }
         }
     }
 
@@ -34,8 +36,14 @@ public class Slot : MonoBehaviour
     /// <param name="collision"></param>
     private void OnTriggerEnter2D(Collider2D other)
     {
+        //if (isFull && transform.GetSiblingIndex()==0 && other.GetComponent<ColorSquare>() && !other.GetComponent<PlayerController>())
+        //{
+        //    other.gameObject.SetActive(false);
+        //    return;
+        //}
         if (isFull)
             return;
+
 
         if (!isFull && !other.GetComponent<Square>().HasFather) 
         {
@@ -44,9 +52,7 @@ public class Slot : MonoBehaviour
 
             if (!isFull &&currentSquare != null && other.GetComponent<Square>())
                other.GetComponent<Square>().MoveToSlot(transform.position);
-            
             isFull = true;
-
             transform.parent.GetComponentInParent<SquareColumn>().UpdateTopSlot(transform.GetSiblingIndex());
         }
     }
@@ -62,5 +68,6 @@ public class Slot : MonoBehaviour
         yield return null;
         if (transform.childCount != 0)
             yield return transform?.GetChild(0).GetComponent<Square>().LooseSelf();
+
     }
 }

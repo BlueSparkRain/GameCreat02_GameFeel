@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -49,6 +50,10 @@ public class ComboRecorder : MonoBehaviour
     [Header("小音符右起始点")]
     public  Transform RightBorn;
 
+
+    [Header("当前得分倍率")]
+    public float currentMulti;
+
     void Start()
     {
          comboIntervalTimer= comboInterval;
@@ -99,8 +104,9 @@ public class ComboRecorder : MonoBehaviour
       yield return TweenHelper.MakeLerp(Vector3.one,new Vector3(1.2f,0.8f,1),0.05f,val=> bigRythm.transform.localScale=val);
       StartCoroutine(ComboSetUp());
       yield return new WaitForSeconds(comboDuration);
+      //comboIntervalTimer = comboInterval;
 
-      Destroy(bigRythm);
+        Destroy(bigRythm);
       //yield return TweenHelper.MakeLerp(new Vector3(1.5f,0.8f,1),Vector3.one,0.25f,val=> bigRythm.transform.localScale=val);
     }
 
@@ -113,6 +119,7 @@ public class ComboRecorder : MonoBehaviour
             {
                 Debug.Log("连击+1");
                 combo++;
+                GetMultiplier();
                 ComboNumText.text = combo.ToString();
                 addCombo = false;
                 //开启误操作检测
@@ -125,7 +132,13 @@ public class ComboRecorder : MonoBehaviour
         }
         //Debug.Log("空拍+重置连击"); 
         combo = 0;//超出连击计时时间，重置连击数
+        GetMultiplier();
         ComboNumText.text = combo.ToString();
+    }
+
+    void GetMultiplier() 
+    {
+        currentMulti = combo>=20 ? 2 + 0.25f * ((combo - 20) / 5) : 1 + 0.2f * (combo / 5);
     }
 
     IEnumerator DisturbCheck()
@@ -139,6 +152,7 @@ public class ComboRecorder : MonoBehaviour
             {
                 //Debug.Log("误操作+重置连击");
                 combo = 0;//超出连击计时时间，重置连击数
+                GetMultiplier();
                 ComboNumText.text = combo.ToString();
                 canDistrub = false;//已扰乱
                 yield break;

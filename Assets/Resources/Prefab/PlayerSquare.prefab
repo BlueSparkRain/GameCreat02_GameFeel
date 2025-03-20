@@ -760,9 +760,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HasFather: 0
   BaseScore: 50
-  partical: {fileID: 0}
-  canAct: 1
-  hitTime: 1
+  canMove: 1
   myData: {fileID: 11400000, guid: 0bd0130e2f857444094e0ecb2f6c43a9, type: 2}
 --- !u!114 &-1764890053907615121
 MonoBehaviour:
@@ -814,4 +812,4 @@ MonoBehaviour:
   whatIsSquare:
     serializedVersion: 2
     m_Bits: 256
-  actInterval: 0.25
+  actInterval: 0.2

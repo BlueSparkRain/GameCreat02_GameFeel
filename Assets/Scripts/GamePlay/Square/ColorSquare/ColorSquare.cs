@@ -26,7 +26,7 @@ public class ColorSquare : Square
             yield break;
 
         DoSelfEffect();
-        yield return AnimScaleReMove();
+        yield return AnimReMoveScale();
         //Debug.Log("É«¿é±»Ïû³ý");
 
         if (transform.parent != null && transform.parent.GetComponent<Slot>() != null)
@@ -48,6 +48,8 @@ public class ColorSquare : Square
         if (transform.parent != null && transform.parent.GetComponent<Slot>())
             yield return transform.parent.GetComponent<Slot>().ThrowSquare();
 
+        if (transform.GetComponent<PlayerController>())
+            yield break;
         FindAnyObjectByType<SquareObjPool>().ReturnPool(this);
     }
 

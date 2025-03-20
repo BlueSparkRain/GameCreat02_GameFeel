@@ -1,12 +1,5 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Reflection;
-using System.Threading;
-using Unity.VisualScripting;
-using UnityEngine;
 using UnityEngine.Events;
-using static UnityEditor.Progress;
 
 public class EventCenter : BaseSingleton<EventCenter>
 {
@@ -235,6 +228,7 @@ public enum E_EventType
     /// ²ÎÊý£ºplayer
     /// </summary>
     E_ColorSquareRemove,
+    E_GetSquareScore,
     E_pkayerDead,
     E_sceneLoad,
     E_dataSave,

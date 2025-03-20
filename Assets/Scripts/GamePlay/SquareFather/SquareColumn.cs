@@ -130,21 +130,28 @@ public class SquareColumn : MonoBehaviour
         {
             canColCheck = false;
             yield return new WaitForSeconds(0.4f);
-            //if (FirstEmptySlotIndex != 0 || SquareNum != 8)
-            //if (FirstEmptySlotIndex != 0  && !isRemoving && !GetComponent<SquareRow>().isRemoving)
-            if (FirstEmptySlotIndex != 0  && !isRemoving)
-            {
-                yield return new WaitForSeconds(0.4f);
 
-                if (FirstEmptySlotIndex != 0 && !isRemoving)
+            //if (!isRemoving)
+            if (FirstEmptySlotIndex != 0 &&!isRemoving)
+            {
+                //if (FirstEmptySlotIndex != 0 || SquareNum != 8)
                 {
-                    ColFull = false;
-                    StartCoroutine(ColumnAddOneSquare());
-                    yield return new WaitForSeconds(0.1f);
-                    canColCheck = true;
-                    canCheck = true;
-                    yield break;
-                
+                    yield return new WaitForSeconds(0.2f);
+
+                    if (FirstEmptySlotIndex != 0 &&!isRemoving)
+                    //if (!isRemoving)
+                    {
+                        //if (FirstEmptySlotIndex != 0 || SquareNum != 8)
+                        //{
+                            ColFull = false;
+                            StartCoroutine(ColumnAddOneSquare());
+                            yield return new WaitForSeconds(0.1f);
+                            canColCheck = true;
+                            canCheck = true;
+                            yield break;
+                        //}
+
+                    }
                 }
              canColCheck = true;
              canCheck = true;
@@ -170,8 +177,6 @@ public class SquareColumn : MonoBehaviour
             if (FirstEmptySlotIndex != 0 || SquareNum != 8)
             {
                 canCheck = false;
-                //canColCheck = true;
-                Debug.Log("≥‰÷µQ±»");
                 StartCoroutine(CanColCheck());
             }
         }
@@ -350,6 +355,9 @@ public class SquareColumn : MonoBehaviour
             //return;
         GetOneSquare();
         FirstEmptySlotIndex = index;
+        if(ColFull)
+            SquareNum = 8-FirstEmptySlotIndex;
+
         StartCoroutine(CheckSlotEmpty());///
 
         if (FirstEmptySlotIndex == 0)

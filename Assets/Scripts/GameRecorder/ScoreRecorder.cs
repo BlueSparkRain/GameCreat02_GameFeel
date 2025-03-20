@@ -30,12 +30,25 @@ public class ScoreRecorder : MonoBehaviour
     //游戏计时器
     float gameTimer;
 
+
+    private void OnEnable()
+    {
+        EventCenter.Instance.AddEventListener<int>(E_EventType.E_GetSquareScore,UpdatePlayerScore);
+    }
+
+    private void OnDisable()
+    {
+        EventCenter.Instance.RemoveEventListener<int>(E_EventType.E_GetSquareScore,UpdatePlayerScore);
+
+    }
+
     /// <summary>
     /// 更新玩家得分及文本
     /// </summary>
-   public void UpdatePlayerScore(int score)
+    public void UpdatePlayerScore(int score)
    {
-        playerCurrentScore += score;
+        int finalScore=(int)(FindAnyObjectByType<ComboRecorder>().currentMulti *score);
+        playerCurrentScore += finalScore;
         scoreText.text = playerCurrentScore.ToString();
 
         if (!gameOver && playerCurrentScore >= GameOverScore)

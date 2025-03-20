@@ -29,6 +29,8 @@ public class PlayerController : MonoBehaviour
 
     Rigidbody2D rb;
 
+    public bool isSwaping;
+
 
     bool canswap = true;
     void Start()
@@ -87,7 +89,8 @@ public class PlayerController : MonoBehaviour
 
         if (PlayerInputManager.Instance.MoveUp)
         {
-            if (transform.parent == null || transform.parent.parent.GetComponent<SquareColumn>().isRemoving || transform.parent.parent.GetComponent<SquareRow>().isRemoving)
+            //if (transform.parent == null || transform.parent.parent.GetComponent<SquareColumn>().isRemoving)
+                if (transform.parent == null)
                 return;
 
             //Debug.Log("ÉÏÒÆ");
@@ -97,8 +100,9 @@ public class PlayerController : MonoBehaviour
         }
         else if (PlayerInputManager.Instance.MoveDown)
         {
-            if (transform.parent == null || transform.parent.parent.GetComponent<SquareColumn>().isRemoving || transform.parent.parent.GetComponent<SquareRow>().isRemoving)
-                return;
+            //if (transform.parent == null || transform.parent.parent.GetComponent<SquareColumn>().isRemoving)
+                if (transform.parent == null)
+                    return;
             //Debug.Log("ÏÂÒÆ");
             targetSquare = CheckTarget(E_TargetDir.ÏÂ);
             if (targetSquare)
@@ -106,8 +110,9 @@ public class PlayerController : MonoBehaviour
         }
         else if (PlayerInputManager.Instance.MoveLeft)
         {
-            if (transform.parent == null || transform.parent.parent.GetComponent<SquareColumn>().isRemoving || transform.parent.parent.GetComponent<SquareRow>().isRemoving)
-                return;
+            //if (transform.parent == null  || transform.parent.parent.GetComponent<SquareRow>().isRemoving)
+                if (transform.parent == null)
+                    return;
             //Debug.Log("×óÒÆ");
             targetSquare = CheckTarget(E_TargetDir.×ó);
             if (targetSquare)
@@ -115,7 +120,8 @@ public class PlayerController : MonoBehaviour
         }
         else if (PlayerInputManager.Instance.MoveRight)
         {
-            if (transform.parent == null || transform.parent.parent.GetComponent<SquareColumn>().isRemoving || transform.parent.parent.GetComponent<SquareRow>().isRemoving)
+            //if (transform.parent == null ||transform.parent.parent.GetComponent<SquareRow>().isRemoving)
+                if (transform.parent == null)
                 return;
             //Debug.Log("ÓÒÒÆ");
             targetSquare = CheckTarget(E_TargetDir.ÓÒ);
@@ -131,7 +137,8 @@ public class PlayerController : MonoBehaviour
 
         if (PlayerInputManager.Instance.ColorationUp)
         {
-            if (transform.parent == null || transform.parent.parent.GetComponent<SquareColumn>().isRemoving || transform.parent.parent.GetComponent<SquareRow>().isRemoving)
+            //if (transform.parent == null || transform.parent.parent.GetComponent<SquareColumn>().isRemoving || transform.parent.parent.GetComponent<SquareRow>().isRemoving)
+                if (transform.parent == null)
                 return;
             //Debug.Log("ÉÏÎü");
             targetSquare = CheckTarget(E_TargetDir.ÉÏ);
@@ -140,7 +147,8 @@ public class PlayerController : MonoBehaviour
         }
         else if (PlayerInputManager.Instance.ColorationDown)
         {
-            if (transform.parent == null || transform.parent.parent.GetComponent<SquareColumn>().isRemoving || transform.parent.parent.GetComponent<SquareRow>().isRemoving)
+            //if (transform.parent == null || transform.parent.parent.GetComponent<SquareColumn>().isRemoving || transform.parent.parent.GetComponent<SquareRow>().isRemoving)
+                if (transform.parent == null)
                 return;
             //Debug.Log("ÏÂÎü");
             targetSquare = CheckTarget(E_TargetDir.ÏÂ);
@@ -149,7 +157,8 @@ public class PlayerController : MonoBehaviour
         }
         else if (PlayerInputManager.Instance.ColorationLeft)
         {
-            if (transform.parent == null || transform.parent.parent.GetComponent<SquareColumn>().isRemoving || transform.parent.parent.GetComponent<SquareRow>().isRemoving)
+            //if (transform.parent == null || transform.parent.parent.GetComponent<SquareColumn>().isRemoving || transform.parent.parent.GetComponent<SquareRow>().isRemoving)
+                if (transform.parent == null)
                 return;
             //Debug.Log("×óÎü");
             targetSquare = CheckTarget(E_TargetDir.×ó);
@@ -158,7 +167,8 @@ public class PlayerController : MonoBehaviour
         }
         else if (PlayerInputManager.Instance.ColorationRight)
         {
-            if (transform.parent == null || transform.parent.parent.GetComponent<SquareColumn>().isRemoving || transform.parent.parent.GetComponent<SquareRow>().isRemoving)
+            //if (transform.parent == null || transform.parent.parent.GetComponent<SquareColumn>().isRemoving || transform.parent.parent.GetComponent<SquareRow>().isRemoving)
+                if (transform.parent == null)
                 return;
             //Debug.Log("ÓÒÎü");
             targetSquare = CheckTarget(E_TargetDir.ÓÒ);
@@ -190,11 +200,12 @@ public class PlayerController : MonoBehaviour
 
     public IEnumerator Swap(Square otherSquare)
     {
-        if (!canswap || !otherSquare.transform.parent || !otherSquare.GetComponent<Square>().canMove)
+        if (!canswap || !otherSquare.transform.parent || !otherSquare.transform.parent.GetComponent<Slot>().isFull || !otherSquare.GetComponent<Square>().canMove)
         {
             Debug.Log("ÎÞ·¨½»»»£¡");
             yield break;
         }
+        isSwaping=true;
 
         canswap = false;
         Transform mySlot = transform.parent;
@@ -219,7 +230,7 @@ public class PlayerController : MonoBehaviour
                 slot.transform.parent.GetComponent<SquareColumn>().UpdateColumnSquares(square, slot.transform.GetSiblingIndex());
                 FindAnyObjectByType<SquareGroup>().UpdateRowSquares(transform.GetComponentInChildren<Square>(), slot.transform.parent.GetSiblingIndex(), slot.transform.GetSiblingIndex());
             }
-            StartCoroutine(square.AnimScaleReMove());
+            StartCoroutine(square.AnimMoveScale());
             //yield return new WaitForSeconds(0.1f);
             canAct = false;
             timer = actInterval;
@@ -227,6 +238,7 @@ public class PlayerController : MonoBehaviour
 
         }
 
+        isSwaping = true;
     }
 
     IEnumerator PlayerMove(Vector3 startPos, Vector3 targetPos, float duration)

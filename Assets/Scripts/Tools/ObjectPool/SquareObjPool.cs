@@ -103,6 +103,7 @@ public class SquareObjPool : MonoBehaviour
     {
          //Debug.Log("»Ø³Ø+1");
          pool.Add(square.gameObject);
+         square.transform.localScale = Vector3.one*1.6f;
          square.gameObject.SetActive(false);
          square.transform.SetParent(transform);
          square.GetComponent<SpriteRenderer>().color=Color.white;
