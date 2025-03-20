@@ -123,29 +123,68 @@ public class SquareColumn : MonoBehaviour
             return;
     }
     bool canCheck=true;
+
+    IEnumerator CanColCheck() 
+    {
+        if (canColCheck && !canCheck)
+        {
+            canColCheck = false;
+            yield return new WaitForSeconds(0.4f);
+            //if (FirstEmptySlotIndex != 0 || SquareNum != 8)
+            //if (FirstEmptySlotIndex != 0  && !isRemoving && !GetComponent<SquareRow>().isRemoving)
+            if (FirstEmptySlotIndex != 0  && !isRemoving)
+            {
+                yield return new WaitForSeconds(0.4f);
+
+                if (FirstEmptySlotIndex != 0 && !isRemoving)
+                {
+                    ColFull = false;
+                    StartCoroutine(ColumnAddOneSquare());
+                    yield return new WaitForSeconds(0.1f);
+                    canColCheck = true;
+                    canCheck = true;
+                    yield break;
+                
+                }
+             canColCheck = true;
+             canCheck = true;
+             yield break;
+            }
+            canColCheck = true;
+            canCheck = true;
+            //timer = 1f;
+            //yield break;
+            //}
+            //canColCheck=true;
+        }
+    }
     private void Update()
     {
         if (ColFull)
            RemoveSquares();
 
 
-        //if (!isRemoving && canColCheck && ColFull && FirstEmptySlotIndex ==1  && SquareNum == 7)
-        //{
-        //    ColFull = false;
-        //    canColCheck = true;
-        //    timer = 0.5f;
-        //    StartCoroutine(ColumnAddOneSquare());
-        //}
+        //if (!isRemoving && canColCheck && ColFull && FirstEmptySlotIndex != 0 && SquareNum != 8)
+        if (!isRemoving && !GetComponent<SquareRow>().isRemoving && canCheck && ColFull)
+        {
+            if (FirstEmptySlotIndex != 0 || SquareNum != 8)
+            {
+                canCheck = false;
+                //canColCheck = true;
+                Debug.Log("³äÖµQ±È");
+                StartCoroutine(CanColCheck());
+            }
+        }
 
         //if (timer >= 0)
         //    timer -= Time.deltaTime;
         //else
         //{
-        //  canColCheck = true;
+        //    canColCheck = true;
         //}
     }
 
-    bool canColCheck;
+    bool canColCheck=true;
     float timer;
 
 
@@ -307,6 +346,8 @@ public class SquareColumn : MonoBehaviour
     /// <param name="index"></param>
     public void UpdateTopSlot(int index)
     {
+        //if (FirstEmptySlotIndex < index)
+            //return;
         GetOneSquare();
         FirstEmptySlotIndex = index;
         StartCoroutine(CheckSlotEmpty());///
@@ -320,7 +361,7 @@ public class SquareColumn : MonoBehaviour
     public IEnumerator CheckSlotEmpty() 
     {
 
-        //yield break;
+        yield break;
 
         if (!isRemoving && !GetComponent<SquareRow>().isRemoving && ColFull )
         {
@@ -380,7 +421,7 @@ public class SquareColumn : MonoBehaviour
 
     public IEnumerator ColumnAddOneSquare()
     {
-        if (SquareNum + 1 <= 8)
+        if (SquareNum + 1 <= 8 ||FirstEmptySlotIndex >0)
         {
             GameObject newSquare = transform.parent.parent?.GetComponent<SquareGroup>().SquarePool.GetRandomSquare();
             StartCoroutine(FallNewSquare(newSquare));

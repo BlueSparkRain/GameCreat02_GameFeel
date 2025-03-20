@@ -36,6 +36,18 @@ public class ComboRecorder : MonoBehaviour
     //可添加一次连击
     bool addCombo;
 
+    [Header("音符连击")]
+    public Transform ComboUIFather;
+
+    [Header("大音符")]
+    public GameObject BigPrefab;
+    [Header("小音符")]
+    public GameObject LittlePrefab;
+
+    [Header("小音符左起始点")]
+    public  Transform LeftBorn;
+    [Header("小音符右起始点")]
+    public  Transform RightBorn;
 
     void Start()
     {
@@ -58,16 +70,38 @@ public class ComboRecorder : MonoBehaviour
         if (canReadNextCombo) 
         {
             comboDurationTimer=comboDuration;
-            StartCoroutine(ComboSetUp());
+            //StartCoroutine(ComboSetUp());
             canReadNextCombo = false;
-            //canTriggerNextCombo=false;
             comboIntervalTimer = comboInterval;
+            StartCoroutine(LittleRythmAnim());
         }
 
         if (!canReadNextCombo && PlayerInputManager.Instance.AnyAct)
         {
             addCombo = true;
         }
+    }
+
+    IEnumerator LittleRythmAnim() 
+    {
+        GameObject leftRythm=Instantiate(LittlePrefab,LeftBorn.position,Quaternion.identity, LeftBorn);
+        GameObject rightRythm=Instantiate(LittlePrefab, RightBorn.position, Quaternion.identity, RightBorn);
+        StartCoroutine( UITween.Instance.UIDoMove(leftRythm.transform,Vector2.zero, new Vector2(342,0),comboInterval));
+        StartCoroutine( UITween.Instance.UIDoMove(rightRythm.transform,Vector2.zero, new  Vector2(-342,0), comboInterval));
+        yield return  new WaitForSeconds(comboInterval);
+        StartCoroutine(BigRythmAnim());
+        Destroy(leftRythm);
+        Destroy(rightRythm);
+    }
+    IEnumerator BigRythmAnim() 
+    {
+      GameObject bigRythm=Instantiate (BigPrefab,ComboUIFather);
+      yield return TweenHelper.MakeLerp(Vector3.one,new Vector3(1.2f,0.8f,1),0.05f,val=> bigRythm.transform.localScale=val);
+      StartCoroutine(ComboSetUp());
+      yield return new WaitForSeconds(comboDuration);
+
+      Destroy(bigRythm);
+      //yield return TweenHelper.MakeLerp(new Vector3(1.5f,0.8f,1),Vector3.one,0.25f,val=> bigRythm.transform.localScale=val);
     }
 
     IEnumerator ComboSetUp()

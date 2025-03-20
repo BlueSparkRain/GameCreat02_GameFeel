@@ -57,17 +57,21 @@ public class SquareObjPool : MonoBehaviour
     /// <returns></returns>
     GameObject GetInstnce() 
     {
+        GameObject instnce;
         //如果池中存在未激活的方块，取出一个空闲方块
         for (int i = 0; i < pool.Count; i++) 
         {
             if (!pool[i].activeInHierarchy) 
             {
-                pool[i].SetActive(true);
-                return pool[i];
+                instnce = pool[i];
+                pool.RemoveAt(i);
+                instnce.SetActive(true);
+                return  instnce;
             }
         }
         //池中已满,生成新方块
-        GameObject instnce=CreatNewInstance();
+        instnce=CreatNewInstance();
+        pool.Remove(instnce);
         instnce.SetActive(true);
         return instnce;
     }
@@ -98,6 +102,7 @@ public class SquareObjPool : MonoBehaviour
     public void ReturnPool(ColorSquare square) 
     {
          //Debug.Log("回池+1");
+         pool.Add(square.gameObject);
          square.gameObject.SetActive(false);
          square.transform.SetParent(transform);
          square.GetComponent<SpriteRenderer>().color=Color.white;
