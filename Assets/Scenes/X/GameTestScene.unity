@@ -713,9 +713,9 @@ MonoBehaviour:
   m_UseCameraSpace: 1
   m_ReactionSettings:
     m_SecondaryNoise: {fileID: 0}
-    m_AmplitudeGain: 1
+    m_AmplitudeGain: 0.5
     m_FrequencyGain: 2
-    m_Duration: 1
+    m_Duration: 0.5
     m_NoiseOffsets: {x: 0, y: 0, z: 0}
 --- !u!114 &495072104
 MonoBehaviour:
@@ -1380,7 +1380,7 @@ MonoBehaviour:
     m_DissipationMode: 2
     m_DissipationDistance: 100
     m_PropagationSpeed: 343
-  m_DefaultVelocity: {x: 0.2, y: -0.1, z: 0}
+  m_DefaultVelocity: {x: 0.2, y: 0, z: 0}
 --- !u!1 &856413625
 GameObject:
   m_ObjectHideFlags: 0
@@ -4194,7 +4194,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4226389763353816032, guid: 3bdd87c869ef3cc4eb1c12cc9a3f9292, type: 3}
       propertyPath: playerBornData.BornIndex
-      value: 1
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 5507514637558252832, guid: 3bdd87c869ef3cc4eb1c12cc9a3f9292, type: 3}
       propertyPath: m_Name

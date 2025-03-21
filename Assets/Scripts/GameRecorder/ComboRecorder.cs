@@ -71,7 +71,6 @@ public class ComboRecorder : MonoBehaviour
             canReadNextCombo = true;
         }
 
-
         if (canReadNextCombo) 
         {
             comboDurationTimer=comboDuration;
@@ -104,7 +103,6 @@ public class ComboRecorder : MonoBehaviour
       yield return TweenHelper.MakeLerp(Vector3.one,new Vector3(1.2f,0.8f,1),0.05f,val=> bigRythm.transform.localScale=val);
       StartCoroutine(ComboSetUp());
       yield return new WaitForSeconds(comboDuration);
-      //comboIntervalTimer = comboInterval;
 
         Destroy(bigRythm);
       //yield return TweenHelper.MakeLerp(new Vector3(1.5f,0.8f,1),Vector3.one,0.25f,val=> bigRythm.transform.localScale=val);
@@ -117,7 +115,7 @@ public class ComboRecorder : MonoBehaviour
             comboDurationTimer -= Time.deltaTime;
             if (addCombo)
             {
-                Debug.Log("Á¬»÷+1");
+                //Debug.Log("Á¬»÷+1");
                 combo++;
                 GetMultiplier();
                 ComboNumText.text = combo.ToString();

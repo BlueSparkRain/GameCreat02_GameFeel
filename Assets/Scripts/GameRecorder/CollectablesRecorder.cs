@@ -67,7 +67,7 @@ public class CollectablesRecorder : MonoBehaviour
 
     void Pass() 
     {
-        Debug.Log("达成收集条件");
+        //Debug.Log("达成收集条件");
     }
 
 }

@@ -1,6 +1,7 @@
 using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
+using static UnityEngine.RuleTile.TilingRuleOutput;
 
 public class Square : MonoBehaviour,ICanEffect
 {
@@ -21,11 +22,31 @@ public class Square : MonoBehaviour,ICanEffect
         rb = GetComponent<Rigidbody2D>();
         if (transform.parent && transform.parent.GetComponent<Slot>())
         {
-            MoveToSlot(transform.parent.position);
+            //MoveToSlot(transform.parent.position);
+            SetMoveToSlot(transform.parent.position);
 
             transform.parent.parent.parent.GetChild(transform.parent.GetSiblingIndex()).GetComponent<SquareRow>().SetRowSquare(this,transform.parent.parent.GetSiblingIndex());
         }
 
+    }
+
+    void SetMoveToSlot(Vector3 slotPos)
+    {
+        HasFather = true;
+        rb.isKinematic = true;
+        rb.velocity = Vector3.zero;
+
+        Vector3 truePos = new Vector3(slotPos.x, slotPos.y, -0.1f);
+        if (transform.parent != null && transform.parent.GetComponent<Slot>() != null)
+        {
+            if (transform.parent.GetComponent<Slot>())
+            {
+                Slot slot = transform.parent.GetComponent<Slot>();
+                transform.parent.parent.GetComponent<SquareColumn>().UpdateColumnSquares(this, transform.parent.GetSiblingIndex());
+                FindAnyObjectByType<SquareGroup>().UpdateRowSquares(transform.GetComponentInChildren<Square>(), slot.transform.parent.GetSiblingIndex(), slot.transform.GetSiblingIndex());
+            }
+            StartCoroutine(TweenHelper.MakeLerp(transform.position, truePos, 0.15f, val => transform.position = val));
+        }
     }
 
     /// <summary>
@@ -34,6 +55,12 @@ public class Square : MonoBehaviour,ICanEffect
     /// <param name="slotPos"></param>
     public virtual void MoveToSlot(Vector3 slotPos)
     {
+        if (transform.parent.GetComponent<Slot>() != null && (transform.parent.childCount > 1))
+        {
+            transform.SetParent(null);
+            return;
+        }
+
         HasFather = true;
         rb.isKinematic = true;
         rb.velocity = Vector3.zero;
@@ -53,16 +80,14 @@ public class Square : MonoBehaviour,ICanEffect
     /// <summary>
     /// ËÉµô±¾·½¿é
     /// </summary>
-    public virtual IEnumerator LooseSelf()
+    public virtual void LooseSelf()
     {
-        if(GetComponent<PlayerController>()!=null && GetComponent<PlayerController>().isSwaping)
-            yield break;
+        if (GetComponent<PlayerController>() != null && GetComponent<PlayerController>().isSwaping)
+            return;
 
         transform.SetParent(null);
         HasFather = false;
-        yield return null;
-        if (GetComponent<PlayerController>() != null && GetComponent<PlayerController>().isSwaping)
-            yield break;
+        //yield return null;
         rb.velocity = new Vector3(0, -60);
     }
 

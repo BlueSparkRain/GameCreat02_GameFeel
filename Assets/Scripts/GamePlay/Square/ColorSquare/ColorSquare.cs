@@ -16,6 +16,9 @@ public class ColorSquare : Square
     protected override void Awake()
     {
         base.Awake();
+
+        if(myData!=null)
+            ColorSelf();
     }
     
     public override IEnumerator BeRemoved()
@@ -29,24 +32,27 @@ public class ColorSquare : Square
         yield return AnimReMoveScale();
         //Debug.Log("色块被消除");
 
-        if (transform.parent != null && transform.parent.GetComponent<Slot>() != null)
-        {
-            if (transform.parent.GetSiblingIndex() - 1 >= 0 && transform.parent.GetComponent<Slot>())
-            {
-                Transform upSlot = transform.parent.parent.GetChild(transform.parent.GetSiblingIndex() - 1);
+        //修改
+        //if (transform.parent != null && transform.parent.GetComponent<Slot>() != null)
+        //{
+        //    if (transform.parent.GetSiblingIndex() - 1 >= 0 && transform.parent.GetComponent<Slot>())
+        //    {
+        //        Transform upSlot = transform.parent.parent.GetChild(transform.parent.GetSiblingIndex() - 1);
 
-                if (upSlot != null && upSlot.GetSiblingIndex() > 1 && upSlot.GetSiblingIndex() != 0)
-                {
-                    if (upSlot.childCount != 0)
-                    {
-                        yield return upSlot.GetComponent<Slot>().ThrowSquare();//上方块先松掉
-                    }
-                }
-            }
-        }
+        //        if (upSlot != null && upSlot.GetSiblingIndex() > 1 && upSlot.GetSiblingIndex() != 0)
+        //        {
+        //            if (upSlot.childCount != 0)
+        //            {
+        //                 upSlot.GetComponent<Slot>().ThrowSquare();
+        //            }
+        //        }
+        //    }
+        //}
+        //
 
         if (transform.parent != null && transform.parent.GetComponent<Slot>())
-            yield return transform.parent.GetComponent<Slot>().ThrowSquare();
+            //yield return transform.parent.GetComponent<Slot>().ThrowSquare();
+            transform.parent.GetComponent<Slot>().ThrowSquare();
 
         if (transform.GetComponent<PlayerController>())
             yield break;

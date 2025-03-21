@@ -33,12 +33,8 @@ public class AudioPanel : BasePanel
     /// <param name="v"></param>
     void OnSFXSliderValueChnage(float v) =>
         MusicManager.Instance.ChangeSoundValue(v);
-
-
     void OnClickReturnButton() =>
       UIManager.Instance.HidePanel<AudioPanel>();
-
-
 
     public override IEnumerator HidePanelTweenEffect()
     {

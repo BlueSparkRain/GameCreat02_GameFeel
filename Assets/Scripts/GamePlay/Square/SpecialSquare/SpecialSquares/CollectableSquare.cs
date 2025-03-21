@@ -43,7 +43,8 @@ public class CollectableSquare : SpecicalSquare
         if (transform.parent && transform.parent.parent.GetComponent<SquareColumn>())
         {
             transform?.parent.parent.GetComponent<SquareColumn>().AddMaxSpawnNum();//恢复列最大容量
-            yield return transform?.parent.GetComponent<Slot>().ThrowSquare();
+            //yield return transform?.parent.GetComponent<Slot>().ThrowSquare();
+            transform?.parent.GetComponent<Slot>().ThrowSquare();
             //粒子特效
             //音效
             yield return new WaitForSeconds(0.2f);

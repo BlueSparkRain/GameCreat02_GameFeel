@@ -30,8 +30,7 @@ public class PlayerController : MonoBehaviour
 
     Rigidbody2D rb;
 
-    public bool isSwaping;
-
+    public bool isSwaping=false;
 
     bool canswap = true;
 
@@ -51,8 +50,6 @@ public class PlayerController : MonoBehaviour
             timer -= Time.deltaTime;
         else
             canAct = true;
-
-
 
         if (canAct)
         {
@@ -88,7 +85,8 @@ public class PlayerController : MonoBehaviour
 
     public void MoveOnce()
     {
-        if (transform.parent == null && canswap)
+        //if (transform.parent == null && canswap)
+        if (transform.parent == null)
             return;
 
         if (PlayerInputManager.Instance.MoveUp)
@@ -204,13 +202,25 @@ public class PlayerController : MonoBehaviour
 
     public IEnumerator Swap(Square otherSquare)
     {
-        if (!canswap || !otherSquare.transform.parent || !otherSquare.transform.parent.GetComponent<Slot>().isFull || !otherSquare.GetComponent<Square>().canMove)
+        if (!canswap || !otherSquare.transform.parent || otherSquare.transform.parent.childCount >1 || !otherSquare.transform.parent.GetComponent<Slot>().isFull || !otherSquare.GetComponent<Square>().canMove )
         {
             Debug.Log("ÎÞ·¨½»»»£¡");
             yield break;
         }
-        isSwaping=true;
-        MusicManager.Instance.PlaySound("swap");
+
+
+        //if (transform.parent == null || !transform.parent.GetComponent<Slot>().isFull ||isSwaping)
+        if (transform.parent == null || !transform.parent.GetComponent<Slot>().isFull)
+            yield break;
+
+        if (!transform.parent || !otherSquare.transform.parent || !otherSquare.transform.parent.GetComponent<Slot>() || !transform.parent.GetComponent<Slot>() )
+            yield break;
+
+        //isSwaping =true;
+
+        StartCoroutine(IsSwapingCheck());
+
+        MusicManager.Instance.PlaySound("swap", 2);
 
         canswap = false;
         Transform mySlot = transform.parent;
@@ -218,6 +228,8 @@ public class PlayerController : MonoBehaviour
         square.HasFather = false;
         transform.SetParent(otherSquare.transform.parent);
         otherSquare.transform.SetParent(mySlot);
+
+      
         if (transform.parent != null && transform.parent.GetComponent<Slot>())
             square.MoveToSlot(transform.parent.position);
 
@@ -235,16 +247,21 @@ public class PlayerController : MonoBehaviour
                 slot.transform.parent.GetComponent<SquareColumn>().UpdateColumnSquares(square, slot.transform.GetSiblingIndex());
                 FindAnyObjectByType<SquareGroup>().UpdateRowSquares(transform.GetComponentInChildren<Square>(), slot.transform.parent.GetSiblingIndex(), slot.transform.GetSiblingIndex());
             }
-            //yield return new WaitForSeconds(0.1f);
             canAct = false;
             timer = actInterval;
             canswap = true;
-            //StartCoroutine(square.AnimMoveScale());
             yield return square.AnimMoveScale();
-            isSwaping = false;
-
         }
 
+    }
+
+    IEnumerator IsSwapingCheck() 
+    {
+        if(isSwaping)
+            yield break;
+        isSwaping = true;
+        yield return new WaitForSeconds(0.3f);
+        isSwaping = false;
     }
 
     IEnumerator PlayerMove(Vector3 startPos, Vector3 targetPos, float duration)
@@ -273,7 +290,6 @@ public class PlayerController : MonoBehaviour
 
     IEnumerator Shake()
     {
-        Debug.Log(VCam);
         yield return TweenHelper.MakeLerp(Vector3.zero, new Vector3(0, 0, 0.8f), 0.08f, val => VCam.eulerAngles = val);
         yield return TweenHelper.MakeLerp(new Vector3(0, 0, 0.8f), new Vector3(0, 0, -0.8f), 0.08f, val => VCam.eulerAngles = val);
         yield return TweenHelper.MakeLerp(new Vector3(0, 0, -0.8f), Vector3.zero, 0.08f, val => VCam.eulerAngles = val);

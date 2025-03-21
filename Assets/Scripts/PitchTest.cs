@@ -18,11 +18,6 @@ public class PitchTest : MonoSingleton<PitchTest>
 
     private void Update()
     {
-        //if (Input.GetKeyDown(KeyCode.Space))
-        //{
-        //    cPitch += 0.2f;
-        //    MusicManager.Instance.PlaySound("do",cPitch);
-        //}
 
         if (timer > 0)
         {

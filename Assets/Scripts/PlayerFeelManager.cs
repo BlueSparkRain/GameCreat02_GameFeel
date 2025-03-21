@@ -20,8 +20,6 @@ public class PlayerFeelManager : MonoSingleton<PlayerFeelManager>
     [Header("染色-震动时长")]
     public float ColorationDuration = 0.3f;
 
-  
-
     void Start()
     {
         // 订阅输入事件
