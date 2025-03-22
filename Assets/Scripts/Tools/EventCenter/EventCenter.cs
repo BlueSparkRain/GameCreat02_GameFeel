@@ -233,7 +233,7 @@ public enum E_EventType
     E_sceneLoad,
     E_dataSave,
     E_PlayerMove,
-    E_Test,
+    E_UIClose,//UIÃæ°å¹Ø±Õ
     E_CamShake
 }
 

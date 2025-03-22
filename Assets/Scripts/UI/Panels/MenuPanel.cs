@@ -55,4 +55,10 @@ public class MenuPanel : BasePanel
         PlayButton.onClick.AddListener(OnClickPlayButton);
         QuitButton.onClick.AddListener(OnClickQuitButton);
     }
+
+    public override void GamePadClose()
+    {
+        base.GamePadClose();
+        //UIManager.Instance.HidePanel<MenuPanel>();
+    }
 }

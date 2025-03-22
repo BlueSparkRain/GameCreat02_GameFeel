@@ -126,16 +126,11 @@ public class Slot : MonoBehaviour
             }
         }
 
-        //StartCoroutine(WaitLoose());
-
         if (currentSquare && currentSquare.GetComponent<PlayerController>() &&  currentSquare.GetComponent<PlayerController>().isSwaping)
-            //yield break;
             return;
 
         currentSquare = null;
-        //isFull = false;
         transform.parent.GetComponent<SquareColumn>().LooseOneSquare();
-        //yield return null;
         if ( transform.childCount != 0)
            transform?.GetChild(0).GetComponent<Square>().LooseSelf();
 
@@ -144,7 +139,7 @@ public class Slot : MonoBehaviour
     IEnumerator WaitLoose()
     {
         canCheckSelf = false;
-        yield return new WaitForSeconds(0.01f);
+        yield return new WaitForSeconds(0.02f);
         canCheckSelf = true;
     }
 }

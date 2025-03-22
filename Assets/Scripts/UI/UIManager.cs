@@ -39,7 +39,6 @@ public class UIManager : BaseSingleton<UIManager>
         //不存在面板，先加载资源
         GameObject panelobj = Resources.Load<GameObject>("Prefab/UIPanel/" + panelName);
 
-
         //将面板预制件创建到对应父layer下，并保持原本的缩放大小
         panelobj = GameObject.Instantiate(panelobj);
         panelobj.transform.SetAsFirstSibling();

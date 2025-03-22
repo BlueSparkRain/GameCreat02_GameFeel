@@ -74,7 +74,6 @@ public class ComboRecorder : MonoBehaviour
         if (canReadNextCombo) 
         {
             comboDurationTimer=comboDuration;
-            //StartCoroutine(ComboSetUp());
             canReadNextCombo = false;
             comboIntervalTimer = comboInterval;
             StartCoroutine(LittleRythmAnim());

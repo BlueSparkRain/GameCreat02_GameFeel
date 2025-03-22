@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class InputActionPanel : BasePanel
@@ -36,4 +37,10 @@ public class InputActionPanel : BasePanel
     {
         base.Init();
     }
+    public override void GamePadClose()
+    {
+        base.GamePadClose();
+        UIManager.Instance.HidePanel<InputActionPanel>();
+    }
+
 }

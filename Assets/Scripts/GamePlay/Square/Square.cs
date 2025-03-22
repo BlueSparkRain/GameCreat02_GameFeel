@@ -22,7 +22,6 @@ public class Square : MonoBehaviour,ICanEffect
         rb = GetComponent<Rigidbody2D>();
         if (transform.parent && transform.parent.GetComponent<Slot>())
         {
-            //MoveToSlot(transform.parent.position);
             SetMoveToSlot(transform.parent.position);
 
             transform.parent.parent.parent.GetChild(transform.parent.GetSiblingIndex()).GetComponent<SquareRow>().SetRowSquare(this,transform.parent.parent.GetSiblingIndex());
@@ -120,7 +119,6 @@ public class Square : MonoBehaviour,ICanEffect
     {
         Debug.Log("方块效果触发");
         //加分
-        //FindAnyObjectByType<ScoreRecorder>().UpdatePlayerScore(BaseScore);
         EventCenter.Instance.EventTrigger(E_EventType.E_GetSquareScore,BaseScore);
         ExplodeEffect();
     }

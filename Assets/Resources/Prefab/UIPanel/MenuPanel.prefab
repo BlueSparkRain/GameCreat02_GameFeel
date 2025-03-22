@@ -385,7 +385,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08d0696aa785fe84c8766b2c6f4d5988, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  transTime: 1
+  transTime: 0.5
   FirstSelectButton: {fileID: 5717229757319158507}
   NeedPausePanel: 0
   PlayButton: {fileID: 2200145276577440820}

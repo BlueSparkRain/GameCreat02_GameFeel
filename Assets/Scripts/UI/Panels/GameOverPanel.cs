@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -18,14 +20,12 @@ public class GameOverPanel : BasePanel
     [Header("玩家失败文本")]
     public TMP_Text lostText;
 
-     void OnClickRePlayButton()
+    void OnClickRePlayButton()
     {
-
-        SceneManager.LoadScene(1);
+        SceneManager.LoadScene(0);
         Debug.Log("重新加载游戏");
         UIManager.Instance.HidePanel<GameOverPanel>();
     }
-
 
     public override void HidePanel()
     {
@@ -75,5 +75,11 @@ public class GameOverPanel : BasePanel
         playerUsedTimeText.transform.parent.gameObject.SetActive(false);
         playerScoreText.transform.parent.gameObject.SetActive(false);
         playerUsedTimeText.transform.parent.gameObject.SetActive(false);
+    }
+
+    public override void GamePadClose()
+    {
+        base.GamePadClose();
+        UIManager.Instance.HidePanel<GameOverPanel>();
     }
 }

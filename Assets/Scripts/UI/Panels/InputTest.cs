@@ -7,7 +7,7 @@ public class InputTest : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        UIManager.Instance.ShowPanel<MenuPanel>(panel => PlayerInputManager.Instance.GamepadUI(panel.FirstSelectButton) );
+       UIManager.Instance.ShowPanel<MenuPanel>(panel => PlayerInputManager.Instance.GamepadUI(panel.FirstSelectButton));
     }
 
     // Update is called once per frame

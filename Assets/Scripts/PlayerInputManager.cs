@@ -16,6 +16,65 @@ public class PlayerInputManager : MonoSingleton<PlayerInputManager>
     public bool ColorationLeft {  get; private set; }
     public bool ColorationRight {  get; private set; }
 
+    public bool SettingPause {  get; private set; }
+
+    bool settingUIPanelIsOpen;
+
+    public GameObject currentUISelectGameObj;
+
+
+    public Stack<GameObject>  selectUIObjs=new Stack<GameObject>();
+    public BasePanel currentPanel;
+
+
+    public bool UISelect;
+    public bool UIClose { get; private set; }
+
+
+    public void SetCurrentSelectGameObj(GameObject obj)
+    {
+        if (selectUIObjs.Contains(obj))
+        {
+            Debug.Log("会重复");
+            return;
+        }
+
+        EventSystem.current.SetSelectedGameObject(obj);
+        selectUIObjs.Push(obj);//新的面板上的按钮
+    }
+
+    public void LostCurrentSelectGameObj() 
+    {
+        Debug.Log(EventSystem.current.currentSelectedGameObject);
+        if(selectUIObjs.Count == 0)
+            return;
+        selectUIObjs.Pop();
+        Debug.Log("弹出后剩余"+selectUIObjs.Count);
+
+        if (selectUIObjs.Count > 0 && selectUIObjs.Peek())
+        {
+            EventSystem.current.SetSelectedGameObject(selectUIObjs.Peek());
+        }
+        else
+        {
+            EventSystem.current.SetSelectedGameObject(null);
+        }
+        Debug.Log(EventSystem.current.currentSelectedGameObject);
+    }
+   
+
+    /// <summary>
+    /// 切换UI映射
+    /// </summary>
+    public void ChangeUIMap() 
+    {
+     
+    
+    }
+
+    public  Vector2  SliderValue;
+
+
     public bool AnyAct;
     public void GamepadUI(GameObject firstButton) 
     {
@@ -33,13 +92,61 @@ public class PlayerInputManager : MonoSingleton<PlayerInputManager>
         }
     }
 
+  
+
     void Update()
     {
+
+        if (EventSystem.current.currentSelectedGameObject != currentUISelectGameObj)
+        {
+            currentUISelectGameObj = EventSystem.current.currentSelectedGameObject;
+
+            if (selectUIObjs.Count > 0)
+            {
+                selectUIObjs.Pop();
+                selectUIObjs.Push(currentUISelectGameObj);
+            }
+            if (currentUISelectGameObj)
+            {
+                if(currentPanel!=null)
+                currentPanel.GetComponent<CanvasGroup>().interactable = false;
+
+                currentPanel = currentUISelectGameObj.transform.GetComponentInParent<BasePanel>();
+           
+            }
+        }
+        //if (currentUISelectGameObj == null)
+        //    currentPanel=null;
+
+            if (currentPanel != null)
+            currentPanel.GetComponent<CanvasGroup>().interactable = true;
+
+
+        if (currentUISelectGameObj != null)
+        {
+            UISelect = playerInput.UI.UISelect.WasPressedThisFrame();
+            UIClose = playerInput.UI.UIClose.WasPressedThisFrame();
+            SliderValue = playerInput.UI.SliderAction.ReadValue<Vector2>();
+        }
+        else
+        {
+            currentPanel = null;
+        }
+
+        if (currentPanel != null && UIClose)
+        { 
+           currentPanel.GamePadClose();
+        }
+
+       SettingPause = playerInput.GamePlay.SettingPause.WasPressedThisFrame();
+
+       //移动操作输入检测
        MoveUp=playerInput.GamePlay.UpMove.WasPressedThisFrame();
        MoveDown = playerInput.GamePlay.DownMove.WasPressedThisFrame();
        MoveLeft=playerInput.GamePlay.LeftMove.WasPressedThisFrame();
        MoveRight=playerInput.GamePlay.RightMove.WasPressedThisFrame();
         
+       //染色操作输入检测
        ColorationUp = playerInput.GamePlay.UpColoration.WasPressedThisFrame();
        ColorationDown = playerInput.GamePlay.DownColoration.WasPressedThisFrame();
        ColorationLeft = playerInput.GamePlay.LeftColoration.WasPressedThisFrame();
@@ -49,8 +156,32 @@ public class PlayerInputManager : MonoSingleton<PlayerInputManager>
             AnyAct = true;
         else
             AnyAct = false;
-        
 
+
+        SettingPanelOpenCheck();
+      
+    }
+
+    /// <summary>
+    /// 检测设置面板的开闭
+    /// </summary>
+    void SettingPanelOpenCheck() 
+    {
+        if (SettingPause)
+        {
+            if (FindAnyObjectByType<SettingPanel>() && !FindAnyObjectByType<SettingPanel>().GetComponent<CanvasGroup>().interactable)
+                return;
+            settingUIPanelIsOpen = !settingUIPanelIsOpen;
+            if (settingUIPanelIsOpen)
+                UIManager.Instance.ShowPanel<SettingPanel>(null);
+            else
+                UIManager.Instance.HidePanel<SettingPanel>();
+        }
+    }
+
+    public  void SettingMenuChange()
+    {
+        settingUIPanelIsOpen = !settingUIPanelIsOpen;
     }
 
 

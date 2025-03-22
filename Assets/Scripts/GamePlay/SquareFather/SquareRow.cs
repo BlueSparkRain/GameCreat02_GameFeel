@@ -14,7 +14,7 @@ public class SquareRow : MonoBehaviour
 
     public bool isRemoving;
 
-    private float spawnInterval = 0.2f;
+    private float spawnInterval = 0.4f;
 
 
     /// <summary>
@@ -99,9 +99,6 @@ public class SquareRow : MonoBehaviour
         bool canAdd = true;
         List<Square> toRemoveSquares = new List<Square>();
 
-        //if (GetComponent<SquareColumn>().isRemoving || isRemoving)
-        //if (isRemoving)
-        //    return null;
 
         startCheckIndex = 0;
 
@@ -229,7 +226,6 @@ public class SquareRow : MonoBehaviour
         {
             if (toRemoveSquares[i].GetComponent<PlayerController>())
             {
-                //yield return toRemoveSquares[i].BeRemoved();
                 StartCoroutine(toRemoveSquares[i].BeRemoved());
                 if (i + 1 >= toRemoveSquares.Count)
                     yield break;
@@ -241,15 +237,10 @@ public class SquareRow : MonoBehaviour
                 Transform targetCol = toRemoveSquares[i].transform?.parent.parent;
                 targetCol?.GetComponent<SquareColumn>().IsColumnRemoving();
                 StartCoroutine(toRemoveSquares[i].BeRemoved());
-                yield return new WaitForSeconds(0.2f);
-
-                //yield return toRemoveSquares[i].BeRemoved();
-
-                //yield return targetCol?.GetComponent<SquareColumn>().ColumnAddOneSquare();
-                //StartCoroutine(targetCol?.GetComponent<SquareColumn>().ColumnAddOneSquare());
-                targetCol?.GetComponent<SquareColumn>().ColumnAddOneSquare();
+                //yield return new WaitForSeconds(0.2f);
 
                 yield return new WaitForSeconds(spawnInterval);
+                targetCol?.GetComponent<SquareColumn>().ColumnAddOneSquare();
                 targetCol?.GetComponent<SquareColumn>().StopColumnRemoving();
             }
         }

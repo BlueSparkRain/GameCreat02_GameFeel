@@ -217,7 +217,6 @@ public class PlayerController : MonoBehaviour
             yield break;
 
         //isSwaping =true;
-
         StartCoroutine(IsSwapingCheck());
 
         MusicManager.Instance.PlaySound("swap", 2);
@@ -229,7 +228,6 @@ public class PlayerController : MonoBehaviour
         transform.SetParent(otherSquare.transform.parent);
         otherSquare.transform.SetParent(mySlot);
 
-      
         if (transform.parent != null && transform.parent.GetComponent<Slot>())
             square.MoveToSlot(transform.parent.position);
 
@@ -240,7 +238,6 @@ public class PlayerController : MonoBehaviour
         if (transform.parent != null)
         {
             StartCoroutine(PlayerMove(transform.position, transform.parent.position, 0.1f));
-
             if (transform.parent.GetComponent<Slot>())
             {
                 Slot slot = transform.parent.GetComponent<Slot>();
@@ -255,12 +252,20 @@ public class PlayerController : MonoBehaviour
 
     }
 
-    IEnumerator IsSwapingCheck() 
+    float interval=0.2f;
+
+    IEnumerator IsSwapingCheck()
     {
-        if(isSwaping)
+        if (isSwaping)
+        {
+            interval += 0.2f;
             yield break;
-        isSwaping = true;
-        yield return new WaitForSeconds(0.3f);
+        }
+            //    StopAllCoroutines();
+            isSwaping = true;
+        //yield return new WaitForSeconds(0.3f);
+        //yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(interval);
         isSwaping = false;
     }
 

@@ -46,7 +46,8 @@ public class PlayerFeelManager : MonoSingleton<PlayerFeelManager>
 
     public IEnumerator IEGamepadVibrate(float low, float high, float time)
     {
-
+        if(PlayerInputManager.Instance.currentUISelectGameObj!=null)
+            yield break;
         if (Gamepad.current == null)
             yield break;
 

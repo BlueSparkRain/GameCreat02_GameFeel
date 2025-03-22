@@ -30,7 +30,7 @@ public class SquareColumn : MonoBehaviour
     /// <summary>
     /// 方块的消除间隔
     /// </summary>
-    private float removeInterval = 0.2f;
+    private float removeInterval = 0.4f;
 
 
     public int maxSpawnNum = 8;
@@ -137,7 +137,7 @@ public class SquareColumn : MonoBehaviour
         if (canColCheck && !canCheck &&!isRemoving)
         {
             canColCheck = false;
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(0.2f);
 
             if (!isRemoving)
                 //if (FirstEmptySlotIndex != 0 &&!isRemoving)
@@ -214,7 +214,7 @@ public class SquareColumn : MonoBehaviour
         {
             StartCoroutine(CheckAndRemoveSquares(CheckRemoveList()));
         }
-        Debug.Log(CheckRemoveList());
+        //Debug.Log(CheckRemoveList());
     }
     public List<Square> CheckRemoveList()
     {
@@ -222,9 +222,6 @@ public class SquareColumn : MonoBehaviour
         bool canAdd = true;
 
         List<Square> toRemoveSquares = new List<Square>();
-
-        //if (GetComponent<SquareRow>().isRemoving || isRemoving || !columnSquares[0] || !columnSquares[0].GetComponent<ColorSquare>().myData)
-        //if (isRemoving || !columnSquares[0] || !columnSquares[0].GetComponent<ColorSquare>().myData)
         if (!columnSquares[0] || !columnSquares[0].GetComponent<ColorSquare>().myData)
             return null;
         E_Color firstCor = columnSquares[0].GetComponent<ColorSquare>().myData.E_Color;
@@ -275,7 +272,6 @@ public class SquareColumn : MonoBehaviour
     IEnumerator CheckAndRemoveSquares(List<Square> removeLists)
     {
 
-        //yield return new WaitForSeconds(0.5f);
 
         if (!GetComponent<SquareRow>().isRemoving &&  !isRemoving)
         {
@@ -334,11 +330,11 @@ public class SquareColumn : MonoBehaviour
             }
             //yield return toRemoveSquares[i].BeRemoved();
             StartCoroutine(toRemoveSquares[i].BeRemoved());
-            yield return new WaitForSeconds(0.2f);
+            //yield return new WaitForSeconds(0.2f);
             //yield return ColumnAddOneSquare();
             //StartCoroutine(ColumnAddOneSquare());
-            ColumnAddOneSquare();
             yield return new WaitForSeconds(removeInterval);
+            ColumnAddOneSquare();
         }
     }
 

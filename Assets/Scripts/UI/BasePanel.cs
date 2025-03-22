@@ -1,9 +1,25 @@
+using System;
 using System.Collections;
+using Unity.VisualScripting;
+using UnityEditor.MemoryProfiler;
 using UnityEngine;
 using UnityEngine.EventSystems;
 [RequireComponent(typeof(CanvasGroup))]
 public abstract class BasePanel : MonoBehaviour
 {
+
+    //private void OnEnable()
+    //{
+    //    EventCenter.Instance.AddEventListener(E_EventType.E_UIClose, GamePadClose);
+    //}
+    //private void OnDisable()
+    //{
+    //    EventCenter.Instance.RemoveEventListener(E_EventType.E_UIClose, GamePadClose);
+    //}
+
+    public virtual void GamePadClose() { }
+
+
     private void Awake()
     {
         DontDestroyOnLoad(this.gameObject);
@@ -30,6 +46,7 @@ public abstract class BasePanel : MonoBehaviour
         
     }
 
+
     /// <summary>
     /// 面板退出调用：执行等级1
     /// </summary>
@@ -37,16 +54,32 @@ public abstract class BasePanel : MonoBehaviour
     {
         if (NeedPausePanel)
         Time.timeScale = 1;
+
+        //IDestroy();
     }
     /// <summary>
     /// 面板退出动画缓动逻辑：执行等级2
     /// </summary>
-    public abstract IEnumerator HidePanelTweenEffect();
-
-    protected virtual void Init()
-    { 
-     if(FirstSelectButton)
-            EventSystem.current.SetSelectedGameObject(FirstSelectButton);
+    public virtual IEnumerator HidePanelTweenEffect() 
+    {
+        yield return null;
+        IDestroy();
     }
 
+    protected virtual void Init()
+    {
+        //GetComponent<CanvasGroup>().interactable=true;
+        if (FirstSelectButton)
+        {
+            //EventSystem.current.SetSelectedGameObject(FirstSelectButton);
+            PlayerInputManager.Instance.SetCurrentSelectGameObj(FirstSelectButton);
+        }
+    }
+
+    protected virtual void IDestroy() 
+    {
+        //GetComponent<CanvasGroup>().interactable = false;
+        PlayerInputManager.Instance.LostCurrentSelectGameObj();
+        //EventSystem.current.SetSelectedGameObject(null);
+    }
 }

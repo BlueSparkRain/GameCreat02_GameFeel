@@ -27,7 +27,6 @@ public class CollectableSquare : SpecicalSquare
     /// <param name="square"></param>
     void CheckSelf(Transform square) 
     {
-        //Debug.Log(Vector2.Distance(square.position, transform.position));
         if (canTrigger && Vector2.Distance(square.position, transform.position) <= 3)
         {
             canTrigger = false;
@@ -43,7 +42,6 @@ public class CollectableSquare : SpecicalSquare
         if (transform.parent && transform.parent.parent.GetComponent<SquareColumn>())
         {
             transform?.parent.parent.GetComponent<SquareColumn>().AddMaxSpawnNum();//恢复列最大容量
-            //yield return transform?.parent.GetComponent<Slot>().ThrowSquare();
             transform?.parent.GetComponent<Slot>().ThrowSquare();
             //粒子特效
             //音效
