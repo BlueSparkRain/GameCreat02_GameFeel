@@ -20,16 +20,35 @@ public class GameOverPanel : BasePanel
     [Header("玩家失败文本")]
     public TMP_Text lostText;
 
+    bool canVer=false;
+
     void OnClickRePlayButton()
     {
-        SceneManager.LoadScene(0);
-        Debug.Log("重新加载游戏");
+        if (!canVer)
+        {
+            return;
+        }
+
         UIManager.Instance.HidePanel<GameOverPanel>();
+        SceneLoadManager.Instance.EndOneLevel();
+        Debug.Log("重新加载游戏");
+    }
+
+    IEnumerator Wait() 
+    {
+        yield return new WaitForSeconds(1);
+        PlayerInputManager.Instance.SetCurrentSelectGameObj(FirstSelectButton);
+    }
+
+    private void Update()
+    {
     }
 
     public override void HidePanel()
     {
         base.HidePanel();
+        PlayerInputManager.Instance.LostCurrentSelectGameObj();
+        canVer = false;
     }
 
     public void LostGame(int playerFinalScore)
@@ -44,6 +63,7 @@ public class GameOverPanel : BasePanel
     {
         yield return UITween.Instance.UIDoMove(root, Vector2.zero, new Vector2(0, -1500), transTime);
         yield return UITween.Instance.UIDoFade(transform, 1, 0, transTime);
+ 
     }
 
     public void GetData(float playerUsedTime, int playerFinalScore)
@@ -65,6 +85,7 @@ public class GameOverPanel : BasePanel
     {
         yield return UITween.Instance.UIDoMove(root, new Vector2(0, -1500), Vector2.zero, transTime);
         yield return UITween.Instance.UIDoFade(transform, 0, 1, transTime);
+        canVer = true;
     }
 
     protected override void Init()
@@ -80,6 +101,6 @@ public class GameOverPanel : BasePanel
     public override void GamePadClose()
     {
         base.GamePadClose();
-        UIManager.Instance.HidePanel<GameOverPanel>();
+        //UIManager.Instance.HidePanel<GameOverPanel>();
     }
 }

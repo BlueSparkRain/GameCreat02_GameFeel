@@ -13,6 +13,7 @@ public class PitchTest : MonoSingleton<PitchTest>
     private void Start()
     {
         MusicManager.Instance.PlayBKMusic("BK1");
+        PlayerFeelManager.Instance.IMInit();
     }
 
 
@@ -29,13 +30,6 @@ public class PitchTest : MonoSingleton<PitchTest>
             if (cPitch > 1)
                 cPitch -= 0.1f;
         }
-
-
-        if (Input.GetKeyDown(KeyCode.Space)) 
-        {
-            UIManager.Instance.ShowPanel<SettingPanel>(null);
-        }
-
     }
 
     public void DingDong() 

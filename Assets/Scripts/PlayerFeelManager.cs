@@ -7,40 +7,70 @@ using UnityEngine.InputSystem;
 public class PlayerFeelManager : MonoSingleton<PlayerFeelManager>
 {
     [Header("移动-低震动马达速度")]
-    public float MoveLowSpeed = 1;
+    public float MoveLowSpeed = 0;
     [Header("移动-高震动马达速度")]
-    public float MoveHighSpeed = 0;
+    public float MoveHighSpeed = 0.2f;
     [Header("移动-震动持续时长")]
-    public float MoveDuration = 0.2f;
+    public float MoveDuration = 0.1f;
 
     [Header("染色-低震动马达速度")]
-    public float ColorationLowSpeed = 0.5f;
+    public float ColorationLowSpeed = 0.3f;
     [Header("染色-高震动马达速度")]
-    public float ColorationHighSpeed = 0.5f;
+    public float ColorationHighSpeed = 0.3f;
     [Header("染色-震动时长")]
-    public float ColorationDuration = 0.3f;
+    public float ColorationDuration = 0.2f;
 
-    void Start()
+    public void IMInit() 
     {
-        // 订阅输入事件
-        PlayerInputManager.Instance.playerInput.GamePlay.LeftMove.started += ctx => GamepadVibrate(MoveLowSpeed,MoveHighSpeed, MoveDuration);
-        PlayerInputManager.Instance.playerInput.GamePlay.RightMove.started += ctx => GamepadVibrate(MoveLowSpeed,MoveHighSpeed, MoveDuration);
-        PlayerInputManager.Instance.playerInput.GamePlay.UpMove.started += ctx => GamepadVibrate(MoveLowSpeed,MoveHighSpeed, MoveDuration);
-        PlayerInputManager.Instance.playerInput.GamePlay.DownMove.started += ctx => GamepadVibrate(MoveLowSpeed,MoveHighSpeed, MoveDuration);
+      InitSelf();
+    }
+
+    protected override void InitSelf()
+    {
+        base.InitSelf();
+        Debug.Log("初始化LLLLL");
+        PlayerInputManager.Instance.playerInput.GamePlay.LeftMove.started += ctx => GamepadVibrate(MoveLowSpeed, MoveHighSpeed, MoveDuration);
+        PlayerInputManager.Instance.playerInput.GamePlay.RightMove.started += ctx => GamepadVibrate(MoveLowSpeed, MoveHighSpeed, MoveDuration);
+        PlayerInputManager.Instance.playerInput.GamePlay.UpMove.started += ctx => GamepadVibrate(MoveLowSpeed, MoveHighSpeed, MoveDuration);
+        PlayerInputManager.Instance.playerInput.GamePlay.DownMove.started += ctx => GamepadVibrate(MoveLowSpeed, MoveHighSpeed, MoveDuration);
         PlayerInputManager.Instance.playerInput.GamePlay.LeftMove.started += ctx => ExcuteCameraShake("ShakeLeftM");
         PlayerInputManager.Instance.playerInput.GamePlay.RightMove.started += ctx => ExcuteCameraShake("ShakeRightM");
         PlayerInputManager.Instance.playerInput.GamePlay.UpMove.started += ctx => ExcuteCameraShake("ShakeUpM");
         PlayerInputManager.Instance.playerInput.GamePlay.DownMove.started += ctx => ExcuteCameraShake("ShakeDownM");
 
-        PlayerInputManager.Instance.playerInput.GamePlay.LeftColoration.started += ctx => GamepadVibrate(ColorationLowSpeed,ColorationHighSpeed, ColorationDuration);
-        PlayerInputManager.Instance.playerInput.GamePlay.RightColoration.started += ctx => GamepadVibrate(ColorationLowSpeed,ColorationHighSpeed, ColorationDuration);
-        PlayerInputManager.Instance.playerInput.GamePlay.UpColoration.started += ctx => GamepadVibrate(ColorationLowSpeed,ColorationHighSpeed, ColorationDuration);
-        PlayerInputManager.Instance.playerInput.GamePlay.DownColoration.started += ctx => GamepadVibrate(ColorationLowSpeed,ColorationHighSpeed, ColorationDuration);
+        PlayerInputManager.Instance.playerInput.GamePlay.LeftColoration.started += ctx => GamepadVibrate(ColorationLowSpeed, ColorationHighSpeed, ColorationDuration);
+        PlayerInputManager.Instance.playerInput.GamePlay.RightColoration.started += ctx => GamepadVibrate(ColorationLowSpeed, ColorationHighSpeed, ColorationDuration);
+        PlayerInputManager.Instance.playerInput.GamePlay.UpColoration.started += ctx => GamepadVibrate(ColorationLowSpeed, ColorationHighSpeed, ColorationDuration);
+        PlayerInputManager.Instance.playerInput.GamePlay.DownColoration.started += ctx => GamepadVibrate(ColorationLowSpeed, ColorationHighSpeed, ColorationDuration);
 
         PlayerInputManager.Instance.playerInput.GamePlay.LeftColoration.started += ctx => ExcuteCameraShake("ShakeLeft");
         PlayerInputManager.Instance.playerInput.GamePlay.RightColoration.started += ctx => ExcuteCameraShake("ShakeRight");
         PlayerInputManager.Instance.playerInput.GamePlay.UpColoration.started += ctx => ExcuteCameraShake("ShakeUp");
         PlayerInputManager.Instance.playerInput.GamePlay.DownColoration.started += ctx => ExcuteCameraShake("ShakeDown");
+    }
+
+    void Start()
+    {
+       InitSelf();
+        // 订阅输入事件
+        //PlayerInputManager.Instance.playerInput.GamePlay.LeftMove.started += ctx => GamepadVibrate(MoveLowSpeed,MoveHighSpeed, MoveDuration);
+        //PlayerInputManager.Instance.playerInput.GamePlay.RightMove.started += ctx => GamepadVibrate(MoveLowSpeed,MoveHighSpeed, MoveDuration);
+        //PlayerInputManager.Instance.playerInput.GamePlay.UpMove.started += ctx => GamepadVibrate(MoveLowSpeed,MoveHighSpeed, MoveDuration);
+        //PlayerInputManager.Instance.playerInput.GamePlay.DownMove.started += ctx => GamepadVibrate(MoveLowSpeed,MoveHighSpeed, MoveDuration);
+        //PlayerInputManager.Instance.playerInput.GamePlay.LeftMove.started += ctx => ExcuteCameraShake("ShakeLeftM");
+        //PlayerInputManager.Instance.playerInput.GamePlay.RightMove.started += ctx => ExcuteCameraShake("ShakeRightM");
+        //PlayerInputManager.Instance.playerInput.GamePlay.UpMove.started += ctx => ExcuteCameraShake("ShakeUpM");
+        //PlayerInputManager.Instance.playerInput.GamePlay.DownMove.started += ctx => ExcuteCameraShake("ShakeDownM");
+
+        //PlayerInputManager.Instance.playerInput.GamePlay.LeftColoration.started += ctx => GamepadVibrate(ColorationLowSpeed,ColorationHighSpeed, ColorationDuration);
+        //PlayerInputManager.Instance.playerInput.GamePlay.RightColoration.started += ctx => GamepadVibrate(ColorationLowSpeed,ColorationHighSpeed, ColorationDuration);
+        //PlayerInputManager.Instance.playerInput.GamePlay.UpColoration.started += ctx => GamepadVibrate(ColorationLowSpeed,ColorationHighSpeed, ColorationDuration);
+        //PlayerInputManager.Instance.playerInput.GamePlay.DownColoration.started += ctx => GamepadVibrate(ColorationLowSpeed,ColorationHighSpeed, ColorationDuration);
+
+        //PlayerInputManager.Instance.playerInput.GamePlay.LeftColoration.started += ctx => ExcuteCameraShake("ShakeLeft");
+        //PlayerInputManager.Instance.playerInput.GamePlay.RightColoration.started += ctx => ExcuteCameraShake("ShakeRight");
+        //PlayerInputManager.Instance.playerInput.GamePlay.UpColoration.started += ctx => ExcuteCameraShake("ShakeUp");
+        //PlayerInputManager.Instance.playerInput.GamePlay.DownColoration.started += ctx => ExcuteCameraShake("ShakeDown");
     }
     public void GamepadVibrate(float low, float high, float time) => StartCoroutine(IEGamepadVibrate(low, high, time));
 
@@ -100,13 +130,21 @@ public class PlayerFeelManager : MonoSingleton<PlayerFeelManager>
         PlayerInputManager.Instance.playerInput.GamePlay.RightColoration.started -= ctx => ExcuteCameraShake("ShakeRight");
         PlayerInputManager.Instance.playerInput.GamePlay.UpColoration.started -= ctx => ExcuteCameraShake("ShakeUp");
         PlayerInputManager.Instance.playerInput.GamePlay.DownColoration.started -= ctx => ExcuteCameraShake("ShakeDown");
+
+ 
     }
 
+    bool sleep=true;
     private void Update()
     {
-    
+        if (sleep && PlayerInputManager.Instance.AnyAct)
+        {
+            Debug.Log("启动");
+            sleep=false;
+        }
+
     }
 
-   
+
 
 }

@@ -132,7 +132,6 @@ public class Square : MonoBehaviour,ICanEffect
             GameObject partical = Instantiate(particalPrefab, transform.position, Quaternion.identity);
             partical.GetComponent<SquarePartical>().StartPlay(GetComponent<SpriteRenderer>().sprite);
         }
-      
     }
 }
 

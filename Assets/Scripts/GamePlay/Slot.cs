@@ -78,14 +78,6 @@ public class Slot : MonoBehaviour
             }
         }
 
-        //上下都有
-        //if (!isFull && transform.GetSiblingIndex() + 1 <= 7 && transform.parent.GetChild(transform.GetSiblingIndex() + 1).GetComponent<Slot>().isFull && (transform.GetSiblingIndex() - 1) >= 0 && transform.parent.GetChild(transform.GetSiblingIndex() - 1).GetComponent<Slot>().isFull)
-        //{
-        //    return;
-        //}
-
-
-
         if (isFull)
         return;
 

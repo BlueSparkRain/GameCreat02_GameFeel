@@ -35,7 +35,6 @@ public class SquareRow : MonoBehaviour
 
             Transform targetCol = rowSquares[i].transform?.parent.parent;
             yield return rowSquares[i].BeRemoved();
-            //yield return targetCol?.GetComponent<SquareColumn>().ColumnAddOneSquare();
             targetCol?.GetComponent<SquareColumn>().ColumnAddOneSquare();
             yield return new WaitForSeconds(spawnInterval);
         }
@@ -237,7 +236,6 @@ public class SquareRow : MonoBehaviour
                 Transform targetCol = toRemoveSquares[i].transform?.parent.parent;
                 targetCol?.GetComponent<SquareColumn>().IsColumnRemoving();
                 StartCoroutine(toRemoveSquares[i].BeRemoved());
-                //yield return new WaitForSeconds(0.2f);
 
                 yield return new WaitForSeconds(spawnInterval);
                 targetCol?.GetComponent<SquareColumn>().ColumnAddOneSquare();

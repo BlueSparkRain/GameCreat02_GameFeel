@@ -1,9 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 public class PlayerInputManager : MonoSingleton<PlayerInputManager>
 {    
     public PlayerInput playerInput;
@@ -33,13 +35,15 @@ public class PlayerInputManager : MonoSingleton<PlayerInputManager>
 
     public void SetCurrentSelectGameObj(GameObject obj)
     {
+
         if (selectUIObjs.Contains(obj))
         {
             Debug.Log("会重复");
             return;
         }
-
         EventSystem.current.SetSelectedGameObject(obj);
+        currentUISelectGameObj = null;
+
         selectUIObjs.Push(obj);//新的面板上的按钮
     }
 
@@ -92,13 +96,19 @@ public class PlayerInputManager : MonoSingleton<PlayerInputManager>
         }
     }
 
-  
+   
 
     void Update()
     {
 
         if (EventSystem.current.currentSelectedGameObject != currentUISelectGameObj)
         {
+
+            if (currentUISelectGameObj && currentUISelectGameObj?.GetComponentInChildren<MylevelSelectButton>())
+            {
+                currentUISelectGameObj.transform.parent.GetComponent<Image>().enabled = false;
+            }
+
             currentUISelectGameObj = EventSystem.current.currentSelectedGameObject;
 
             if (selectUIObjs.Count > 0)
@@ -112,7 +122,6 @@ public class PlayerInputManager : MonoSingleton<PlayerInputManager>
                 currentPanel.GetComponent<CanvasGroup>().interactable = false;
 
                 currentPanel = currentUISelectGameObj.transform.GetComponentInParent<BasePanel>();
-           
             }
         }
         //if (currentUISelectGameObj == null)
@@ -124,6 +133,11 @@ public class PlayerInputManager : MonoSingleton<PlayerInputManager>
 
         if (currentUISelectGameObj != null)
         {
+            if (currentUISelectGameObj?.GetComponentInChildren<MylevelSelectButton>()) 
+            {
+             currentUISelectGameObj.transform.parent.GetComponent<Image>().enabled = true;
+            }
+
             UISelect = playerInput.UI.UISelect.WasPressedThisFrame();
             UIClose = playerInput.UI.UIClose.WasPressedThisFrame();
             SliderValue = playerInput.UI.SliderAction.ReadValue<Vector2>();

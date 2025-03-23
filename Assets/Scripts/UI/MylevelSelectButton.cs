@@ -1,22 +1,14 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
-using Unity.VisualScripting;
 
-public class levelSelectButton : MonoBehaviour
+public class MylevelSelectButton : MonoBehaviour
 {
-    // Start is called before the first frame update
-    // Start is called before the first frame update
-    public int levelNumber=1;
+    public int levelNumber = 1;
     public Shader shader;
     private Material material;
-    private TextMeshProUGUI  textMesh;
     public string levelName;
-    public int levelStar=-1;
+    public int levelStar = -1;
     public Texture _locked;
     public Texture _0Star;
     public Texture _1Star;
@@ -24,49 +16,73 @@ public class levelSelectButton : MonoBehaviour
     public Texture _3Star;
     public Texture alpha;
 
+
+    /// <summary>
+    /// 本关卡正被锁定
+    /// </summary>
+    public bool isLocked;
+
+
     void Start()
     {
         material = new Material(shader);
         GetComponent<Image>().material = material;
         material.SetTexture("_MainTex", GetComponent<Image>().sprite.texture);
-        material.SetTexture("_alpha",alpha);
-        
-        textMesh=GetComponentInChildren<TextMeshProUGUI>();//关卡编号
-        if(textMesh!=null)
-            textMesh.text = levelNumber.ToString();
+        material.SetTexture("_alpha", alpha);
 
-        this.GetComponent<Button>().onClick.AddListener(ChangeScene);
-        
-        ChangeLeveTexture(levelStar);
+        GetComponentInChildren<TMP_Text>().text = transform.parent.GetSiblingIndex().ToString();//关卡编号
+
+        this.GetComponent<Button>().onClick.AddListener(OnClickUnLockButton);
+
+        ChangeLeveState(-1);
+        isLocked = true;
     }
 
-    // Update is called once per frame
+
     void Update()
     {
         if (material != null)
         {
             Vector4 mousePosition = Input.mousePosition;
             material.SetVector("_MousePos", mousePosition);
-            //Debug.Log(mousePosition);
-        }
-        ChangeLeveTexture(levelStar);
-        if(levelStar==-1)
-        {
-            GetComponent<Button>().interactable=false;
-        }
-        else
-        {
-            GetComponent<Button>().interactable=true;
         }
     }
 
-    void ChangeScene()
+    /// <summary>
+    /// 解锁本关卡
+    /// </summary>
+    public void UnLockSelf()
     {
-        SceneManager.LoadScene( levelName);
+        isLocked = false;
+        Debug.Log("解锁关卡" + transform.parent.GetSiblingIndex());
+        ChangeLeveState(0);
     }
 
-    void ChangeLeveTexture(int levelStar)
+    /// <summary>
+    /// 进入以解锁的关卡
+    /// </summary>
+    void OnClickUnLockButton()
     {
+        if (isLocked)
+        {
+            StartCoroutine(LevelSelectManager.Instance.LockRemindShow());
+
+            return;
+        }
+        SceneLoadManager.Instance.LoadNewLevel(transform.parent.GetSiblingIndex() + 2);
+        //UIManager.Instance.ShowPanel<SceneTransPanel>(panel => panel.SceneLoadingTrans(transform.parent.GetSiblingIndex() + 2));
+    }
+
+    public void ChangeLeveState(int levelStarNum)
+    {
+        if (levelStarNum < levelStar)
+        {
+            Debug.Log("这不是最高分");
+            return;
+        }
+
+        levelStar = levelStarNum;
+
         switch (levelStar)
         {
             case -1:
@@ -82,7 +98,7 @@ public class levelSelectButton : MonoBehaviour
                 material.SetInt("_levelStar", 1);
                 break;
             case 2:
-                material.SetTexture("_LevelStatusTex", _2Star); 
+                material.SetTexture("_LevelStatusTex", _2Star);
                 material.SetInt("_levelStar", 2);
                 break;
             case 3:
@@ -91,7 +107,4 @@ public class levelSelectButton : MonoBehaviour
                 break;
         }
     }
-
-   
-    
 }

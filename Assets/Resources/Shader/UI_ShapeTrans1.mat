@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-2959652731838226150
+--- !u!114 &-8717174587050146091
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}
@@ -20,8 +20,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: ScreenEffect
-  m_Shader: {fileID: -6465566751694194690, guid: 9842379140c5d9049a833098598ea604, type: 3}
+  m_Name: UI_ShapeTrans1
+  m_Shader: {fileID: -6465566751694194690, guid: 899b02e82e76bd246b6bcaf7cda8ccdc, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -32,16 +32,16 @@ Material:
   m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
-  m_LockedProperties: _MaskScale
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 4caad65a41cca98419a1ec895e1ddbf5, type: 3}
+        m_Texture: {fileID: 2800000, guid: 3cb8192a58208544f951ca1b25f8e8c3, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NoiseTex:
-        m_Texture: {fileID: 2800000, guid: 4caad65a41cca98419a1ec895e1ddbf5, type: 3}
+        m_Texture: {fileID: 2800000, guid: 84482ce3c84ecd942b57d70843bd5b2e, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
@@ -58,24 +58,26 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Alpha: 0.046
+    - _CircleRim: 0.089
     - _ColorMask: 15
-    - _MaskHardness: 0.726
-    - _MaskScale: 1.93
-    - _NoiseIntensity: 0.52
+    - _NoiseIntensity: 0.0207
+    - _ShapeChange: 1
     - _Stencil: 0
     - _StencilComp: 8
     - _StencilOp: 0
     - _StencilReadMask: 255
     - _StencilWriteMask: 255
+    - _TranBar: 0
     - _UIMaskSoftnessX: 1
     - _UIMaskSoftnessY: 1
     m_Colors:
+    - _CircleTilling: {r: 20, g: 11.7, b: 0, a: 0}
     - _ClipRect: {r: 0, g: 0, b: 0, a: 0}
-    - _MainTexTilling: {r: 2, g: 2, b: 0, a: 0}
-    - _NoiseSpeed: {r: 0.04, g: 0, b: 0, a: 0}
-    - _NoiseTexTilling: {r: 1, g: 1, b: 0, a: 0}
-    - _ScreenDown_Color: {r: 10.489674, g: 0, b: 2.7333148, a: 0}
-    - _ScreenUP_Color: {r: 0, g: 5.565899, b: 10.432951, a: 0}
+    - _NoiseSpeed: {r: 0.5, g: 0, b: 0, a: 0}
+    - _NoiseTexTilling: {r: 4.07, g: 5.39, b: 0, a: 0}
+    - _RB_Offset: {r: 0.02, g: 0, b: -0.02, a: 0}
+    - _RimColorA: {r: 1.8443029, g: 0.61262846, b: 0, a: 1}
+    - _RimColorB: {r: 0, g: 0.000039577484, b: 1, a: 1}
+    - _ShapeTilling: {r: 20, g: 10.62, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

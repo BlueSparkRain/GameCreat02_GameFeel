@@ -18,10 +18,12 @@ public class MenuPanel : BasePanel
     [Header("退出按钮")]
     public Button QuitButton;
 
+    [Header("面板根")]
+    public Transform root;
 
-    void OnClickPlayButton() { 
+    void OnClickPlayButton() {
+        UIManager.Instance.ShowPanel<SceneTransPanel>(panel => panel.SceneLoadingTrans(1));
         UIManager.Instance.HidePanel<MenuPanel>();
-        SceneManager.LoadScene(1);
     }
 
     void OnClickQuitButton() 
@@ -36,8 +38,10 @@ public class MenuPanel : BasePanel
 
     public override IEnumerator HidePanelTweenEffect()
     {
+        yield return UITween.Instance.UIDoMove(root, Vector2.zero, new Vector2(0,-2000),transTime/3);
         yield return UITween.Instance.UIDoFade(transform, 1, 0, transTime / 2);
     }
+
 
     public override void ShowPanel()
     {
@@ -46,7 +50,8 @@ public class MenuPanel : BasePanel
 
     public override IEnumerator ShowPanelTweenEffect()
     {
-        yield return UITween.Instance.UIDoFade(transform, 0, 1, transTime / 2);
+        yield return UITween.Instance.UIDoFade(transform, 0, 1, transTime / 3);
+        yield return UITween.Instance.UIDoMove(root,new Vector2(0,-2000),Vector2.zero,transTime/2);
     }
 
     protected override void Init()
