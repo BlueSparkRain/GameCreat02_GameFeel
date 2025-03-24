@@ -1,18 +1,13 @@
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.EventSystems;
 public class PitchTest : MonoSingleton<PitchTest>
 {
-
-    public float cPitch=1;
-
+    public float cPitch = 1;
     float timer;
-    public  float interval = 0.5f;
-
+    public float interval = 0.5f;
 
     private void Start()
     {
-        MusicManager.Instance.PlayBKMusic("BK1");
+        //MusicManager.Instance.PlayBKMusic("BK1");
         PlayerFeelManager.Instance.IMInit();
     }
 
@@ -32,7 +27,7 @@ public class PitchTest : MonoSingleton<PitchTest>
         }
     }
 
-    public void DingDong() 
+    public void DingDong()
     {
         cPitch += 0.1f;
         MusicManager.Instance.PlaySound("do", cPitch);

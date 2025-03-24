@@ -1,24 +1,24 @@
-using System;
 using System.Collections;
-using Unity.VisualScripting;
-using UnityEditor.MemoryProfiler;
 using UnityEngine;
-using UnityEngine.EventSystems;
 [RequireComponent(typeof(CanvasGroup))]
 public abstract class BasePanel : MonoBehaviour
 {
-
-    //private void OnEnable()
-    //{
-    //    EventCenter.Instance.AddEventListener(E_EventType.E_UIClose, GamePadClose);
-    //}
-    //private void OnDisable()
-    //{
-    //    EventCenter.Instance.RemoveEventListener(E_EventType.E_UIClose, GamePadClose);
-    //}
-
     public virtual void GamePadClose() { }
 
+    public IEnumerator LockSelf()
+    {
+        if (!GetComponentInParent<CanvasGroup>())
+            yield break;
+
+        GetComponentInParent<CanvasGroup>().interactable = false;
+        yield return new WaitForSeconds(2);
+        GetComponentInParent<CanvasGroup>().interactable = true;
+    }
+
+    public void ClearSelf()
+    {
+        DestroyImmediate(gameObject);
+    }
 
     private void Awake()
     {
@@ -41,9 +41,9 @@ public abstract class BasePanel : MonoBehaviour
     {
         transform.SetAsLastSibling();
         Init();
-        if (NeedPausePanel) 
-        Time.timeScale = 0;
-        
+        if (NeedPausePanel)
+            Time.timeScale = 0;
+
     }
 
 
@@ -53,14 +53,14 @@ public abstract class BasePanel : MonoBehaviour
     public virtual void HidePanel()
     {
         if (NeedPausePanel)
-        Time.timeScale = 1;
+            Time.timeScale = 1;
 
         //IDestroy();
     }
     /// <summary>
     /// 面板退出动画缓动逻辑：执行等级2
     /// </summary>
-    public virtual IEnumerator HidePanelTweenEffect() 
+    public virtual IEnumerator HidePanelTweenEffect()
     {
         yield return null;
         IDestroy();
@@ -76,7 +76,7 @@ public abstract class BasePanel : MonoBehaviour
         }
     }
 
-    protected virtual void IDestroy() 
+    protected virtual void IDestroy()
     {
         //GetComponent<CanvasGroup>().interactable = false;
         PlayerInputManager.Instance.LostCurrentSelectGameObj();

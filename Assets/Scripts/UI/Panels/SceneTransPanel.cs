@@ -48,7 +48,8 @@ public class SceneTransPanel : BasePanel
 
     public void SceneLoadingTrans(int index)
     {
-        PlayerInputManager.Instance.SetCurrentSelectGameObj(null);
+        //PlayerInputManager.Instance.
+        PlayerInputManager.Instance.ClearObjStack();
         StartCoroutine(LoadingBar(index));
     }
 
@@ -66,6 +67,7 @@ public class SceneTransPanel : BasePanel
         isTransing = true;
         //PlayerInputManager.Instance.SetCurrentSelectGameObj(null);
 
+
         Image tranImg = NextEffect();
         float timer = 0;
         yield return TweenHelper.MakeLerp(0, 1, transTime, val => tranImg.GetComponent<Image>().material.SetFloat("_TranBar", val)); 
@@ -78,10 +80,12 @@ public class SceneTransPanel : BasePanel
             loadingText.text = ((int)(loadingBar.fillAmount * 100)).ToString() + "%";
         }
 
+
         yield return SceneLoadManager.Instance.LoadNewScene(index);
 
         yield return new WaitForSeconds(0.5f);
         loadingBar.fillAmount = 1;
+ 
         loadingText.text = ((int)(loadingBar.fillAmount * 100)).ToString() + "%";
         yield return new WaitForSeconds(fadeTime);
         StartCoroutine( TweenHelper.MakeLerp(1, 0, transTime / 2, val => tranImg.GetComponent<Image>().material.SetFloat("_TranBar", val))) ;
@@ -95,7 +99,7 @@ public class SceneTransPanel : BasePanel
         else
             curentImageIndex = 0;
 
-        Debug.Log("¸Ï");
+        //Debug.Log("¸Ï");
         return shaderTransImages[curentImageIndex];
     }
 

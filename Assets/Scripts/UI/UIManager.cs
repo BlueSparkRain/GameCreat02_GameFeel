@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UI;
 public enum E_UILayer
 {
     Bottom,
@@ -16,6 +18,8 @@ public enum E_UILayer
 /// </summary>
 public class UIManager : BaseSingleton<UIManager>
 {
+
+
 
     private Dictionary<string, BasePanel> panelDic = new Dictionary<string, BasePanel>();
     public void ShowPanel<T>(UnityAction<T> callBack, E_UILayer layer = E_UILayer.Middle, bool isSync = false) where T : BasePanel
@@ -78,4 +82,16 @@ public class UIManager : BaseSingleton<UIManager>
         yield return panel.HidePanelTweenEffect();
         panel.gameObject.SetActive(false);
     }
+
+    public void DestoryAllPanels() 
+    {
+        foreach (var item in  panelDic)
+        {
+            item.Value.ClearSelf();
+        }
+    }
+
+
+  
+
 }

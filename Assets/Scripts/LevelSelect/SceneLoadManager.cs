@@ -1,6 +1,7 @@
 using System.Collections;
-using System.Diagnostics;
+using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class SceneLoadManager : MonoSingleton<SceneLoadManager>
 {
@@ -8,9 +9,20 @@ public class SceneLoadManager : MonoSingleton<SceneLoadManager>
     public IEnumerator LoadNewScene(int index)
     {
 
+        if (index == 0)
+        {
+            if(SceneManager.GetSceneAt(0) != SceneManager.GetSceneByBuildIndex(1))
+            yield return SceneManager.UnloadSceneAsync(SceneManager.GetSceneAt(1));
+
+            yield return SceneManager.UnloadSceneAsync(SceneManager.GetSceneAt(0));
+            SceneManager.LoadScene(index);
+            yield break;
+        }
+
+
+
         if (SceneManager.GetActiveScene() == SceneManager.GetSceneByBuildIndex(0)) 
         {
-            Debug.Print("niin");
           yield return SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene());
           SceneManager.LoadScene(index);
           yield break;
@@ -41,14 +53,14 @@ public class SceneLoadManager : MonoSingleton<SceneLoadManager>
     /// <param name="sceneIndex"></param>
     public void LoadNewLevel(int sceneIndex) 
     {
-       StartCoroutine( LevelSelectManager.Instance.HideLevelSelector());
-        UIManager.Instance.ShowPanel<SceneTransPanel>(panel => panel.SceneLoadingTrans(sceneIndex));
+        StartCoroutine( LevelSelectManager.Instance.HideLevelSelector());
+        UIManager.Instance.ShowPanel<SceneTransPanel>(panel =>  panel.SceneLoadingTrans(sceneIndex));
     }
 
     public void EndOneLevel()
     {
-        LevelSelectManager.Instance.EndCurrentLevel(2);//2星通过
         UIManager.Instance.ShowPanel<SceneTransPanel>(panel => panel.SceneLoadingTrans(1));
+        LevelSelectManager.Instance.EndCurrentLevel(2);//2星通过
         StartCoroutine(LevelSelectManager.Instance.ShowLevelSelector());
     }
 
@@ -57,5 +69,28 @@ public class SceneLoadManager : MonoSingleton<SceneLoadManager>
        yield return SceneManager.UnloadSceneAsync(unloadSceneIndex);
        
        SceneManager.LoadSceneAsync(sceneIndex);
+    }
+
+
+    public IEnumerator SetGameReload(Button button)
+    {
+        button.interactable = false;
+        yield return new WaitForSeconds(2);
+        button.interactable = true;
+        button.onClick.AddListener(
+       () =>
+       {
+           UIManager.Instance.ShowPanel<SceneTransPanel>(panel =>
+           {
+               panel.SceneLoadingTrans(0);
+               DestroyImmediate(LevelSelectManager.Instance.gameObject);
+           });
+           StartCoroutine(ClearAllPanels());
+       });
+    }
+    IEnumerator ClearAllPanels()
+    {
+        yield return new WaitForSeconds(3);
+        UIManager.Instance.DestoryAllPanels();
     }
 }

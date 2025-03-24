@@ -24,26 +24,28 @@ public class PlayerInputManager : MonoSingleton<PlayerInputManager>
 
     public GameObject currentUISelectGameObj;
 
-
     public Stack<GameObject>  selectUIObjs=new Stack<GameObject>();
     public BasePanel currentPanel;
-
 
     public bool UISelect;
     public bool UIClose { get; private set; }
 
-
+    public void ClearObjStack() 
+    {
+        selectUIObjs.Clear();
+        SetCurrentSelectGameObj(null);
+    }
     public void SetCurrentSelectGameObj(GameObject obj)
     {
 
         if (selectUIObjs.Contains(obj))
         {
-            Debug.Log("会重复");
+            //Debug.Log("会重复");
             return;
         }
         EventSystem.current.SetSelectedGameObject(obj);
-        currentUISelectGameObj = null;
 
+        currentUISelectGameObj = null;
         selectUIObjs.Push(obj);//新的面板上的按钮
     }
 
@@ -67,15 +69,6 @@ public class PlayerInputManager : MonoSingleton<PlayerInputManager>
     }
    
 
-    /// <summary>
-    /// 切换UI映射
-    /// </summary>
-    public void ChangeUIMap() 
-    {
-     
-    
-    }
-
     public  Vector2  SliderValue;
 
 
@@ -96,8 +89,6 @@ public class PlayerInputManager : MonoSingleton<PlayerInputManager>
         }
     }
 
-   
-
     void Update()
     {
 
@@ -110,6 +101,7 @@ public class PlayerInputManager : MonoSingleton<PlayerInputManager>
             }
 
             currentUISelectGameObj = EventSystem.current.currentSelectedGameObject;
+
 
             if (selectUIObjs.Count > 0)
             {
@@ -124,8 +116,6 @@ public class PlayerInputManager : MonoSingleton<PlayerInputManager>
                 currentPanel = currentUISelectGameObj.transform.GetComponentInParent<BasePanel>();
             }
         }
-        //if (currentUISelectGameObj == null)
-        //    currentPanel=null;
 
             if (currentPanel != null)
             currentPanel.GetComponent<CanvasGroup>().interactable = true;

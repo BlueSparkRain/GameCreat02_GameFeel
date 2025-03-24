@@ -28,7 +28,7 @@ public class PlayerFeelManager : MonoSingleton<PlayerFeelManager>
     protected override void InitSelf()
     {
         base.InitSelf();
-        Debug.Log("初始化LLLLL");
+        //Debug.Log("初始化LLLLL");
         PlayerInputManager.Instance.playerInput.GamePlay.LeftMove.started += ctx => GamepadVibrate(MoveLowSpeed, MoveHighSpeed, MoveDuration);
         PlayerInputManager.Instance.playerInput.GamePlay.RightMove.started += ctx => GamepadVibrate(MoveLowSpeed, MoveHighSpeed, MoveDuration);
         PlayerInputManager.Instance.playerInput.GamePlay.UpMove.started += ctx => GamepadVibrate(MoveLowSpeed, MoveHighSpeed, MoveDuration);

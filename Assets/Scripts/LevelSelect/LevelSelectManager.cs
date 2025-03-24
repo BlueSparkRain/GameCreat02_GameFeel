@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class LevelSelectManager : MonoSingleton<LevelSelectManager>
 {
@@ -17,6 +18,21 @@ public class LevelSelectManager : MonoSingleton<LevelSelectManager>
 
     bool isLockReminging;
 
+
+    public Button returnButton;
+
+    protected override void Awake()
+    {
+        base.Awake();
+    }
+
+  
+
+    public void ResetSelf() 
+    {
+        currentLevelIndex = 0;
+
+    }
     public  IEnumerator LockRemindShow() 
     {
        if(isLockReminging)
@@ -48,12 +64,6 @@ public class LevelSelectManager : MonoSingleton<LevelSelectManager>
         yield return UITween.Instance.UIDoFade(transform,0,1,0.5f);
         yield return UITween.Instance.UIDoLocalMove(Root, new Vector2(0,2000),0.3f);
 
-        transform.GetComponent<CanvasGroup>().interactable = true;
-        if (FirstSelectButton)
-        {
-            //EventSystem.current.SetSelectedGameObject(FirstSelectButton);
-            PlayerInputManager.Instance.SetCurrentSelectGameObj(FirstSelectButton);
-        }
     } 
     public IEnumerator HideLevelSelector() 
     {
@@ -64,28 +74,32 @@ public class LevelSelectManager : MonoSingleton<LevelSelectManager>
 
     void Start()
     {
-        VCam = GameObject.FindAnyObjectByType<CinemachineVirtualCamera>().transform;
+        VCam=Camera.main.transform;
         //注册所有按钮
         for (int i = 0; i < buttonContainer.childCount; i++)
         {
            levelSelectButtons.Add(buttonContainer.GetChild(i).GetComponentInChildren<MylevelSelectButton>());
         }
-   
-        StartCoroutine(IntoLevelSelectScene());
-    }
+        StartCoroutine( levelSelectButtons[currentLevelIndex].UnLockSelf());
+        //StartCoroutine(SceneLoadManager.Instance.SetGameReload(returnButton));
 
-    IEnumerator IntoLevelSelectScene() 
+
+        returnButton.onClick.AddListener(
+    () =>
     {
-        yield return new WaitForSeconds(2);
-
-        levelSelectButtons[0].UnLockSelf();
-
-        currentLevelIndex = 0;
-        PlayerInputManager.Instance.SetCurrentSelectGameObj(FirstSelectButton);
+        UIManager.Instance.ShowPanel<SceneTransPanel>(panel =>
+        {
+            panel.SceneLoadingTrans(0);
+            Destroy(LevelSelectManager.Instance.gameObject,3);
+        });
+        //UIManager.Instance.DestoryAllPanels();
+    });
     }
 
-
-
+   public void IntoLevelSelectScene(int index) 
+    {
+        currentLevelIndex = index;
+    }
 
     /// <summary>
     /// 完成当前关卡
@@ -93,29 +107,27 @@ public class LevelSelectManager : MonoSingleton<LevelSelectManager>
     /// <param name="score"></param>
     public void EndCurrentLevel(int  starNum) 
     {
-        levelSelectButtons[currentLevelIndex].ChangeLeveState(starNum);
-        UnLockNewLevel();
-
+       levelSelectButtons[currentLevelIndex].ChangeLeveState(starNum);
+        StartCoroutine(UnLockNewLevel());
     }
 
     /// <summary>
     /// 解锁新关卡
     /// </summary>
     /// <param name="Index"></param>
-    public void UnLockNewLevel()
+    public IEnumerator UnLockNewLevel()
     {
-        currentLevelIndex++;
-        levelSelectButtons[currentLevelIndex].UnLockSelf();
+       currentLevelIndex++;
+        yield return new WaitForSeconds(2);
+       StartCoroutine( levelSelectButtons[currentLevelIndex].UnLockSelf());
     }
 
     private void Update()
     {
 
-
-
         if (Input.GetKeyDown(KeyCode.P))
         {
-            SceneLoadManager.Instance.EndOneLevel();
+          SceneLoadManager.Instance.EndOneLevel();
         }
     }
 

@@ -1,3 +1,4 @@
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -21,7 +22,6 @@ public class MylevelSelectButton : MonoBehaviour
     /// 本关卡正被锁定
     /// </summary>
     public bool isLocked;
-
 
     void Start()
     {
@@ -47,13 +47,18 @@ public class MylevelSelectButton : MonoBehaviour
             material.SetVector("_MousePos", mousePosition);
         }
     }
-
+    float a;
     /// <summary>
     /// 解锁本关卡
     /// </summary>
-    public void UnLockSelf()
+    public IEnumerator UnLockSelf()
     {
+        LevelSelectManager.Instance.GetComponent<CanvasGroup>().interactable = false;
+        PlayerInputManager.Instance.SetCurrentSelectGameObj(transform.gameObject);
+        yield return new WaitForSeconds(3);
+        LevelSelectManager.Instance.IntoLevelSelectScene(transform.parent.GetSiblingIndex());
         isLocked = false;
+        LevelSelectManager.Instance.GetComponentInParent<CanvasGroup>().interactable = true;
         Debug.Log("解锁关卡" + transform.parent.GetSiblingIndex());
         ChangeLeveState(0);
     }
@@ -66,7 +71,6 @@ public class MylevelSelectButton : MonoBehaviour
         if (isLocked)
         {
             StartCoroutine(LevelSelectManager.Instance.LockRemindShow());
-
             return;
         }
         SceneLoadManager.Instance.LoadNewLevel(transform.parent.GetSiblingIndex() + 2);

@@ -20,7 +20,7 @@ public class GameOverPanel : BasePanel
     [Header("玩家失败文本")]
     public TMP_Text lostText;
 
-    bool canVer=false;
+    bool canVer=true;
 
     void OnClickRePlayButton()
     {
@@ -28,10 +28,10 @@ public class GameOverPanel : BasePanel
         {
             return;
         }
-
-        UIManager.Instance.HidePanel<GameOverPanel>();
-        SceneLoadManager.Instance.EndOneLevel();
+        canVer = false;
         Debug.Log("重新加载游戏");
+        SceneLoadManager.Instance.EndOneLevel();
+        UIManager.Instance.HidePanel<GameOverPanel>();
     }
 
     IEnumerator Wait() 
@@ -47,8 +47,9 @@ public class GameOverPanel : BasePanel
     public override void HidePanel()
     {
         base.HidePanel();
-        PlayerInputManager.Instance.LostCurrentSelectGameObj();
-        canVer = false;
+        canVer=false;
+        //PlayerInputManager.Instance.LostCurrentSelectGameObj();
+
     }
 
     public void LostGame(int playerFinalScore)
@@ -63,7 +64,8 @@ public class GameOverPanel : BasePanel
     {
         yield return UITween.Instance.UIDoMove(root, Vector2.zero, new Vector2(0, -1500), transTime);
         yield return UITween.Instance.UIDoFade(transform, 1, 0, transTime);
- 
+        canVer = true;
+
     }
 
     public void GetData(float playerUsedTime, int playerFinalScore)

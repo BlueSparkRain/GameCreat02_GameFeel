@@ -40,11 +40,23 @@ public class PlayerController : MonoBehaviour
         square = GetComponent<ColorSquare>();
         rb = GetComponent<Rigidbody2D>();
         VCam = FindAnyObjectByType<CinemachineVirtualCamera>().transform;
+        StartCoroutine(SleepWake());
+    }
+    bool sleep;
+
+    IEnumerator SleepWake() 
+    {
+        yield return new WaitForSeconds(2);
+        sleep = false;
     }
 
     void Update()
     {
-        rb.isKinematic = true;
+        if (sleep)
+            return;
+        
+
+        //rb.isKinematic = true;
 
         if (timer >= 0)
             timer -= Time.deltaTime;
