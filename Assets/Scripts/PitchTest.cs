@@ -7,7 +7,6 @@ public class PitchTest : MonoSingleton<PitchTest>
 
     private void Start()
     {
-        //MusicManager.Instance.PlayBKMusic("BK1");
         PlayerFeelManager.Instance.IMInit();
     }
 

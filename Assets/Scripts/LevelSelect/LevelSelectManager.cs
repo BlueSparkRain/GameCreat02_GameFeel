@@ -127,7 +127,7 @@ public class LevelSelectManager : MonoSingleton<LevelSelectManager>
 
         if (Input.GetKeyDown(KeyCode.P))
         {
-          SceneLoadManager.Instance.EndOneLevel();
+          SceneLoadManager.Instance.EndOneLevel(2);
         }
     }
 

@@ -30,26 +30,15 @@ public class GameOverPanel : BasePanel
         }
         canVer = false;
         Debug.Log("重新加载游戏");
-        SceneLoadManager.Instance.EndOneLevel();
+        SceneLoadManager.Instance.EndOneLevel(highestStarNum);
+        highestStarNum = 0;
         UIManager.Instance.HidePanel<GameOverPanel>();
-    }
-
-    IEnumerator Wait() 
-    {
-        yield return new WaitForSeconds(1);
-        PlayerInputManager.Instance.SetCurrentSelectGameObj(FirstSelectButton);
-    }
-
-    private void Update()
-    {
     }
 
     public override void HidePanel()
     {
         base.HidePanel();
         canVer=false;
-        //PlayerInputManager.Instance.LostCurrentSelectGameObj();
-
     }
 
     public void LostGame(int playerFinalScore)
@@ -68,7 +57,11 @@ public class GameOverPanel : BasePanel
 
     }
 
-    public void GetData(float playerUsedTime, int playerFinalScore)
+    int highestStarNum;
+
+ 
+
+    public void GetPlayerData(float playerUsedTime, int playerFinalScore,int highestStarNum)
     {
         playerUsedTimeText.transform.parent.gameObject.SetActive(true);
         playerScoreText.transform.parent.gameObject.SetActive(true);
@@ -76,7 +69,9 @@ public class GameOverPanel : BasePanel
         playerUsedTimeText.text = playerUsedTime.ToString();
         playerScoreText.text = playerFinalScore.ToString();
         playerLevelText.text = "A";
+        this.highestStarNum = highestStarNum;
     }
+
 
     public override void ShowPanel()
     {
@@ -103,6 +98,5 @@ public class GameOverPanel : BasePanel
     public override void GamePadClose()
     {
         base.GamePadClose();
-        //UIManager.Instance.HidePanel<GameOverPanel>();
     }
 }

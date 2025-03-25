@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -57,10 +58,10 @@ public class SceneLoadManager : MonoSingleton<SceneLoadManager>
         UIManager.Instance.ShowPanel<SceneTransPanel>(panel =>  panel.SceneLoadingTrans(sceneIndex));
     }
 
-    public void EndOneLevel()
+    public void EndOneLevel(int starNum)
     {
         UIManager.Instance.ShowPanel<SceneTransPanel>(panel => panel.SceneLoadingTrans(1));
-        LevelSelectManager.Instance.EndCurrentLevel(2);//2星通过
+        LevelSelectManager.Instance.EndCurrentLevel(starNum);//2星通过
         StartCoroutine(LevelSelectManager.Instance.ShowLevelSelector());
     }
 

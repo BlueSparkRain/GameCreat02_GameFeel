@@ -51,6 +51,7 @@ public class CollectablesRecorder : MonoBehaviour
         PassCheck();
     }
 
+    bool canAddStar = true;
 
     /// <summary>
     /// 收集任务达成检测
@@ -61,12 +62,17 @@ public class CollectablesRecorder : MonoBehaviour
         {
             if (!collectableTargetList[i].reachTarget)
             return;
-            Pass();
         }
+        Pass();
     }
 
     void Pass() 
     {
+        if (canAddStar)
+        {
+            FindAnyObjectByType<ScoreRecorder>().GetCollectData();
+        }
+        canAddStar = false;
         //Debug.Log("达成收集条件");
     }
 
@@ -105,5 +111,4 @@ public class CollectablesUnit
 public enum E_Collectable 
 { 
 贝壳,章鱼,金币,
-
 }

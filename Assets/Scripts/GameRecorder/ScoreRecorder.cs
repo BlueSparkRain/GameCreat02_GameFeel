@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -25,10 +26,15 @@ public class ScoreRecorder : MonoBehaviour
     public int GameOverScore=8000;
 
     bool gameOver = false;
-
-
     //游戏计时器
     float gameTimer;
+
+    int highestStarNum;
+
+    void GetStarNum(int starNum)
+    {
+        highestStarNum += starNum;
+    }
 
 
     private void OnEnable()
@@ -42,6 +48,10 @@ public class ScoreRecorder : MonoBehaviour
 
     }
 
+    public void GetCollectData() 
+    {
+     GetStarNum(1);
+    }
     /// <summary>
     /// 更新玩家得分及文本
     /// </summary>
@@ -53,8 +63,9 @@ public class ScoreRecorder : MonoBehaviour
 
         if (!gameOver && playerCurrentScore >= GameOverScore)
         {
+            GetStarNum(2);
             gameOver = true;
-            UIManager.Instance.ShowPanel<GameOverPanel>(panel => panel.GetData(gameDuration - gameTimer, playerCurrentScore));
+            UIManager.Instance.ShowPanel<GameOverPanel>(panel => panel.GetPlayerData(gameDuration - gameTimer, playerCurrentScore,highestStarNum));
         }
    }
 
@@ -66,10 +77,7 @@ public class ScoreRecorder : MonoBehaviour
     {
         gameTimer = gameDuration;
         StartCoroutine(Gaming());
-
     }
-
-
     IEnumerator Gaming() 
     {
         while (gameTimer>=0) 
@@ -85,6 +93,5 @@ public class ScoreRecorder : MonoBehaviour
             gameOver = true;
             UIManager.Instance.ShowPanel<GameOverPanel>(panel=>panel.LostGame(playerCurrentScore));
         }
-
     }
 }
