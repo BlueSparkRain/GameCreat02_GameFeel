@@ -112,6 +112,4 @@ public class SquareObjPool : MonoBehaviour
          square.transform.localPosition = Vector3.zero;
          square.transform.localRotation = Quaternion.identity;
     }
-
-  
 }

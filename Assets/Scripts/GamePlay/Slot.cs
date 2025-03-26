@@ -18,13 +18,6 @@ public class Slot : MonoBehaviour
 
     bool canCheckSelf = true;
 
-    //public IEnumerator LooseUpSlotCheck() 
-    //{
-    //    if (!canCheckSelf)
-    //        yield break;
-    //    ThrowSquare();
-    //}
-
     private void Update()
     {
 

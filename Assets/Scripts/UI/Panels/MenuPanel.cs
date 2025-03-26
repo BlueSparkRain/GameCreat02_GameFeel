@@ -66,7 +66,7 @@ public class MenuPanel : BasePanel
     IEnumerator WaitUnLock()
     {
         Ilock=true;
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(1);
         Ilock=false;
         GetComponent<CanvasGroup>().interactable = true;
     }
@@ -74,7 +74,7 @@ public class MenuPanel : BasePanel
     {
         if (Ilock) 
         {
-           GetComponent<CanvasGroup>().interactable = false;
+            GetComponent<CanvasGroup>().interactable = false;
         }
 
     }

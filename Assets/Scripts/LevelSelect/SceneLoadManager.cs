@@ -61,7 +61,7 @@ public class SceneLoadManager : MonoSingleton<SceneLoadManager>
     public void EndOneLevel(int starNum)
     {
         UIManager.Instance.ShowPanel<SceneTransPanel>(panel => panel.SceneLoadingTrans(1));
-        LevelSelectManager.Instance.EndCurrentLevel(starNum);//2ÐÇÍ¨¹ý
+        LevelSelectManager.Instance.EndCurrentLevel(starNum);
         StartCoroutine(LevelSelectManager.Instance.ShowLevelSelector());
     }
 

@@ -162,7 +162,7 @@ GameObject:
   - component: {fileID: 2871082666609896943}
   - component: {fileID: 3130825936758550986}
   m_Layer: 8
-  m_Name: "CollectableSquare-\u8D1D\u58F3"
+  m_Name: "CollectableSquare-\u97F3\u7B26Y"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -228,7 +228,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: f30f9f9fa1b9d5041ae0f9719c9ca420, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.8577813, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -324,10 +324,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HasFather: 0
-  BaseScore: 50
+  BaseScore: 100
   canMove: 0
   SpecicalSprite: {fileID: 21300000, guid: f30f9f9fa1b9d5041ae0f9719c9ca420, type: 3}
   type: 0
+  moveTime: 2
 --- !u!95 &3130825936758550986
 Animator:
   serializedVersion: 7

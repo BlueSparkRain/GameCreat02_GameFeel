@@ -1,9 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO.IsolatedStorage;
 using UnityEngine;
-using UnityEngine.UIElements.Experimental;
 
 public class SquareColumn : MonoBehaviour
 {
@@ -35,7 +33,7 @@ public class SquareColumn : MonoBehaviour
 
     public int maxSpawnNum = 8;
 
-    public void AddMaxSpawnNum() 
+    public void AddMaxSpawnNum()
     {
         maxSpawnNum++;
     }
@@ -43,14 +41,18 @@ public class SquareColumn : MonoBehaviour
     private void Awake()
     {
 
+        squareSpawner = transform.GetChild(8);
+        if (SquareNum == 8)
+            return;
+
         SquareIndex = 7;
+
         for (int i = 0; i < 8; i++)
         {
             transform.GetChild(i).gameObject.SetActive(false);
         }
         transform.GetChild(SquareIndex).gameObject.SetActive(true);
 
-        squareSpawner = transform.GetChild(8);
     }
 
     void Start()
@@ -73,12 +75,10 @@ public class SquareColumn : MonoBehaviour
             if (playerBornData.IsPlayerBornColumn && i == playerBornData.BornIndex)
             {
                 GameObject player = Instantiate(Resources.Load<GameObject>("Prefab/PlayerSquare"), squareSpawner.position, Quaternion.identity, null);
-                //yield return player.GetComponent<Square>().LooseSelf();
                 player.GetComponent<Square>().LooseSelf();
 
             }
             else
-                //StartCoroutine(ColumnAddOneSquare());
                 ColumnAddOneSquare();
 
             yield return new WaitForSeconds(0.15f);
@@ -89,15 +89,15 @@ public class SquareColumn : MonoBehaviour
     /// <summary>
     /// 本列开启消除任务
     /// </summary>
-    public void IsColumnRemoving() 
+    public void IsColumnRemoving()
     {
-    isRemoving = true;
+        isRemoving = true;
     }
 
     /// <summary>
     /// 本列完成消除任务
     /// </summary>
-    public void StopColumnRemoving() 
+    public void StopColumnRemoving()
     {
         isRemoving = false;
     }
@@ -128,70 +128,58 @@ public class SquareColumn : MonoBehaviour
         if (!ColFull)
             return;
     }
-    bool canCheck=true;
+    bool canCheck = true;
 
-    IEnumerator CanColCheck() 
+    IEnumerator CanColCheck()
     {
         yield return new WaitForSeconds(0.2f);
 
-        if (canColCheck && !canCheck &&!isRemoving)
+        if (canColCheck && !canCheck && !isRemoving)
         {
             canColCheck = false;
             yield return new WaitForSeconds(0.2f);
 
             if (!isRemoving)
-                //if (FirstEmptySlotIndex != 0 &&!isRemoving)
             {
-                //if (FirstEmptySlotIndex != 0 || SquareNum != 8)
                 if (SquareNum != 8)
                 {
                     yield return new WaitForSeconds(0.2f);
-
-                    //if (FirstEmptySlotIndex != 0 &&!isRemoving)
                     if (!isRemoving)
                     {
-                        //if (FirstEmptySlotIndex != 0 || SquareNum != 8 )
-                        if (SquareNum != 8 )
+
+                        if (SquareNum != 8)
                         {
-                            //ColFull = false;
-                            //StartCoroutine(ColumnAddOneSquare());
+
                             ColumnAddOneSquare();
                             yield return new WaitForSeconds(0.1f);
                             canColCheck = true;
                             canCheck = true;
                             yield break;
                         }
-                        //canColCheck = true;
-                        //canCheck = true;
-                        //yield break;
+
 
                     }
                     canColCheck = true;
                     canCheck = true;
                     yield break;
                 }
-             //canColCheck = true;
-             //canCheck = true;
-             //yield break;
+
             }
 
             canColCheck = true;
             canCheck = true;
-            //timer = 1f;
-            //yield break;
-            //}
-            //canColCheck=true;
+
         }
     }
     private void Update()
     {
         if (ColFull)
-           RemoveSquares();
+            RemoveSquares();
 
 
         //if (!isRemoving && canColCheck && ColFull && FirstEmptySlotIndex != 0 && SquareNum != 8)
         if (!isRemoving && !GetComponent<SquareRow>().isRemoving && canCheck && ColFull)
-            //if (!isRemoving && !GetComponent<SquareRow>().isRemoving && canCheck)
+        //if (!isRemoving && !GetComponent<SquareRow>().isRemoving && canCheck)
         {
             //if (FirstEmptySlotIndex != 0 || SquareNum != 8 && !isRemoving)
             if (SquareNum != 8 && !isRemoving)
@@ -199,12 +187,12 @@ public class SquareColumn : MonoBehaviour
                 canCheck = false;
                 StartCoroutine(CanColCheck());
             }
-        
+
         }
 
     }
 
-    bool canColCheck=true;
+    bool canColCheck = true;
     float timer;
 
 
@@ -214,7 +202,6 @@ public class SquareColumn : MonoBehaviour
         {
             StartCoroutine(CheckAndRemoveSquares(CheckRemoveList()));
         }
-        //Debug.Log(CheckRemoveList());
     }
     public List<Square> CheckRemoveList()
     {
@@ -222,7 +209,7 @@ public class SquareColumn : MonoBehaviour
         bool canAdd = true;
 
         List<Square> toRemoveSquares = new List<Square>();
-        if (!columnSquares[0] || !columnSquares[0].GetComponent<ColorSquare>().myData)
+        if (!columnSquares[0] || !columnSquares[0].GetComponent<ColorSquare>() ||!columnSquares[0].GetComponent<ColorSquare>().myData)
             return null;
         E_Color firstCor = columnSquares[0].GetComponent<ColorSquare>().myData.E_Color;
         toRemoveSquares.Add(columnSquares[0]);
@@ -234,7 +221,7 @@ public class SquareColumn : MonoBehaviour
                 continue;
             }
 
-            if(!columnSquares[i].GetComponent<ColorSquare>().myData || !columnSquares[i])
+            if (!columnSquares[i].GetComponent<ColorSquare>().myData || !columnSquares[i])
                 return null;
 
             if (columnSquares[i] && columnSquares[i].GetComponent<ColorSquare>() && columnSquares[i].GetComponent<ColorSquare>().myData.E_Color == firstCor && canAdd)
@@ -273,7 +260,7 @@ public class SquareColumn : MonoBehaviour
     {
 
 
-        if (!GetComponent<SquareRow>().isRemoving &&  !isRemoving)
+        if (!GetComponent<SquareRow>().isRemoving && !isRemoving)
         {
             IsColumnRemoving();
 
@@ -304,7 +291,7 @@ public class SquareColumn : MonoBehaviour
     {
         Debug.Log("完成3消");
         yield return RemoveLine(toRemoveSquares);
- 
+
     }
 
     /// <summary>
@@ -314,10 +301,10 @@ public class SquareColumn : MonoBehaviour
     {
         Debug.Log("完成4消");
         yield return RemoveLine(toRemoveSquares);
-    
+
     }
 
-     IEnumerator RemoveLine(List<Square> toRemoveSquares) 
+    IEnumerator RemoveLine(List<Square> toRemoveSquares)
     {
         for (int i = 0; i < toRemoveSquares.Count; i++)
         {
@@ -328,11 +315,7 @@ public class SquareColumn : MonoBehaviour
                     yield break;
                 i++;
             }
-            //yield return toRemoveSquares[i].BeRemoved();
             StartCoroutine(toRemoveSquares[i].BeRemoved());
-            //yield return new WaitForSeconds(0.2f);
-            //yield return ColumnAddOneSquare();
-            //StartCoroutine(ColumnAddOneSquare());
             yield return new WaitForSeconds(removeInterval);
             ColumnAddOneSquare();
         }
@@ -361,13 +344,12 @@ public class SquareColumn : MonoBehaviour
                 removeIndex = columnSquares.Count - 2;
 
             yield return columnSquares[removeIndex].BeRemoved();
-            //yield return ColumnAddOneSquare();
             ColumnAddOneSquare();
             yield return new WaitForSeconds(0.02f);
         }
     }
 
-   
+
     /// <summary>
     /// 更新最上层的空槽索引
     /// </summary>
@@ -375,7 +357,7 @@ public class SquareColumn : MonoBehaviour
     public void UpdateTopSlot(int index)
     {
         GetOneSquare();
-        
+
         FirstEmptySlotIndex = index;
 
         if (ColFull)
@@ -391,21 +373,12 @@ public class SquareColumn : MonoBehaviour
             }
         }
 
-        //FirstEmptySlotIndex = index;
-
-        //if(ColFull)
-        //    SquareNum = 8-FirstEmptySlotIndex;
-
 
         if (FirstEmptySlotIndex == 0)
             return;
         transform.GetChild(FirstEmptySlotIndex - 1).gameObject.SetActive(true);
     }
 
-   
-
-
-   
 
     /// <summary>
     /// 当一个槽被填满，解锁上方的一个槽
@@ -424,46 +397,41 @@ public class SquareColumn : MonoBehaviour
     {
         square.transform.position = squareSpawner.position;
         square.GetComponent<Square>().LooseSelf();
-        //StartCoroutine(square.GetComponent<Square>().LooseSelf());
     }
 
-    public void LooseOneSquare() 
+    public void LooseOneSquare()
     {
-        if(SquareNum-1>=0)
-        SquareNum--;
+        if (SquareNum - 1 >= 0)
+            SquareNum--;
 
         FirstEmptySlotIndex = 8 - SquareNum;
     }
 
-     public void GetOneSquare() 
+    public void GetOneSquare()
     {
-        if(SquareNum+1<=8)
-        SquareNum++;
+        if (SquareNum + 1 <= 8)
+            SquareNum++;
 
-        FirstEmptySlotIndex = 8-SquareNum;
+        FirstEmptySlotIndex = 8 - SquareNum;
 
-        if(SquareNum<=8)
+        if (SquareNum <= 8)
             canCheck = true;
     }
 
     //public IEnumerator ColumnAddOneSquare()
     public void ColumnAddOneSquare()
     {
-        //if (SquareNum != 8 || FirstEmptySlotIndex !=0)
-        //{
-            GameObject newSquare = transform.parent.parent?.GetComponent<SquareGroup>().SquarePool.GetRandomSquare();
-            StartCoroutine(FallNewSquare(newSquare));
-            //yield return null;
-        //}
+
+        GameObject newSquare = transform.parent.parent?.GetComponent<SquareGroup>().SquarePool.GetRandomSquare();
+        StartCoroutine(FallNewSquare(newSquare));
+
     }
 
     IEnumerator FallNewSquare(GameObject square)
     {
         yield return new WaitForSeconds(0.1f);
-        //yield return new WaitForSeconds(0.25f);
         AppearNewSquare(square);
     }
-
 }
 
 [Serializable]

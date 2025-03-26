@@ -10,9 +10,11 @@ public class SquareKiller : MonoBehaviour
     {
         if (other.gameObject.GetComponent<ColorSquare>())
         {
-            //Debug.Log("Â©ÍøÖ®Óã");
-            //Destroy(other.gameObject);
-            //other.gameObject.GetComponent<Square>().BeRemoved();
+            if (other.gameObject.GetComponent<PlayerController>())
+            {
+                other.gameObject.transform.position += new Vector3(0, 100, 0);
+                return;
+            }
             FindAnyObjectByType<SquareObjPool>().ReturnPool(other.gameObject.GetComponent<ColorSquare>()); 
         }
     }

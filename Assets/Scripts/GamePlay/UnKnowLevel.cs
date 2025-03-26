@@ -17,6 +17,7 @@ public class UnKnowLevel : MonoBehaviour
     {
         yield return new WaitForSeconds(2);
         MenuButton.interactable = true;
+        PlayerInputManager.Instance.SetCurrentSelectGameObj(MenuButton.gameObject);
         MenuButton.onClick.AddListener(
        () =>
         {
@@ -26,7 +27,7 @@ public class UnKnowLevel : MonoBehaviour
                 DestroyImmediate( LevelSelectManager.Instance.gameObject);
             });
 
-            PlayerInputManager.Instance.SetCurrentSelectGameObj(MenuButton.gameObject);
+            //PlayerInputManager.Instance.SetCurrentSelectGameObj(MenuButton.gameObject);
 
             StartCoroutine(ClearAllPanels());
         });

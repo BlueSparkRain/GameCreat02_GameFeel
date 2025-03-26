@@ -22,6 +22,19 @@ public class GameOverPanel : BasePanel
 
     bool canVer=true;
 
+    public Transform HightScaleStar;
+
+    IEnumerator HightStarScale() 
+    {
+        yield return new WaitForSeconds(1);
+        Debug.Log("jchsidioid");
+        StartCoroutine( TweenHelper.MakeLerp(Vector3.zero, Vector3.one*1.2f, 0.1f, val => HightScaleStar.localScale = val));
+        yield return TweenHelper.MakeLerp(Vector3.zero, new Vector3(0, 0, 5.8f), 0.08f, val => HightScaleStar.eulerAngles = val);
+        yield return TweenHelper.MakeLerp(new Vector3(0, 0, 5.8f), new Vector3(0, 0, -5.8f), 0.08f, val => HightScaleStar.eulerAngles = val);
+        yield return TweenHelper.MakeLerp(new Vector3(0, 0, -5.8f), Vector3.zero, 0.08f, val => HightScaleStar.eulerAngles = val);
+        //yield return TweenHelper.MakeLerp(Vector3.one*1.2f, Vector3.zero, 0.1f, val => HightScaleStar.localScale = val);
+    }
+
     void OnClickRePlayButton()
     {
         if (!canVer)
@@ -29,7 +42,7 @@ public class GameOverPanel : BasePanel
             return;
         }
         canVer = false;
-        Debug.Log("重新加载游戏");
+        MusicManager.Instance.StopBKMusic();
         SceneLoadManager.Instance.EndOneLevel(highestStarNum);
         highestStarNum = 0;
         UIManager.Instance.HidePanel<GameOverPanel>();
@@ -76,13 +89,15 @@ public class GameOverPanel : BasePanel
     public override void ShowPanel()
     {
         base.ShowPanel();
+        StartCoroutine(HightStarScale());
     }
 
     public override IEnumerator ShowPanelTweenEffect()
     {
-        yield return UITween.Instance.UIDoMove(root, new Vector2(0, -1500), Vector2.zero, transTime);
         yield return UITween.Instance.UIDoFade(transform, 0, 1, transTime);
+        yield return UITween.Instance.UIDoMove(root, new Vector2(0, -1500), Vector2.zero, transTime);
         canVer = true;
+
     }
 
     protected override void Init()

@@ -1,7 +1,6 @@
 using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -26,20 +25,21 @@ public class LevelSelectManager : MonoSingleton<LevelSelectManager>
         base.Awake();
     }
 
-  
 
-    public void ResetSelf() 
+
+    public void ResetSelf()
     {
         currentLevelIndex = 0;
 
     }
-    public  IEnumerator LockRemindShow() 
+    public IEnumerator LockRemindShow()
     {
-       if(isLockReminging)
+        if (isLockReminging)
             yield break;
+        Debug.Log("wooowowowowowoow");
         isLockReminging = true;
-        StartCoroutine( Shake());
-        yield return UITween.Instance.UIDoLocalMove(LockBoard,new Vector2(0,-450),0.3f);
+        StartCoroutine(Shake());
+        yield return UITween.Instance.UIDoLocalMove(LockBoard, new Vector2(0, -450), 0.3f);
         yield return TweenHelper.MakeLerp(Vector3.zero, new Vector3(0, 0, 5.8f), 0.08f, val => LockBoard.eulerAngles = val);
         yield return TweenHelper.MakeLerp(new Vector3(0, 0, -5.8f), new Vector3(0, 0, 5.8f), 0.08f, val => LockBoard.eulerAngles = val);
         yield return TweenHelper.MakeLerp(new Vector3(0, 0, 5.8f), Vector3.zero, 0.08f, val => LockBoard.eulerAngles = val);
@@ -59,13 +59,16 @@ public class LevelSelectManager : MonoSingleton<LevelSelectManager>
         yield return UITween.Instance.UIDoLocalMove(LockBoard, new Vector2(0, 450), 0.3f);
     }
 
-    public IEnumerator ShowLevelSelector() 
+    public IEnumerator ShowLevelSelector()
     {
-        yield return UITween.Instance.UIDoFade(transform,0,1,0.5f);
-        yield return UITween.Instance.UIDoLocalMove(Root, new Vector2(0,2000),0.3f);
 
-    } 
-    public IEnumerator HideLevelSelector() 
+        MusicManager.Instance.PlayBKMusic("BK1");
+
+        yield return UITween.Instance.UIDoFade(transform, 0, 1, 0.5f);
+        yield return UITween.Instance.UIDoLocalMove(Root, new Vector2(0, 2000), 0.3f);
+
+    }
+    public IEnumerator HideLevelSelector()
     {
         transform.GetComponent<CanvasGroup>().interactable = false;
         yield return UITween.Instance.UIDoLocalMove(Root, new Vector2(0, -2000), 0.3f);
@@ -74,13 +77,13 @@ public class LevelSelectManager : MonoSingleton<LevelSelectManager>
 
     void Start()
     {
-        VCam=Camera.main.transform;
+        VCam = Camera.main.transform;
         //注册所有按钮
         for (int i = 0; i < buttonContainer.childCount; i++)
         {
-           levelSelectButtons.Add(buttonContainer.GetChild(i).GetComponentInChildren<MylevelSelectButton>());
+            levelSelectButtons.Add(buttonContainer.GetChild(i).GetComponentInChildren<MylevelSelectButton>());
         }
-        StartCoroutine( levelSelectButtons[currentLevelIndex].UnLockSelf());
+        StartCoroutine(levelSelectButtons[currentLevelIndex].UnLockSelf());
         //StartCoroutine(SceneLoadManager.Instance.SetGameReload(returnButton));
 
 
@@ -90,13 +93,13 @@ public class LevelSelectManager : MonoSingleton<LevelSelectManager>
         UIManager.Instance.ShowPanel<SceneTransPanel>(panel =>
         {
             panel.SceneLoadingTrans(0);
-            Destroy(LevelSelectManager.Instance.gameObject,3);
+            Destroy(LevelSelectManager.Instance.gameObject, 3);
         });
         //UIManager.Instance.DestoryAllPanels();
     });
     }
 
-   public void IntoLevelSelectScene(int index) 
+    public void IntoLevelSelectScene(int index)
     {
         currentLevelIndex = index;
     }
@@ -105,9 +108,9 @@ public class LevelSelectManager : MonoSingleton<LevelSelectManager>
     /// 完成当前关卡
     /// </summary>
     /// <param name="score"></param>
-    public void EndCurrentLevel(int  starNum) 
+    public void EndCurrentLevel(int starNum)
     {
-       levelSelectButtons[currentLevelIndex].ChangeLeveState(starNum);
+        levelSelectButtons[currentLevelIndex].ChangeLeveState(starNum);
         StartCoroutine(UnLockNewLevel());
     }
 
@@ -117,9 +120,9 @@ public class LevelSelectManager : MonoSingleton<LevelSelectManager>
     /// <param name="Index"></param>
     public IEnumerator UnLockNewLevel()
     {
-       currentLevelIndex++;
+        currentLevelIndex++;
         yield return new WaitForSeconds(2);
-       StartCoroutine( levelSelectButtons[currentLevelIndex].UnLockSelf());
+        StartCoroutine(levelSelectButtons[currentLevelIndex].UnLockSelf());
     }
 
     private void Update()
@@ -127,8 +130,13 @@ public class LevelSelectManager : MonoSingleton<LevelSelectManager>
 
         if (Input.GetKeyDown(KeyCode.P))
         {
-          SceneLoadManager.Instance.EndOneLevel(2);
+            SceneLoadManager.Instance.EndOneLevel(2);
         }
+
+        if (FindAnyObjectByType<CinemachineBrain>())
+            VCam = FindAnyObjectByType<CinemachineBrain>().transform;
+        else
+            VCam = Camera.main.transform;
     }
 
 }

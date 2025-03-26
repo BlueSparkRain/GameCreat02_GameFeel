@@ -35,6 +35,7 @@ public class PlayerInputManager : MonoSingleton<PlayerInputManager>
         selectUIObjs.Clear();
         SetCurrentSelectGameObj(null);
     }
+
     public void SetCurrentSelectGameObj(GameObject obj)
     {
 

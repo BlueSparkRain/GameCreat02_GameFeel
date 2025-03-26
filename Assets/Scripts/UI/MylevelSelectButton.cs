@@ -32,7 +32,7 @@ public class MylevelSelectButton : MonoBehaviour
 
         GetComponentInChildren<TMP_Text>().text = transform.parent.GetSiblingIndex().ToString();//¹Ø¿¨±àºÅ
 
-        this.GetComponent<Button>().onClick.AddListener(OnClickUnLockButton);
+        GetComponent<Button>().onClick.AddListener(OnClickUnLockButton);
 
         ChangeLeveState(-1);
         isLocked = true;

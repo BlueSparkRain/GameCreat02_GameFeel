@@ -1,15 +1,25 @@
+using System.Collections;
 using UnityEngine;
-public class PitchTest : MonoSingleton<PitchTest>
+public class PitchTest : MonoBehaviour
 {
     public float cPitch = 1;
     float timer;
     public float interval = 0.5f;
 
+
+
     private void Start()
     {
         PlayerFeelManager.Instance.IMInit();
+        //MusicManager.Instance.PlayBKMusic("Bob");
+        StartCoroutine(StartComboMusic());
     }
 
+    IEnumerator StartComboMusic() 
+    {
+      yield return new WaitForSeconds(0.3f);
+        MusicManager.Instance.PlayBKMusic("Bob");
+    }
 
     private void Update()
     {

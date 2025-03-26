@@ -1950,6 +1950,54 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5910454738766648186, guid: 47bfe0c1147c3ac4b8322c47bd0f341b, type: 3}
+      propertyPath: m_Colors.m_NormalColor.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5910454738766648186, guid: 47bfe0c1147c3ac4b8322c47bd0f341b, type: 3}
+      propertyPath: m_Colors.m_NormalColor.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5910454738766648186, guid: 47bfe0c1147c3ac4b8322c47bd0f341b, type: 3}
+      propertyPath: m_Colors.m_NormalColor.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5910454738766648186, guid: 47bfe0c1147c3ac4b8322c47bd0f341b, type: 3}
+      propertyPath: m_Colors.m_PressedColor.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5910454738766648186, guid: 47bfe0c1147c3ac4b8322c47bd0f341b, type: 3}
+      propertyPath: m_Colors.m_PressedColor.g
+      value: 0.36650753
+      objectReference: {fileID: 0}
+    - target: {fileID: 5910454738766648186, guid: 47bfe0c1147c3ac4b8322c47bd0f341b, type: 3}
+      propertyPath: m_Colors.m_PressedColor.r
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5910454738766648186, guid: 47bfe0c1147c3ac4b8322c47bd0f341b, type: 3}
+      propertyPath: m_Colors.m_SelectedColor.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5910454738766648186, guid: 47bfe0c1147c3ac4b8322c47bd0f341b, type: 3}
+      propertyPath: m_Colors.m_SelectedColor.g
+      value: 0.69411767
+      objectReference: {fileID: 0}
+    - target: {fileID: 5910454738766648186, guid: 47bfe0c1147c3ac4b8322c47bd0f341b, type: 3}
+      propertyPath: m_Colors.m_SelectedColor.r
+      value: 0.23529413
+      objectReference: {fileID: 0}
+    - target: {fileID: 5910454738766648186, guid: 47bfe0c1147c3ac4b8322c47bd0f341b, type: 3}
+      propertyPath: m_Colors.m_HighlightedColor.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5910454738766648186, guid: 47bfe0c1147c3ac4b8322c47bd0f341b, type: 3}
+      propertyPath: m_Colors.m_HighlightedColor.g
+      value: 0.6927588
+      objectReference: {fileID: 0}
+    - target: {fileID: 5910454738766648186, guid: 47bfe0c1147c3ac4b8322c47bd0f341b, type: 3}
+      propertyPath: m_Colors.m_HighlightedColor.r
+      value: 0.2358489
+      objectReference: {fileID: 0}
     - target: {fileID: 8577877346151960240, guid: 47bfe0c1147c3ac4b8322c47bd0f341b, type: 3}
       propertyPath: m_fontColor.b
       value: 0.8392157

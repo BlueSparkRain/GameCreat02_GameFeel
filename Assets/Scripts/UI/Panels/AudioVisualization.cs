@@ -19,6 +19,8 @@ public class NewBehaviourScript : MonoBehaviour
     public float reMapParam = 0.15f;
     void Start()
     {
+        //return;
+
         audioSource = GameObject.Find("BKMusic").GetComponent<AudioSource>();
         images = new GameObject[imageCount];
         for (int i = 0; i < imageCount; i++)

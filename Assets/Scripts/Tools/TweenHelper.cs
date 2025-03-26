@@ -17,7 +17,7 @@ public static class TweenHelper
             updateY?.Invoke(currentValue);
             updateZ?.Invoke(currentValue);
 
-            elapsedTime += Time.deltaTime;
+            elapsedTime += Time.unscaledDeltaTime;
             yield return null; // 等待下一帧
         }
         updateX?.Invoke(targetValue);
@@ -38,7 +38,7 @@ public static class TweenHelper
             //    yield break;
 
             updatePosition?.Invoke(currentPosition); // 更新位置
-            elapsedTime += Time.deltaTime;
+            elapsedTime += Time.unscaledDeltaTime;
             yield return null; // 等待下一帧
         }
 

@@ -110,5 +110,5 @@ public class CollectablesUnit
 
 public enum E_Collectable 
 { 
-±´¿Ç,ÕÂÓã,½ğ±Ò,
+±´¿Ç,ÕÂÓã,½ğ±Ò,Òô·û
 }

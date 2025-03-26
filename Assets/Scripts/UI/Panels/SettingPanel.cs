@@ -12,7 +12,7 @@ public class SettingPanel : BasePanel
     [Header("返回主菜单按钮")]
     public Button ReturnToMenuButton;
     [Header("输入映射按钮")]
-    public Button InputActionButton;
+    public Button TechButton;
     [Header("音量设置按钮")]
     public Button AudioSettingButton;
     //[Header("返回主菜单按钮")]
@@ -20,8 +20,29 @@ public class SettingPanel : BasePanel
     [Header("返回按钮")]
     public Button ReturnButton;
 
-    void OnClickReturnToMenuButtton() => UIManager.Instance.ShowPanel<MenuPanel>(null);
-    void OnClickInputActionButton() => UIManager.Instance.ShowPanel<InputActionPanel>(null);
+    void OnClickReturnToMenuButtton() 
+    {
+        UIManager.Instance.HidePanel<SettingPanel>();
+
+             UIManager.Instance.ShowPanel<SceneTransPanel>(panel =>
+             {
+                 panel.SceneLoadingTrans(0);
+                 DestroyImmediate(LevelSelectManager.Instance.gameObject);
+             });
+
+             //PlayerInputManager.Instance.SetCurrentSelectGameObj(MenuButton.gameObject);
+
+             StartCoroutine(ClearAllPanels());
+         
+
+    }
+
+    IEnumerator ClearAllPanels()
+    {
+        yield return new WaitForSeconds(3);
+        UIManager.Instance.DestoryAllPanels();
+    }
+    void OnClickInputActionButton() => UIManager.Instance.ShowPanel<TechPanel>(null);
     void OnClickAudioSettingButton() => UIManager.Instance.ShowPanel<AudioPanel>(null);
     void OnClickReturnButton() => UIManager.Instance.HidePanel<SettingPanel>();
 
@@ -30,7 +51,7 @@ public class SettingPanel : BasePanel
         base.Init();
         ReturnToMenuButton.onClick.AddListener(OnClickReturnToMenuButtton);
         AudioSettingButton.onClick.AddListener(OnClickAudioSettingButton);
-        InputActionButton.onClick.AddListener(OnClickInputActionButton);
+        TechButton.onClick.AddListener(OnClickInputActionButton);
         ReturnButton.onClick.AddListener(OnClickReturnButton);
     }
 
