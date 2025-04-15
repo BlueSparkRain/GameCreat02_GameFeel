@@ -4,13 +4,12 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class TargetCollectableObj : MonoBehaviour
+public class PlayerCollectablesViewer : MonoBehaviour
 {
     [Header("当前已收集个数Text")]
     public TMP_Text currentCollectNum;
     [Header("目标收集个数Text")]
     public TMP_Text targetCollectNum;
-
 
     [Header("目标收集物Image")]
     public Image collectImage;

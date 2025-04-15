@@ -6,6 +6,12 @@ using UnityEngine.UI;
 
 public class SceneLoadManager : MonoSingleton<SceneLoadManager>
 {
+    UIManager uiInstance;
+    private void Start()
+    {
+       uiInstance=UIManager.Instance;
+    }
+
 
     public IEnumerator LoadNewScene(int index)
     {
@@ -19,8 +25,6 @@ public class SceneLoadManager : MonoSingleton<SceneLoadManager>
             SceneManager.LoadScene(index);
             yield break;
         }
-
-
 
         if (SceneManager.GetActiveScene() == SceneManager.GetSceneByBuildIndex(0)) 
         {
@@ -55,12 +59,12 @@ public class SceneLoadManager : MonoSingleton<SceneLoadManager>
     public void LoadNewLevel(int sceneIndex) 
     {
         StartCoroutine( LevelSelectManager.Instance.HideLevelSelector());
-        UIManager.Instance.ShowPanel<SceneTransPanel>(panel =>  panel.SceneLoadingTrans(sceneIndex));
+        //uiInstance.ShowPanel<SceneTransPanel>(panel =>  panel.SceneLoadingTrans(sceneIndex));
     }
 
     public void EndOneLevel(int starNum)
     {
-        UIManager.Instance.ShowPanel<SceneTransPanel>(panel => panel.SceneLoadingTrans(1));
+        //uiInstance.ShowPanel<SceneTransPanel>(panel => panel.SceneLoadingTrans(1));
         LevelSelectManager.Instance.EndCurrentLevel(starNum);
         StartCoroutine(LevelSelectManager.Instance.ShowLevelSelector());
     }
@@ -73,25 +77,27 @@ public class SceneLoadManager : MonoSingleton<SceneLoadManager>
     }
 
 
-    public IEnumerator SetGameReload(Button button)
-    {
-        button.interactable = false;
-        yield return new WaitForSeconds(2);
-        button.interactable = true;
-        button.onClick.AddListener(
-       () =>
-       {
-           UIManager.Instance.ShowPanel<SceneTransPanel>(panel =>
-           {
-               panel.SceneLoadingTrans(0);
-               DestroyImmediate(LevelSelectManager.Instance.gameObject);
-           });
-           StartCoroutine(ClearAllPanels());
-       });
-    }
-    IEnumerator ClearAllPanels()
-    {
-        yield return new WaitForSeconds(3);
-        UIManager.Instance.DestoryAllPanels();
-    }
+    //public IEnumerator SetGameReload(Button button)
+    //{
+    //    button.interactable = false;
+    //    yield return new WaitForSeconds(2);
+    //    button.interactable = true;
+    //    button.onClick.AddListener(
+    //   () =>
+    //   {
+    //       uiInstance.ShowPanel<SceneTransPanel>(panel =>
+    //       {
+    //           panel.SceneLoadingTrans(0);
+    //           DestroyImmediate(LevelSelectManager.Instance.gameObject);
+    //       });
+
+    //       //StartCoroutine(ClearAllPanels());
+    //   });
+    //}
+    //ÆúÓÃ
+    //IEnumerator ClearAllPanels()
+    //{
+    //    yield return new WaitForSeconds(3);
+    //    uiInstance.DestoryAllPanels();
+    //}
 }

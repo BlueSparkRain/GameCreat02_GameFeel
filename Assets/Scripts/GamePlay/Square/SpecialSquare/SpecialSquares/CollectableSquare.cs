@@ -53,7 +53,7 @@ public class CollectableSquare : SpecicalSquare
     public override IEnumerator BeRemoved()
     {
         yield return base.BeRemoved();
-        FindAnyObjectByType<CollectablesRecorder>().GetCollectable(type);//记录收集物
+        FindAnyObjectByType<CollectablesController>().GetCollectable(type);//记录收集物
         if (transform.parent && transform.parent.parent.GetComponent<SquareColumn>())
         {
             transform?.parent.parent.GetComponent<SquareColumn>().AddMaxSpawnNum();//恢复列最大容量

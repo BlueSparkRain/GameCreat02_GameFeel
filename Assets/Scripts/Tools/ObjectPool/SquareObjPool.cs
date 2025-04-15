@@ -2,6 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+public enum E_ColorSquare 
+{
+ 赤,橙,黄,绿,青,蓝,紫
+}
+
+
 public class SquareObjPool : MonoBehaviour
 {
     [Header("池容量")]
@@ -28,6 +35,68 @@ public class SquareObjPool : MonoBehaviour
             CreatNewInstance();
     }
 
+    public List<ColorSquareSO> GetColorSOList(List<int> intList) 
+    { 
+      List<ColorSquareSO> soList = new List<ColorSquareSO>();
+      for(int i = 0;i < intList.Count; i++) 
+      {
+            soList.Add(prototyppeSODataList[intList[i]]);
+      }
+      return soList;
+    }
+
+
+    public GameObject GetTargetSquare(ColorSquareSO soData)
+    {
+        GameObject colorSquare = GetInstnce();
+        ColorWhiteSquare(colorSquare, soData);
+        StartCoroutine(AppearTrail(colorSquare));
+        return colorSquare;
+    }
+
+
+    /// <summary>
+    /// 加工并返回确定类型的色块
+    /// </summary>
+    /// <returns></returns>
+    public GameObject GetTargetSquare(E_ColorSquare squareType) 
+    {
+        GameObject colorSquare = GetInstnce();
+        ColorSquareSO so;
+
+        switch (squareType)
+        {
+            case E_ColorSquare.赤:
+                so = prototyppeSODataList[0];
+                break;
+            case E_ColorSquare.橙:
+                so = prototyppeSODataList[1];
+                break;
+            case E_ColorSquare.黄:
+                so = prototyppeSODataList[2];
+                break;
+            case E_ColorSquare.绿:
+                so = prototyppeSODataList[3];
+                break;
+            case E_ColorSquare.青:
+                so = prototyppeSODataList[4];
+                break;
+            case E_ColorSquare.蓝:
+                so = prototyppeSODataList[5];
+                break;
+            case E_ColorSquare.紫:
+                so = prototyppeSODataList[6];
+                break;
+            default:
+                so = prototyppeSODataList[0];
+                break;
+        }
+
+        ColorWhiteSquare(colorSquare, so);
+        StartCoroutine(AppearTrail(colorSquare));
+        return colorSquare;
+    }
+
     /// <summary>
     /// 加工并返回完成的色块
     /// </summary>
@@ -38,8 +107,8 @@ public class SquareObjPool : MonoBehaviour
         //七种颜色随机
         int randSeed = Random.Range(0, 6);
         ColorSquareSO so = prototyppeSODataList[randSeed];
-        ColorWhiteSquare(colorSquare,so);
 
+        ColorWhiteSquare(colorSquare,so);
         StartCoroutine(AppearTrail(colorSquare));
         return colorSquare;
     }
@@ -64,14 +133,14 @@ public class SquareObjPool : MonoBehaviour
             if (!pool[i].activeInHierarchy) 
             {
                 instnce = pool[i];
-                pool.RemoveAt(i);
+                //pool.RemoveAt(i);
                 instnce.SetActive(true);
                 return  instnce;
             }
         }
         //池中已满,生成新方块
         instnce=CreatNewInstance();
-        pool.Remove(instnce);
+        //pool.Remove(instnce);
         instnce.SetActive(true);
         return instnce;
     }
@@ -102,7 +171,7 @@ public class SquareObjPool : MonoBehaviour
     public void ReturnPool(ColorSquare square) 
     {
          //Debug.Log("回池+1");
-         pool.Add(square.gameObject);
+         //pool.Add(square.gameObject);
          square.transform.localScale = Vector3.one*1.6f;
          square.gameObject.SetActive(false);
          square.transform.SetParent(transform);

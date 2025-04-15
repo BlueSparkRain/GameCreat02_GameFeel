@@ -56,8 +56,16 @@ public class MenuPanel : BasePanel
     protected override void Init()
     {
         base.Init();
-        PlayButton.onClick.AddListener(OnClickPlayButton);
-        QuitButton.onClick.AddListener(OnClickQuitButton);
+        //PlayButton.onClick.AddListener(OnClickPlayButton);
+        //QuitButton.onClick.AddListener(OnClickQuitButton);
+
+
+        PlayButton.onClick.AddListener(() =>  {
+
+            Debug.Log("What going on");
+            uiManager.ShowPanel<TestPanel>(null,true); });
+
+
         StartCoroutine(WaitUnLock());
     }
 
@@ -72,11 +80,17 @@ public class MenuPanel : BasePanel
     }
     private void Update()
     {
+        //if(uiManager!=null)
+        //Debug.Log(uiManager.currentPanel);
+
         if (Ilock) 
         {
             GetComponent<CanvasGroup>().interactable = false;
         }
-
+        if (Input.GetKeyDown(KeyCode.Space)) 
+        {
+        
+        }
     }
     public override void GamePadClose()
     {

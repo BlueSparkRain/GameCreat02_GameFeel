@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class TechPanel : BasePanel
 {
@@ -36,7 +37,7 @@ public class TechPanel : BasePanel
 
     private void Update()
     {
-        if (PlayerInputManager.Instance.ColorationRight || Input.GetKeyDown(KeyCode.Backspace))
+        if (PlayerInputManager.Instance.ColorationRight || Keyboard.current.backspaceKey.wasPressedThisFrame)
            StartCoroutine( NextPage());
     }
 
@@ -61,12 +62,6 @@ public class TechPanel : BasePanel
         Debug.Log("ÏÂÒ»Ò³");
         yield return UITween.Instance.UIDoLocalMove(Root, new Vector3(-2000, 0, 0),transTime / 3);
         canAct=true;
-    }
-
-
-    protected override void IDestroy()
-    {
-        base.IDestroy();
     }
 
     protected override void Init()

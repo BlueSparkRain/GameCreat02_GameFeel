@@ -6,7 +6,8 @@ using UnityEngine.UI;
 public class UnKnowLevel : MonoBehaviour
 {
     public Button MenuButton;
-    // Start is called before the first frame update
+
+
     void Start()
     {
         StartCoroutine(SetGameReload());
@@ -29,12 +30,15 @@ public class UnKnowLevel : MonoBehaviour
 
             //PlayerInputManager.Instance.SetCurrentSelectGameObj(MenuButton.gameObject);
 
-            StartCoroutine(ClearAllPanels());
+            //StartCoroutine(ClearAllPanels());
         });
         }
-     IEnumerator ClearAllPanels() 
-    {
-        yield return new WaitForSeconds(3);
-        UIManager.Instance.DestoryAllPanels();
-    }
+
+
+    //ÆúÓÃ
+    // IEnumerator ClearAllPanels() 
+    //{
+    //    yield return new WaitForSeconds(3);
+    //    UIManager.Instance.DestoryAllPanels();
+    //}
 }

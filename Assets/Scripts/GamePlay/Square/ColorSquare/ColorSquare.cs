@@ -29,12 +29,11 @@ public class ColorSquare : Square
             yield break;
 
         DoSelfEffect();
-        yield return AnimReMoveScale();
+        yield return SquareReMoveAnim();
         //Debug.Log("É«¿é±»Ïû³ý");
 
-   
-        if (transform.parent != null && transform.parent.GetComponent<Slot>())
-            transform.parent.GetComponent<Slot>().ThrowSquare();
+        if (transform.parent != null && slot)
+            slot.ThrowSquare();
 
         if (transform.GetComponent<PlayerController>())
             yield break;

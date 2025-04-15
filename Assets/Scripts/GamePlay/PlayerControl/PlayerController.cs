@@ -190,7 +190,6 @@ public class PlayerController : MonoBehaviour
 
     void Coloration(ColorSquare otherSquare)
     {
-
         if (VCam)
             StartCoroutine(Shake());
 
@@ -219,8 +218,6 @@ public class PlayerController : MonoBehaviour
             Debug.Log("无法交换！");
             yield break;
         }
-
-
         //if (transform.parent == null || !transform.parent.GetComponent<Slot>().isFull ||isSwaping)
         if (transform.parent == null || !transform.parent.GetComponent<Slot>().isFull)
             yield break;
@@ -241,11 +238,11 @@ public class PlayerController : MonoBehaviour
         otherSquare.transform.SetParent(mySlot);
 
         if (transform.parent != null && transform.parent.GetComponent<Slot>())
-            square.MoveToSlot(transform.parent.position);
+           square.MoveToSlot(transform.parent.position);
 
         if (otherSquare != null && mySlot != null)
         {
-            otherSquare.MoveToSlot(mySlot.position);
+           otherSquare.MoveToSlot(mySlot.position);
         }
         if (transform.parent != null)
         {
@@ -259,7 +256,7 @@ public class PlayerController : MonoBehaviour
             canAct = false;
             timer = actInterval;
             canswap = true;
-            yield return square.AnimMoveScale();
+            yield return square.SquareMoveAnim();
         }
 
     }
@@ -275,8 +272,6 @@ public class PlayerController : MonoBehaviour
         }
             //    StopAllCoroutines();
             isSwaping = true;
-        //yield return new WaitForSeconds(0.3f);
-        //yield return new WaitForSeconds(1f);
         yield return new WaitForSeconds(interval);
         isSwaping = false;
     }
@@ -286,8 +281,6 @@ public class PlayerController : MonoBehaviour
 
         if (VCam) 
             StartCoroutine(Shake());
-            //Debug.Log("手柄震动！");
-        
 
         float timer = 0;
         while (timer <= duration)

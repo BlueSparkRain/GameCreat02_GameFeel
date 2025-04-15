@@ -54,20 +54,12 @@ public class SquareGroup : MonoBehaviour
     /// </summary>
     void LoadWholePan()
     {
-        for (int i = 0; i < 8; i++)
-        {
-            ColumnSpawenNewSquare(i, SquarePool);
-        }
+        ColorSquareManager.Instance.BornAllSquares();
     }
 
-    /// <summary>
-    /// 通知每列各自充满
-    /// </summary>
-    /// <param name="column"></param>
-    /// <param name="pool"></param>
-    public void ColumnSpawenNewSquare(int column, SquareObjPool pool)
+    public void FirstColSquares(int colIndex,List<ColorSquareSO> soLists) 
     {
-      StartCoroutine(Columns[column].SpawnFirstColumn(pool));
+       StartCoroutine(  Columns[colIndex].SpawneFirstColSquares(soLists) );
     }
 
     /// <summary>

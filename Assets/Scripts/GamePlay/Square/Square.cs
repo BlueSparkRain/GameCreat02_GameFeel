@@ -1,52 +1,41 @@
 using System.Collections;
-using Unity.VisualScripting;
+using Unity.IO.LowLevel.Unsafe;
 using UnityEngine;
-using static UnityEngine.RuleTile.TilingRuleOutput;
 
-public class Square : MonoBehaviour,ICanEffect
+public class Square : MonoBehaviour, ICanEffect
 {
     Rigidbody2D rb;
     [HideInInspector]
     public bool HasFather;
     [Header("基础得分")]
-    public int  BaseScore=50;
+    public int BaseScore = 50;
 
     [Header("本地块可以移动")]
-    public bool canMove=true;
+    public bool canMove = true;
+    protected GameObject particalPrefab => Resources.Load<GameObject>("Prefab/SquarePartical");
 
-    private GameObject particalPrefab => Resources.Load<GameObject>("Prefab/SquarePartical");
+    protected Slot slot;
 
-
-    protected virtual void Awake()
+    protected virtual  void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        
+    }
+
+    private void Start()
+    {
+        StartCoroutine(HaveReady());
+    }
+    IEnumerator HaveReady()
+    {
+        yield return null;
         if (transform.parent && transform.parent.GetComponent<Slot>())
         {
-            SetMoveToSlot(transform.parent.position);
-
-            transform.parent.parent.parent.GetChild(transform.parent.GetSiblingIndex()).GetComponent<SquareRow>().SetRowSquare(this,transform.parent.parent.GetSiblingIndex());
-        }
-
-    }
-
-    void SetMoveToSlot(Vector3 slotPos)
-    {
-        HasFather = true;
-        rb.isKinematic = true;
-        rb.velocity = Vector3.zero;
-
-        Vector3 truePos = new Vector3(slotPos.x, slotPos.y, -0.1f);
-        if (transform.parent != null && transform.parent.GetComponent<Slot>() != null)
-        {
-            if (transform.parent.GetComponent<Slot>())
-            {
-                Slot slot = transform.parent.GetComponent<Slot>();
-                transform.parent.parent.GetComponent<SquareColumn>().UpdateColumnSquares(this, transform.parent.GetSiblingIndex());
-                FindAnyObjectByType<SquareGroup>().UpdateRowSquares(transform.GetComponentInChildren<Square>(), slot.transform.parent.GetSiblingIndex(), slot.transform.GetSiblingIndex());
-            }
-            StartCoroutine(TweenHelper.MakeLerp(transform.position, truePos, 0.15f, val => transform.position = val));
+            MoveToSlot(transform.parent.position);
+            slot.transform.parent.parent.GetChild(transform.parent.GetSiblingIndex()).GetComponent<SquareRow>().SetRowSquare(this, slot.transform.parent.GetSiblingIndex());
         }
     }
+
 
     /// <summary>
     /// 使本方块移动至目标槽位置
@@ -64,13 +53,13 @@ public class Square : MonoBehaviour,ICanEffect
         rb.isKinematic = true;
         rb.velocity = Vector3.zero;
 
-        Vector3 truePos = new Vector3(slotPos.x,slotPos.y,-0.1f);
-        if (transform.parent!=null&& transform.parent.GetComponent<Slot>() != null)
-        {  
+        Vector3 truePos = new Vector3(slotPos.x, slotPos.y, -0.1f);
+        if (transform.parent != null && transform.parent.GetComponent<Slot>() != null)
+        {
             if (transform.parent.GetComponent<Slot>())
             {
-                Slot slot = transform.parent.GetComponent<Slot>();
-                transform.parent.parent.GetComponent<SquareColumn>().UpdateColumnSquares(this, transform.parent.GetSiblingIndex());
+                slot = transform.parent.GetComponent<Slot>();
+                slot.selfColumn.UpdateColumnSquares(this, transform.parent.GetSiblingIndex());
                 FindAnyObjectByType<SquareGroup>().UpdateRowSquares(transform.GetComponentInChildren<Square>(), slot.transform.parent.GetSiblingIndex(), slot.transform.GetSiblingIndex());
             }
             StartCoroutine(TweenHelper.MakeLerp(transform.position, truePos, 0.15f, val => transform.position = val));
@@ -86,20 +75,38 @@ public class Square : MonoBehaviour,ICanEffect
 
         transform.SetParent(null);
         HasFather = false;
-        //yield return null;
         rb.velocity = new Vector3(0, -60);
     }
 
-    public virtual IEnumerator AnimMoveScale()
+    /// <summary>
+    /// 色块出现的动画
+    /// </summary>
+    /// <returns></returns>
+    protected virtual IEnumerator SquareBornAnim()
+    {
+
+        yield return null;
+    }
+
+
+    /// <summary>
+    /// 色块在交换时的动画
+    /// </summary>
+    /// <returns></returns>
+    public virtual IEnumerator SquareMoveAnim()
     {
         yield return TweenHelper.MakeLerp(transform.localScale, new Vector3(2.0f, 1.0f, 1.6f), 0.05f, val => transform.localScale = val);
         yield return TweenHelper.MakeLerp(transform.localScale, Vector3.one * 1.6f, 0.05f, val => transform.localScale = val);
     }
 
-    public virtual IEnumerator AnimReMoveScale()
+    /// <summary>
+    /// 色块在被消除时的动画
+    /// </summary>
+    /// <returns></returns>
+    public virtual IEnumerator SquareReMoveAnim()
     {
         yield return TweenHelper.MakeLerp(transform.localScale, new Vector3(2.5f, 0.7f, 1.6f), 0.1f, val => transform.localScale = val);
-        yield return TweenHelper.MakeLerp(transform.localScale, new Vector3(0.8f,2.5f, 1.6f), 0.06f, val => transform.localScale = val);
+        yield return TweenHelper.MakeLerp(transform.localScale, new Vector3(0.8f, 2.5f, 1.6f), 0.06f, val => transform.localScale = val);
         yield return TweenHelper.MakeLerp(transform.localScale, Vector3.one * 1.6f, 0.05f, val => transform.localScale = val);
         yield return TweenHelper.MakeLerp(transform.localScale, Vector3.one * 2.6f, 0.03f, val => transform.localScale = val);
     }
@@ -119,16 +126,17 @@ public class Square : MonoBehaviour,ICanEffect
     {
         Debug.Log("方块效果触发");
         //加分
-        EventCenter.Instance.EventTrigger(E_EventType.E_GetSquareScore,BaseScore);
+        EventCenter.Instance.EventTrigger(E_EventType.E_GetSquareScore, BaseScore);
         ExplodeEffect();
     }
 
     /// <summary>
     /// 方块自身被去除时的爆炸效果
     /// </summary>
-    protected virtual void ExplodeEffect() 
+    protected virtual void ExplodeEffect()
     {
-        if (!GetComponent<PlayerController>()) {
+        if (!GetComponent<PlayerController>())
+        {
             GameObject partical = Instantiate(particalPrefab, transform.position, Quaternion.identity);
             partical.GetComponent<SquarePartical>().StartPlay(GetComponent<SpriteRenderer>().sprite);
         }

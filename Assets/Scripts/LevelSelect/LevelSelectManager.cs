@@ -127,16 +127,11 @@ public class LevelSelectManager : MonoSingleton<LevelSelectManager>
 
     private void Update()
     {
-
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            SceneLoadManager.Instance.EndOneLevel(2);
-        }
-
-        if (FindAnyObjectByType<CinemachineBrain>())
-            VCam = FindAnyObjectByType<CinemachineBrain>().transform;
-        else
-            VCam = Camera.main.transform;
+        //ÆúÓÃ
+        //if (FindAnyObjectByType<CinemachineBrain>())
+        //    VCam = FindAnyObjectByType<CinemachineBrain>().transform;
+        //else
+        //    VCam = Camera.main.transform;
     }
 
 }

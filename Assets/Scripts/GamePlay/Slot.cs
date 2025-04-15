@@ -10,18 +10,35 @@ public class Slot : MonoBehaviour
     public bool isFull;
     public Square currentSquare;
 
+    public SquareColumn  selfColumn;
+
+    Slot upslot;
+    Slot downslot;
+
+
+    public  bool isDownEmpty;
+
     private void Awake()
     {
         if(transform.childCount!=0)
-            isFull = true;
+            isFull = true;     
+    }
+
+    private void Start()
+    {
+        selfColumn = transform.parent.GetComponent<SquareColumn>();
+        if (transform.GetSiblingIndex() != 0)
+            upslot = selfColumn.columnSlots[transform.GetSiblingIndex() - 1].GetComponent<Slot>();
+
+        if (transform.GetSiblingIndex() != 7)
+            downslot = selfColumn.columnSlots[transform.GetSiblingIndex() + 1].GetComponent<Slot>();
+
     }
 
     bool canCheckSelf = true;
 
     private void Update()
     {
-
-        //Debug.Log(transform.childCount);
 
         if (transform.childCount == 0)
             isFull=false;
@@ -30,16 +47,15 @@ public class Slot : MonoBehaviour
             isFull = true;
 
         //检测本槽下方是否有空位，有空位则松掉本槽内方块
-        //if (transform.parent.GetComponent<SquareColumn>().ColFull && canCheckSelf && isFull && transform.GetSiblingIndex() <= 6)
-        if ( canCheckSelf && isFull && transform.GetSiblingIndex() <= 6)
+        if (canCheckSelf && isFull && transform.GetSiblingIndex() <= 6)
         {
-            if (!transform.parent.GetChild(transform.GetSiblingIndex() + 1).GetComponent<PlayerController>() && !transform.parent.GetChild(transform.GetSiblingIndex() + 1).GetComponent<Slot>().isFull)
+            if (!selfColumn.transform.GetChild(transform.GetSiblingIndex() + 1).GetComponent<PlayerController>()
+                && !selfColumn.transform.GetChild(transform.GetSiblingIndex() + 1).GetComponent<Slot>().isFull)
+            //if (!selfColumn.transform.GetChild(transform.GetSiblingIndex() + 1).GetComponent<Slot>().isFull)
             {
-                //StartCoroutine(transform.parent.GetChild(transform.GetSiblingIndex() + 1).GetComponent<Slot>().WaitLoose());
                 ThrowSquare();
             }
         }
-
     }
 
     /// <summary>
@@ -48,46 +64,44 @@ public class Slot : MonoBehaviour
     /// <param name="collision"></param>
     private void OnTriggerEnter2D(Collider2D other)
     {
+        if (isDownEmpty)
+            return;
 
         if (other.GetComponent<PlayerController>() && other.GetComponent<PlayerController>().isSwaping)
             return;
 
-        if (!transform.parent.GetComponent<SquareColumn>().isRemoving)
+        if (!selfColumn.isRemoving)
         {
-            if (transform.parent.GetComponent<SquareColumn>().ColFull && !other.GetComponent<Square>().HasFather && !isFull)
+            if (selfColumn.ColFull && !other.GetComponent<Square>().HasFather && !isFull)
             {
-                if (transform.GetSiblingIndex() + 1 <= 7 && !transform.parent.GetChild(transform.GetSiblingIndex() + 1).GetComponent<Slot>().isFull && (transform.GetSiblingIndex() - 1) >= 0 && !transform.parent.GetChild(transform.GetSiblingIndex() - 1).GetComponent<Slot>().isFull)
-                {
-
-                    return;
-                }
+                if (downslot && !downslot.isFull
+                    && upslot && !upslot.isFull)
+                return;
                 else
                 {
-                    if (!isFull && transform.parent.GetChild(transform.GetSiblingIndex() + 1).GetComponent<Slot>() && !transform.parent.GetChild(transform.GetSiblingIndex() + 1).GetComponent<Slot>().isFull)
-                    {
-                        return;
-                    }
+                    if (!isFull && 
+                        downslot && !downslot.isFull)
+                    return;    
                 }
             }
         }
-
-        if (isFull)
-        return;
 
         if (!isFull && !other.GetComponent<Square>().HasFather) 
         {
             other.transform.SetParent(transform);
             currentSquare = other.GetComponent<Square>();
 
-
             StartCoroutine(WaitLoose());
 
-
-            if (!isFull &&currentSquare != null && other.GetComponent<Square>())
+            if (!isFull && currentSquare != null && other.GetComponent<Square>())
                other.GetComponent<Square>().MoveToSlot(transform.position);
+            
             isFull = true;
 
-            transform.parent.GetComponentInParent<SquareColumn>().UpdateTopSlot(transform.GetSiblingIndex());
+            if (upslot)
+                upslot.isDownEmpty = false;
+
+            selfColumn.UpdateTopSlot(transform.GetSiblingIndex());
         }
     }
   
@@ -96,27 +110,26 @@ public class Slot : MonoBehaviour
     /// </summary>
     public void ThrowSquare()
     {
-        //if (!canCheckSelf)
-        //    return;
-
         if (currentSquare && currentSquare.GetComponent<PlayerController>() && currentSquare.GetComponent<PlayerController>().isSwaping)
             return;
 
         //本槽掉落，短暂冻结上槽
-        if (canCheckSelf && isFull && transform.GetSiblingIndex() > 0)
+        if (canCheckSelf && isFull && upslot)
         {
-            if (!transform.parent.GetChild(transform.GetSiblingIndex() - 1).GetComponent<PlayerController>() &&  transform.parent.GetChild(transform.GetSiblingIndex() - 1).GetComponent<Slot>().isFull)
+            if (!upslot.GetComponentInChildren<PlayerController>() && 
+                 upslot.GetComponent<Slot>().isFull)
             {
-                StartCoroutine(transform.parent.GetChild(transform.GetSiblingIndex() - 1).GetComponent<Slot>().WaitLoose());
+                StartCoroutine(upslot.WaitLoose());
             }
         }
 
-        if (currentSquare && currentSquare.GetComponent<PlayerController>() &&  currentSquare.GetComponent<PlayerController>().isSwaping)
-            return;
+        //松掉上槽
+        if(upslot)
+            upslot.isDownEmpty = true;
 
         currentSquare = null;
-        transform.parent.GetComponent<SquareColumn>().LooseOneSquare();
-        if ( transform.childCount != 0)
+        selfColumn.LooseOneSquare();
+        if (transform.childCount != 0)
            transform?.GetChild(0).GetComponent<Square>().LooseSelf();
 
     }

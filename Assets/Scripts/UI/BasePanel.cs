@@ -1,9 +1,31 @@
 using System.Collections;
+using UnityEditor.Build.Content;
 using UnityEngine;
 [RequireComponent(typeof(CanvasGroup))]
 public abstract class BasePanel : MonoBehaviour
 {
-    public virtual void GamePadClose() { }
+    [Header("动画持续时间")]
+    public float transTime = 1;
+    [Header("手柄模式默认按钮")]
+    public GameObject FirstSelectButton;
+    [Header("暂停时间")]
+    public bool NeedPausePanel;
+
+    protected UIManager uiManager;
+
+    protected GameInputModeManager gameInputModeManager;
+
+    public virtual void GamePadClose()
+    {
+
+
+    }
+
+
+    public virtual void InitGamePadMap()
+    {
+        //此处为场景中的EventSystem分配选中按钮
+    }
 
     public IEnumerator LockSelf()
     {
@@ -24,9 +46,7 @@ public abstract class BasePanel : MonoBehaviour
     {
         DontDestroyOnLoad(this.gameObject);
     }
-    public float transTime = 1;
-    public GameObject FirstSelectButton;
-    public bool NeedPausePanel;
+
 
     /// <summary>
     /// 面板进入动画缓动逻辑：执行等级2
@@ -43,7 +63,6 @@ public abstract class BasePanel : MonoBehaviour
         Init();
         if (NeedPausePanel)
             Time.timeScale = 0;
-
     }
 
 
@@ -54,8 +73,6 @@ public abstract class BasePanel : MonoBehaviour
     {
         if (NeedPausePanel)
             Time.timeScale = 1;
-
-        //IDestroy();
     }
     /// <summary>
     /// 面板退出动画缓动逻辑：执行等级2
@@ -63,23 +80,24 @@ public abstract class BasePanel : MonoBehaviour
     public virtual IEnumerator HidePanelTweenEffect()
     {
         yield return null;
-        IDestroy();
     }
-
     protected virtual void Init()
     {
-        //GetComponent<CanvasGroup>().interactable=true;
+        if (uiManager == null)
+        {
+            uiManager = UIManager.Instance;
+            gameInputModeManager=GameInputModeManager.Instance;
+        }
+
+        //手柄模式下,分配默认按钮
+        if (GameInputModeManager.Instance.inputType == E_Input.手柄) 
+        {
+             
+        }
+
         if (FirstSelectButton)
         {
-            //EventSystem.current.SetSelectedGameObject(FirstSelectButton);
             PlayerInputManager.Instance.SetCurrentSelectGameObj(FirstSelectButton);
         }
-    }
-
-    protected virtual void IDestroy()
-    {
-        //GetComponent<CanvasGroup>().interactable = false;
-        PlayerInputManager.Instance.LostCurrentSelectGameObj();
-        //EventSystem.current.SetSelectedGameObject(null);
     }
 }

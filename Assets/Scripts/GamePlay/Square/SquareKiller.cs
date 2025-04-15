@@ -5,7 +5,12 @@ using UnityEngine;
 
 public class SquareKiller : MonoBehaviour
 {
+    SquareObjPool pool;
 
+    private void Start()
+    {
+        pool = FindAnyObjectByType<SquareObjPool>();
+    }
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.gameObject.GetComponent<ColorSquare>())
@@ -15,7 +20,7 @@ public class SquareKiller : MonoBehaviour
                 other.gameObject.transform.position += new Vector3(0, 100, 0);
                 return;
             }
-            FindAnyObjectByType<SquareObjPool>().ReturnPool(other.gameObject.GetComponent<ColorSquare>()); 
+            pool.ReturnPool(other.gameObject.GetComponent<ColorSquare>()); 
         }
     }
 }

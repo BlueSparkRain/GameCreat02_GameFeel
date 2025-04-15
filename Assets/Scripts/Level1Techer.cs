@@ -13,7 +13,7 @@ public class Level1Techer : MonoBehaviour
     IEnumerator Wait() 
     {
         yield return new WaitForSeconds(1.5f);
-        UIManager.Instance.ShowPanel<TechPanel>(null);
+        //UIManager.Instance.ShowPanel<TechPanel>(null);
 
     }
 

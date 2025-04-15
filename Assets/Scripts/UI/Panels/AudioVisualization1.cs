@@ -16,7 +16,7 @@ public class AudioVisualization1 : MonoBehaviour
     public float reMapParam = 0.15f;
     void Start()
     {
-        //return;
+        return;
 
         audioSource =GameObject.Find("BKMusic").GetComponent<AudioSource>();
         images = new GameObject[6];

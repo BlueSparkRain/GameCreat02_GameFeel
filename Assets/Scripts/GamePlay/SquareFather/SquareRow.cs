@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class SquareRow : MonoBehaviour
 {
@@ -14,7 +15,7 @@ public class SquareRow : MonoBehaviour
 
     public bool isRemoving;
 
-    private float spawnInterval = 0.4f;
+    private float removeInterval = 0.3f;
 
 
     /// <summary>
@@ -36,7 +37,7 @@ public class SquareRow : MonoBehaviour
             Transform targetCol = rowSquares[i].transform?.parent.parent;
             yield return rowSquares[i].BeRemoved();
             targetCol?.GetComponent<SquareColumn>().ColumnAddOneSquare();
-            yield return new WaitForSeconds(spawnInterval);
+            yield return new WaitForSeconds(removeInterval);
         }
     }
 
@@ -148,9 +149,6 @@ public class SquareRow : MonoBehaviour
                 }
             }
         }
-
-
-
         if (toRemoveSquares.Count >= 3)
             return toRemoveSquares;
         else
@@ -160,30 +158,26 @@ public class SquareRow : MonoBehaviour
     IEnumerator CheckAndRemoveSquares(List<Square> removeLists)
     {
 
-
-
         if (!GetComponent<SquareColumn>().isRemoving && !isRemoving)
         {
             IsRowRemoving();
-
-            //yield return new WaitForSeconds(2);
-
             if (removeLists.Count <= 2)
             {
             }
             else if (removeLists.Count >= 5)
             {
-                yield return RemoveColLine5(removeLists);
+                yield return RemoveRowLine(removeLists, RemoveRowLine5);
             }
             else if (removeLists.Count >= 4)
             {
-                yield return RemoveColLine4(removeLists);
+                yield return RemoveRowLine(removeLists, RemoveRowLine4);
             }
 
             else if (removeLists.Count >= 3)
             {
-                yield return RemoveColLine3(removeLists);
+                yield return RemoveRowLine(removeLists, RemoveRowLine3);
             }
+
             StopRowRemoving();
         }
     }
@@ -192,34 +186,36 @@ public class SquareRow : MonoBehaviour
     /// <summary>
     /// 连线3消：无功能，只积分
     /// </summary>
-    public IEnumerator RemoveColLine3(List<Square> toRemoveSquares)
+    public void RemoveRowLine3()
     {
-        //Debug.Log("完成列3消");
-        yield return RemoveRowLine(toRemoveSquares);
-        //3消机制
+        Debug.Log("完成3消");
+
+        //5消机制
     }
+
 
     /// <summary>
     /// 连线4消：消除+生成1个整列炸弹色块
     /// </summary>
-    public IEnumerator RemoveColLine4(List<Square> toRemoveSquares)
+    public void RemoveRowLine4()
     {
-        //Debug.Log("完成列4消");
-        yield return RemoveRowLine(toRemoveSquares);
-        //4消机制
+        Debug.Log("完成4消");
+
+        //5消机制
     }
+
 
     /// <summary>
     /// 连线5消：消除+生成色块闪电：清除所有相同颜色色块
     /// </summary>
-    public IEnumerator RemoveColLine5(List<Square> toRemoveSquares)
+    public void RemoveRowLine5()
     {
-        //Debug.Log("完成列5消");
-        yield return RemoveRowLine(toRemoveSquares);
+        Debug.Log("完成5消");
+
         //5消机制
     }
 
-    IEnumerator RemoveRowLine(List<Square> toRemoveSquares)
+    IEnumerator RemoveRowLine(List<Square> toRemoveSquares,UnityAction callback=null)
     {
         for (int i = 0; i < toRemoveSquares.Count; i++)
         {
@@ -233,16 +229,27 @@ public class SquareRow : MonoBehaviour
 
             if (toRemoveSquares[i].transform.parent != null)
             {
-                Transform targetCol = toRemoveSquares[i].transform?.parent.parent;
-                targetCol?.GetComponent<SquareColumn>().IsColumnRemoving();
+                SquareColumn targetCol = toRemoveSquares[i].transform?.parent?.parent?.GetComponent<SquareColumn>();
+                targetCol?.IsColumnRemoving();
                 StartCoroutine(toRemoveSquares[i].BeRemoved());
 
-                yield return new WaitForSeconds(spawnInterval);
-                targetCol?.GetComponent<SquareColumn>().ColumnAddOneSquare();
-                targetCol?.GetComponent<SquareColumn>().StopColumnRemoving();
+
+                StartCoroutine(WaitRemoveSpawen(targetCol));
+                yield return new WaitForSeconds(removeInterval);
+                //targetCol?.ColumnAddOneSquare();
+                targetCol?.StopColumnRemoving();
             }
         }
+
+        callback?.Invoke();
     }
 
+
+    IEnumerator WaitRemoveSpawen(SquareColumn col)
+    {
+        yield return new WaitForSeconds(0.8f);
+        col?.ColumnAddOneSquare();
+
+    }
 
 }

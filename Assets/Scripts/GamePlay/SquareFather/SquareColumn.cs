@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class SquareColumn : MonoBehaviour
 {
@@ -15,6 +16,7 @@ public class SquareColumn : MonoBehaviour
     public PlayerBornData playerBornData;
 
     public List<Square> columnSquares = new List<Square>();
+    public List<Slot> columnSlots = new List<Slot>();
 
     /// <summary>
     /// 本列中容纳方块的最上层槽的序列索引
@@ -23,16 +25,21 @@ public class SquareColumn : MonoBehaviour
 
     public bool ColFull;
 
+    [Header("本列正在消除中")]
     public bool isRemoving;
 
     /// <summary>
     /// 方块的消除间隔
     /// </summary>
-    private float removeInterval = 0.4f;
+    private float removeInterval = 0.3f;
 
 
+    [Header("本列色块补充最大容量")]
     public int maxSpawnNum = 8;
 
+    /// <summary>
+    /// 当场景中有提前放置在列上的色块，会影响本列的可生成色块最大容量，当可消除物被消除，恢复生成容量
+    /// </summary>
     public void AddMaxSpawnNum()
     {
         maxSpawnNum++;
@@ -40,19 +47,21 @@ public class SquareColumn : MonoBehaviour
 
     private void Awake()
     {
-
         squareSpawner = transform.GetChild(8);
-        if (SquareNum == 8)
-            return;
 
-        SquareIndex = 7;
-
+        //预缓存槽对象，性能优化
         for (int i = 0; i < 8; i++)
         {
-            transform.GetChild(i).gameObject.SetActive(false);
+          columnSlots.Add(transform.GetChild(i).GetComponent<Slot>());
         }
-        transform.GetChild(SquareIndex).gameObject.SetActive(true);
 
+
+        for (int i = 0; i <columnSlots.Count ; i++)
+        {
+            columnSlots[i].isDownEmpty = true;
+        }
+        columnSlots[7].isDownEmpty=false;
+   
     }
 
     void Start()
@@ -67,24 +76,32 @@ public class SquareColumn : MonoBehaviour
         }
     }
 
-
-    public IEnumerator SpawnFirstColumn(SquareObjPool pool)
+    /// <summary>
+    /// 随机（删组合）充满本列
+    /// </summary>
+    /// <param name="soList"></param>
+    /// <returns></returns>
+    public IEnumerator SpawneFirstColSquares(List<ColorSquareSO> soList) 
     {
+        WaitForSeconds delay=  new WaitForSeconds(0.2f);
         for (int i = 0; i < maxSpawnNum; i++)
         {
+
             if (playerBornData.IsPlayerBornColumn && i == playerBornData.BornIndex)
             {
                 GameObject player = Instantiate(Resources.Load<GameObject>("Prefab/PlayerSquare"), squareSpawner.position, Quaternion.identity, null);
                 player.GetComponent<Square>().LooseSelf();
-
+                yield return delay;
+                continue;
             }
-            else
-                ColumnAddOneSquare();
 
-            yield return new WaitForSeconds(0.15f);
+
+            GameObject newSquare = transform.parent.parent?.GetComponent<SquareGroup>().SquarePool.GetTargetSquare(soList[i]);
+            StartCoroutine(FallNewSquare(newSquare));
+            yield return delay;
         }
-    }
 
+    }
 
     /// <summary>
     /// 本列开启消除任务
@@ -109,10 +126,6 @@ public class SquareColumn : MonoBehaviour
     /// <param name="index"></param>
     public void UpdateColumnSquares(Square square, int index)
     {
-
-        //if(columnSquares.Contains(square))
-        //    return;
-
         columnSquares[index] = square;
 
         for (int i = 0; i < columnSquares.Count; i++)
@@ -130,71 +143,37 @@ public class SquareColumn : MonoBehaviour
     }
     bool canCheck = true;
 
-    IEnumerator CanColCheck()
-    {
-        yield return new WaitForSeconds(0.2f);
-
-        if (canColCheck && !canCheck && !isRemoving)
-        {
-            canColCheck = false;
-            yield return new WaitForSeconds(0.2f);
-
-            if (!isRemoving)
-            {
-                if (SquareNum != 8)
-                {
-                    yield return new WaitForSeconds(0.2f);
-                    if (!isRemoving)
-                    {
-
-                        if (SquareNum != 8)
-                        {
-
-                            ColumnAddOneSquare();
-                            yield return new WaitForSeconds(0.1f);
-                            canColCheck = true;
-                            canCheck = true;
-                            yield break;
-                        }
-
-
-                    }
-                    canColCheck = true;
-                    canCheck = true;
-                    yield break;
-                }
-
-            }
-
-            canColCheck = true;
-            canCheck = true;
-
-        }
-    }
     private void Update()
     {
         if (ColFull)
             RemoveSquares();
 
-
-        //if (!isRemoving && canColCheck && ColFull && FirstEmptySlotIndex != 0 && SquareNum != 8)
+        //测试
         if (!isRemoving && !GetComponent<SquareRow>().isRemoving && canCheck && ColFull)
-        //if (!isRemoving && !GetComponent<SquareRow>().isRemoving && canCheck)
         {
-            //if (FirstEmptySlotIndex != 0 || SquareNum != 8 && !isRemoving)
             if (SquareNum != 8 && !isRemoving)
             {
                 canCheck = false;
-                StartCoroutine(CanColCheck());
+                StartCoroutine(AddWholeSquares());
             }
-
         }
-
     }
 
-    bool canColCheck = true;
-    float timer;
-
+    IEnumerator AddWholeSquares() 
+    {
+        WaitForSeconds delay=new WaitForSeconds(0.8f);
+        yield return delay;
+        yield return new WaitForSeconds(2);
+        for (int i = 0; i <8-SquareNum ; i++)
+        {
+            yield return delay;
+            if (SquareNum < 8)
+                ColumnAddOneSquare();
+            else
+                break;
+        }
+        canCheck = true;
+    }
 
     public void RemoveSquares()
     {
@@ -220,13 +199,11 @@ public class SquareColumn : MonoBehaviour
             {
                 continue;
             }
-
             if (!columnSquares[i].GetComponent<ColorSquare>().myData || !columnSquares[i])
                 return null;
 
             if (columnSquares[i] && columnSquares[i].GetComponent<ColorSquare>() && columnSquares[i].GetComponent<ColorSquare>().myData.E_Color == firstCor && canAdd)
             {
-
                 if (!toRemoveSquares.Contains(columnSquares[i]))
                 {
                     num++;
@@ -258,8 +235,6 @@ public class SquareColumn : MonoBehaviour
 
     IEnumerator CheckAndRemoveSquares(List<Square> removeLists)
     {
-
-
         if (!GetComponent<SquareRow>().isRemoving && !isRemoving)
         {
             IsColumnRemoving();
@@ -269,16 +244,16 @@ public class SquareColumn : MonoBehaviour
             }
             else if (removeLists.Count >= 5)
             {
-                yield return RemoveColLine5(removeLists);
+                yield return RemoveLine(removeLists,RemoveColLine5); 
             }
             else if (removeLists.Count >= 4)
             {
-                yield return RemoveColLine4(removeLists);
+                yield return RemoveLine(removeLists, RemoveColLine4);
             }
 
             else if (removeLists.Count >= 3)
             {
-                yield return RemoveColLine3(removeLists);
+                yield return RemoveLine(removeLists, RemoveColLine3);
             }
             StopColumnRemoving();
         }
@@ -287,24 +262,20 @@ public class SquareColumn : MonoBehaviour
     /// <summary>
     /// 连线3消：无功能，只积分
     /// </summary>
-    public IEnumerator RemoveColLine3(List<Square> toRemoveSquares)
+    public void RemoveColLine3()
     {
         Debug.Log("完成3消");
-        yield return RemoveLine(toRemoveSquares);
-
     }
 
     /// <summary>
     /// 连线4消：消除+生成1个整列炸弹色块
     /// </summary>
-    public IEnumerator RemoveColLine4(List<Square> toRemoveSquares)
+    public void RemoveColLine4()
     {
         Debug.Log("完成4消");
-        yield return RemoveLine(toRemoveSquares);
-
     }
 
-    IEnumerator RemoveLine(List<Square> toRemoveSquares)
+    IEnumerator RemoveLine(List<Square> toRemoveSquares,UnityAction callback=null)
     {
         for (int i = 0; i < toRemoveSquares.Count; i++)
         {
@@ -316,18 +287,29 @@ public class SquareColumn : MonoBehaviour
                 i++;
             }
             StartCoroutine(toRemoveSquares[i].BeRemoved());
+
+            StartCoroutine(WaitRemoveSpawen());
+
             yield return new WaitForSeconds(removeInterval);
-            ColumnAddOneSquare();
+            //ColumnAddOneSquare();
         }
+
+        callback?.Invoke();
+    }
+
+    IEnumerator WaitRemoveSpawen() 
+    {
+        yield return new WaitForSeconds (1f);
+            ColumnAddOneSquare();
+
     }
 
     /// <summary>
     /// 连线5消：消除+生成色块闪电：清除所有相同颜色色块
     /// </summary>
-    public IEnumerator RemoveColLine5(List<Square> toRemoveSquares)
+    public void RemoveColLine5()
     {
         Debug.Log("完成5消");
-        yield return RemoveLine(toRemoveSquares);
     }
 
     /// <summary>

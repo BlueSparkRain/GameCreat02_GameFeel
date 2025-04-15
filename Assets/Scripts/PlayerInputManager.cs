@@ -20,6 +20,8 @@ public class PlayerInputManager : MonoSingleton<PlayerInputManager>
 
     public bool SettingPause {  get; private set; }
 
+    public bool  MouseClick {  get; private set; } 
+
     bool settingUIPanelIsOpen;
 
     public GameObject currentUISelectGameObj;
@@ -92,7 +94,7 @@ public class PlayerInputManager : MonoSingleton<PlayerInputManager>
 
     void Update()
     {
-
+        //待优化/////////////////////////////////////
         if (EventSystem.current.currentSelectedGameObject != currentUISelectGameObj)
         {
 
@@ -142,6 +144,8 @@ public class PlayerInputManager : MonoSingleton<PlayerInputManager>
         { 
            currentPanel.GamePadClose();
         }
+        ///////////////////////////////////
+
 
        SettingPause = playerInput.GamePlay.SettingPause.WasPressedThisFrame();
 
@@ -156,6 +160,9 @@ public class PlayerInputManager : MonoSingleton<PlayerInputManager>
        ColorationDown = playerInput.GamePlay.DownColoration.WasPressedThisFrame();
        ColorationLeft = playerInput.GamePlay.LeftColoration.WasPressedThisFrame();
        ColorationRight = playerInput.GamePlay.RightColoration.WasPressedThisFrame();
+
+        //玩家输入检测
+        MouseClick=playerInput.GamePlay.MouseClick.WasPressedThisFrame();
 
         if (MoveUp || MoveDown || MoveLeft || MoveRight || ColorationUp || ColorationDown || ColorationLeft || ColorationRight)
             AnyAct = true;

@@ -15,6 +15,7 @@ public class SettingPanel : BasePanel
     public Button TechButton;
     [Header("音量设置按钮")]
     public Button AudioSettingButton;
+
     //[Header("返回主菜单按钮")]
     //public Button ReturnToMenuButton;
     [Header("返回按钮")]
@@ -22,36 +23,41 @@ public class SettingPanel : BasePanel
 
     void OnClickReturnToMenuButtton() 
     {
-        UIManager.Instance.HidePanel<SettingPanel>();
+        //UIManager.Instance.HidePanel<SettingPanel>();
 
-             UIManager.Instance.ShowPanel<SceneTransPanel>(panel =>
-             {
-                 panel.SceneLoadingTrans(0);
-                 DestroyImmediate(LevelSelectManager.Instance.gameObject);
-             });
+        //     UIManager.Instance.ShowPanel<SceneTransPanel>(panel =>
+        //     {
+        //         panel.SceneLoadingTrans(0);
+        //         DestroyImmediate(LevelSelectManager.Instance.gameObject);
+        //     });
 
+
+            
+             //弃用
              //PlayerInputManager.Instance.SetCurrentSelectGameObj(MenuButton.gameObject);
 
-             StartCoroutine(ClearAllPanels());
+             //StartCoroutine(ClearAllPanels());
          
 
     }
 
-    IEnumerator ClearAllPanels()
-    {
-        yield return new WaitForSeconds(3);
-        UIManager.Instance.DestoryAllPanels();
-    }
-    void OnClickInputActionButton() => UIManager.Instance.ShowPanel<TechPanel>(null);
-    void OnClickAudioSettingButton() => UIManager.Instance.ShowPanel<AudioPanel>(null);
+    //弃用
+    //IEnumerator ClearAllPanels()
+    //{
+    //    yield return new WaitForSeconds(3);
+    //    UIManager.Instance.DestoryAllPanels();
+    //}
+
+    //void OnClickInputActionButton() => UIManager.Instance.ShowPanel<TechPanel>(null);
+    //void OnClickAudioSettingButton() => UIManager.Instance.ShowPanel<AudioPanel>(null);
     void OnClickReturnButton() => UIManager.Instance.HidePanel<SettingPanel>();
 
     protected override void Init()
     {
         base.Init();
         ReturnToMenuButton.onClick.AddListener(OnClickReturnToMenuButtton);
-        AudioSettingButton.onClick.AddListener(OnClickAudioSettingButton);
-        TechButton.onClick.AddListener(OnClickInputActionButton);
+        //AudioSettingButton.onClick.AddListener(OnClickAudioSettingButton);
+        //TechButton.onClick.AddListener(OnClickInputActionButton);
         ReturnButton.onClick.AddListener(OnClickReturnButton);
     }
 

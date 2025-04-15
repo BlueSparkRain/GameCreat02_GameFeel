@@ -116,6 +116,15 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""MouseClick"",
+                    ""type"": ""Button"",
+                    ""id"": ""3450e61c-09eb-41da-8689-31441da0abd2"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -514,6 +523,17 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""action"": ""SettingPause"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3928ea00-c628-4b33-8d63-a51b4ad66817"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MouseClick"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -752,6 +772,7 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         m_GamePlay_DownColoration = m_GamePlay.FindAction("DownColoration", throwIfNotFound: true);
         m_GamePlay_SliderAction = m_GamePlay.FindAction("SliderAction", throwIfNotFound: true);
         m_GamePlay_SettingPause = m_GamePlay.FindAction("SettingPause", throwIfNotFound: true);
+        m_GamePlay_MouseClick = m_GamePlay.FindAction("MouseClick", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_UISelect = m_UI.FindAction("UISelect", throwIfNotFound: true);
@@ -829,6 +850,7 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
     private readonly InputAction m_GamePlay_DownColoration;
     private readonly InputAction m_GamePlay_SliderAction;
     private readonly InputAction m_GamePlay_SettingPause;
+    private readonly InputAction m_GamePlay_MouseClick;
     public struct GamePlayActions
     {
         private @PlayerInput m_Wrapper;
@@ -843,6 +865,7 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         public InputAction @DownColoration => m_Wrapper.m_GamePlay_DownColoration;
         public InputAction @SliderAction => m_Wrapper.m_GamePlay_SliderAction;
         public InputAction @SettingPause => m_Wrapper.m_GamePlay_SettingPause;
+        public InputAction @MouseClick => m_Wrapper.m_GamePlay_MouseClick;
         public InputActionMap Get() { return m_Wrapper.m_GamePlay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -882,6 +905,9 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
             @SettingPause.started += instance.OnSettingPause;
             @SettingPause.performed += instance.OnSettingPause;
             @SettingPause.canceled += instance.OnSettingPause;
+            @MouseClick.started += instance.OnMouseClick;
+            @MouseClick.performed += instance.OnMouseClick;
+            @MouseClick.canceled += instance.OnMouseClick;
         }
 
         private void UnregisterCallbacks(IGamePlayActions instance)
@@ -916,6 +942,9 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
             @SettingPause.started -= instance.OnSettingPause;
             @SettingPause.performed -= instance.OnSettingPause;
             @SettingPause.canceled -= instance.OnSettingPause;
+            @MouseClick.started -= instance.OnMouseClick;
+            @MouseClick.performed -= instance.OnMouseClick;
+            @MouseClick.canceled -= instance.OnMouseClick;
         }
 
         public void RemoveCallbacks(IGamePlayActions instance)
@@ -1015,6 +1044,7 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         void OnDownColoration(InputAction.CallbackContext context);
         void OnSliderAction(InputAction.CallbackContext context);
         void OnSettingPause(InputAction.CallbackContext context);
+        void OnMouseClick(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

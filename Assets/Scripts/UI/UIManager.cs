@@ -1,9 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Security.Cryptography.X509Certificates;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.UI;
 public enum E_UILayer
 {
     Bottom,
@@ -18,12 +16,29 @@ public enum E_UILayer
 /// </summary>
 public class UIManager : BaseSingleton<UIManager>
 {
-
-
-
     private Dictionary<string, BasePanel> panelDic = new Dictionary<string, BasePanel>();
-    public void ShowPanel<T>(UnityAction<T> callBack, E_UILayer layer = E_UILayer.Middle, bool isSync = false) where T : BasePanel
+
+    /// <summary>
+    /// 最后打开的面板
+    /// </summary>
+    public BasePanel currentPanel;
+
+    /// <summary>
+    /// 使用UI管理器打开目标面板
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="callBack">委托回调分发</param>
+    /// <param name="isSubPanel">子面板（打开子面板时父面板不会关闭）</param>
+    /// <param name="layer">目标生成层</param>
+    /// <param name="isSync">使用异步，未来可期</param>
+    public void ShowPanel<T>(UnityAction<T> callBack, bool isSubPanel = false, E_UILayer layer = E_UILayer.Middle, bool isSync = false) where T : BasePanel
     {
+        //如果不是子面板，关闭当前的面板
+        if (!isSubPanel && currentPanel != null)//&& panelDic.ContainsKey(currentPanel.name))
+        {
+            MonoManager.Instance.StartCoroutine(PanelHideEnd(panelDic[currentPanel.GetType().Name]));
+        }
+
         //获取面板名，预制体名和面板类名需保持一致
         string panelName = typeof(T).Name;
         BasePanel panel;
@@ -34,6 +49,7 @@ public class UIManager : BaseSingleton<UIManager>
             if (!panel.gameObject.activeSelf)
                 panel.gameObject.SetActive(true);
 
+            currentPanel = panel;
             panel.ShowPanel();
             MonoManager.Instance.StartCoroutine(panel.ShowPanelTweenEffect());
             Debug.Log("面板已存在:" + panelName);
@@ -49,6 +65,9 @@ public class UIManager : BaseSingleton<UIManager>
 
         //获取对应UI组件返回
         panel = panelobj.GetComponent<BasePanel>();
+
+        currentPanel = panel;
+
         panel.ShowPanel();
         MonoManager.Instance.StartCoroutine(panel.ShowPanelTweenEffect());
 
@@ -61,7 +80,7 @@ public class UIManager : BaseSingleton<UIManager>
         }
     }
 
-    public void HidePanel<T>(bool isDestroy = false)
+    public void HidePanel<T>(bool isDestroy = false) where T : BasePanel
     {
         string panelName = typeof(T).Name;
         if (panelDic.ContainsKey(panelName))
@@ -82,16 +101,5 @@ public class UIManager : BaseSingleton<UIManager>
         yield return panel.HidePanelTweenEffect();
         panel.gameObject.SetActive(false);
     }
-
-    public void DestoryAllPanels() 
-    {
-        foreach (var item in  panelDic)
-        {
-            item.Value.ClearSelf();
-        }
-    }
-
-
-  
 
 }
