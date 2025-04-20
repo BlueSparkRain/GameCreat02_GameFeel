@@ -69,9 +69,13 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  columnSlots: []
+  MoveDir: 1
+  squareLooseSpeed: 60
   FirstEmptySlotIndex: 0
   ColFull: 0
   isRemoving: 0
+  maxSpawnNum: 8
 --- !u!114 &4304275669617285749
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -93,7 +97,6 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  SquareNum: 0
   RowFull: 0
   isRemoving: 0
 --- !u!1 &4642927721282616925

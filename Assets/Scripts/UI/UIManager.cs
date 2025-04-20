@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Rendering.Universal;
 public enum E_UILayer
 {
     Bottom,
@@ -24,6 +25,23 @@ public class UIManager : BaseSingleton<UIManager>
     public BasePanel currentPanel;
 
     /// <summary>
+    /// 获取到目标面板
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
+    public BasePanel GetPanel<T>()
+    {
+        string panelName = typeof(T).Name;
+        if (panelDic.ContainsKey(panelName))
+        {
+            return panelDic[panelName];
+        }
+        Debug.Log("未查询到目标面板");
+        return null;
+    }
+
+
+    /// <summary>
     /// 使用UI管理器打开目标面板
     /// </summary>
     /// <typeparam name="T"></typeparam>
@@ -31,10 +49,10 @@ public class UIManager : BaseSingleton<UIManager>
     /// <param name="isSubPanel">子面板（打开子面板时父面板不会关闭）</param>
     /// <param name="layer">目标生成层</param>
     /// <param name="isSync">使用异步，未来可期</param>
-    public void ShowPanel<T>(UnityAction<T> callBack, bool isSubPanel = false, E_UILayer layer = E_UILayer.Middle, bool isSync = false) where T : BasePanel
+    public void ShowPanel<T>(UnityAction<T> callBack, bool isSubPanel = false, bool isPopWindow=false) where T : BasePanel
     {
         //如果不是子面板，关闭当前的面板
-        if (!isSubPanel && currentPanel != null)//&& panelDic.ContainsKey(currentPanel.name))
+        if (!isSubPanel && currentPanel != null)
         {
             MonoManager.Instance.StartCoroutine(PanelHideEnd(panelDic[currentPanel.GetType().Name]));
         }
@@ -49,7 +67,9 @@ public class UIManager : BaseSingleton<UIManager>
             if (!panel.gameObject.activeSelf)
                 panel.gameObject.SetActive(true);
 
-            currentPanel = panel;
+            if(!isPopWindow)
+                currentPanel = panel;
+
             panel.ShowPanel();
             MonoManager.Instance.StartCoroutine(panel.ShowPanelTweenEffect());
             Debug.Log("面板已存在:" + panelName);
@@ -66,7 +86,8 @@ public class UIManager : BaseSingleton<UIManager>
         //获取对应UI组件返回
         panel = panelobj.GetComponent<BasePanel>();
 
-        currentPanel = panel;
+        if (!isPopWindow)
+            currentPanel = panel;
 
         panel.ShowPanel();
         MonoManager.Instance.StartCoroutine(panel.ShowPanelTweenEffect());

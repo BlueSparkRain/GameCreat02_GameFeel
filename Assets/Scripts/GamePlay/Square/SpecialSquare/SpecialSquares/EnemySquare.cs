@@ -4,4 +4,7 @@
 public class EnemySquare : SpecicalSquare
 {
 
+
+
+
 }

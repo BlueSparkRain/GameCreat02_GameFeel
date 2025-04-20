@@ -228,13 +228,16 @@ public enum E_EventType
     /// 参数：player
     /// </summary>
     E_ColorSquareRemove,
+
+    /// <summary>
+    /// 方块得分
+    /// </summary>
     E_GetSquareScore,
-    E_pkayerDead,
-    E_sceneLoad,
-    E_dataSave,
-    E_PlayerMove,
-    E_UIClose,//UI面板关闭
-    E_CamShake
+
+    /// <summary>
+    /// 保存游戏数据
+    /// </summary>
+    E_DataSave,
 }
 
 

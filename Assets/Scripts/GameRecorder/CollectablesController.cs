@@ -25,12 +25,13 @@ public class CollectablesController : MonoBehaviour
                 collectDic.Add(collectableTargetList[i].targetCollectableType, collectableTargetList[i]);
         }
 
-
         foreach (var item in collectDic)
         {
             item.Value.targetCollectableObj = Instantiate(UIObjPrefab, targetCollectableContainer).GetComponent<PlayerCollectablesViewer>();
             item.Value.targetCollectableObj.InitSelf(item.Value.targetNum, item.Value.targetCollectableSprite);
         }
+
+       
     }
 
     /// <summary>

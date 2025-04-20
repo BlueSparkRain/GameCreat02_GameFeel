@@ -630,6 +630,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   transTime: 1
   FirstSelectButton: {fileID: 0}
+  UIRoot: {fileID: 0}
   NeedPausePanel: 0
   fadeTime: 0.5
   LoadingTime: 2
@@ -709,7 +710,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8338207415724025121}
   m_Enabled: 1
-  m_Alpha: 0
+  m_Alpha: 1
   m_Interactable: 0
   m_BlocksRaycasts: 0
   m_IgnoreParentGroups: 0

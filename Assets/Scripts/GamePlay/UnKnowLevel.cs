@@ -1,13 +1,10 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class UnKnowLevel : MonoBehaviour
 {
     public Button MenuButton;
-
-
     void Start()
     {
         StartCoroutine(SetGameReload());
@@ -24,15 +21,15 @@ public class UnKnowLevel : MonoBehaviour
         {
             UIManager.Instance.ShowPanel<SceneTransPanel>(panel =>
             {
-                panel.SceneLoadingTrans(0);
-                DestroyImmediate( LevelSelectManager.Instance.gameObject);
+                //panel.SceneLoadingTrans(0);
+                //DestroyImmediate( LevelSelectManager.Instance.gameObject);
             });
 
             //PlayerInputManager.Instance.SetCurrentSelectGameObj(MenuButton.gameObject);
 
             //StartCoroutine(ClearAllPanels());
         });
-        }
+    }
 
 
     //ÆúÓÃ

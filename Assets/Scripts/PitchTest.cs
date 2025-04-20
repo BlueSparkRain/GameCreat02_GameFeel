@@ -6,12 +6,9 @@ public class PitchTest : MonoBehaviour
     float timer;
     public float interval = 0.5f;
 
-
-
     private void Start()
     {
-        PlayerFeelManager.Instance.IMInit();
-        //MusicManager.Instance.PlayBKMusic("Bob");
+        GamepadShakeManager.Instance.IMInit();
         StartCoroutine(StartComboMusic());
     }
 

@@ -371,10 +371,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   transTime: 0.5
   FirstSelectButton: {fileID: 8836869159386677843}
+  UIRoot: {fileID: 0}
   NeedPausePanel: 0
   SFXSlder: {fileID: 1395090788209115618}
   BGMSlder: {fileID: 8563169138434836848}
-  Root: {fileID: 1877820589598225722}
   ReturnButton: {fileID: 2424601606897941159}
 --- !u!223 &1037093109182014145
 Canvas:
@@ -487,7 +487,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -2000, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 626.6478, y: 152.4209}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8621401182214101243

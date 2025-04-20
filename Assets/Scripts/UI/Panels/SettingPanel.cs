@@ -1,64 +1,76 @@
-using System;
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class SettingPanel : BasePanel
 {
-    [Header("面板根")]
-    public Transform Root;
-
-    [Header("返回主菜单按钮")]
-    public Button ReturnToMenuButton;
     [Header("输入映射按钮")]
-    public Button TechButton;
+    public Button ActionSettingButton;
     [Header("音量设置按钮")]
     public Button AudioSettingButton;
 
-    //[Header("返回主菜单按钮")]
-    //public Button ReturnToMenuButton;
+    [Header("返回主菜单按钮")]
+    public Button ReturnToMenuButton;
+
+    [Header("震动设置按钮")]
+    public Button ShakeSettingButton;
+
     [Header("返回按钮")]
     public Button ReturnButton;
 
-    void OnClickReturnToMenuButtton() 
+    /// <summary>
+    /// 回到主菜单按钮绑定
+    /// </summary>
+    void OnClickReturnToMenuButtton()
     {
-        //UIManager.Instance.HidePanel<SettingPanel>();
-
-        //     UIManager.Instance.ShowPanel<SceneTransPanel>(panel =>
-        //     {
-        //         panel.SceneLoadingTrans(0);
-        //         DestroyImmediate(LevelSelectManager.Instance.gameObject);
-        //     });
-
-
-            
-             //弃用
-             //PlayerInputManager.Instance.SetCurrentSelectGameObj(MenuButton.gameObject);
-
-             //StartCoroutine(ClearAllPanels());
-         
 
     }
 
-    //弃用
-    //IEnumerator ClearAllPanels()
-    //{
-    //    yield return new WaitForSeconds(3);
-    //    UIManager.Instance.DestoryAllPanels();
-    //}
+    /// <summary>
+    ///  震动设置按钮绑定
+    /// </summary>
+    void OnClickIShakeSettingButton() => uiManager.ShowPanel<TechPanel>(null);
 
-    //void OnClickInputActionButton() => UIManager.Instance.ShowPanel<TechPanel>(null);
-    //void OnClickAudioSettingButton() => UIManager.Instance.ShowPanel<AudioPanel>(null);
-    void OnClickReturnButton() => UIManager.Instance.HidePanel<SettingPanel>();
+    /// <summary>
+    /// 输入模式设置按钮绑定
+    /// </summary>
+    void OnClickAcionSettingButton() => uiManager.ShowPanel<ActionSettingPanel>(null, true);
+    /// <summary>
+    /// 音乐音效设置按钮绑定
+    /// </summary>
+    void OnClickAudioSettingButton() => uiManager.ShowPanel<AudioPanel>(null, true);
+
+    /// <summary>
+    /// 返回设置按钮绑定
+    /// </summary>
+    void OnClickReturnButton() => uiManager.HidePanel<SettingPanel>();
+
+    /// <summary>
+    /// 返回主菜单设置按钮绑定
+    /// </summary>
+    void OnClickReturnToMenuButton()
+    {
+        //回到persistent场景
+        uiManager.ShowPanel<MenuPanel>(null, true);
+    }
 
     protected override void Init()
     {
         base.Init();
         ReturnToMenuButton.onClick.AddListener(OnClickReturnToMenuButtton);
-        //AudioSettingButton.onClick.AddListener(OnClickAudioSettingButton);
-        //TechButton.onClick.AddListener(OnClickInputActionButton);
+        AudioSettingButton.onClick.AddListener(OnClickAudioSettingButton);
+        ActionSettingButton.onClick.AddListener(OnClickAcionSettingButton);
+        ShakeSettingButton.onClick.AddListener(OnClickIShakeSettingButton);
         ReturnButton.onClick.AddListener(OnClickReturnButton);
+    }
+    public override void ShowPanel()
+    {
+        base.ShowPanel();
+    }
+
+    public override IEnumerator ShowPanelTweenEffect()
+    {
+        yield return uiTweener.UIEaseInFrom(E_Dir.下, transform, UIRoot, transTime);
     }
 
     public override void HidePanel()
@@ -68,27 +80,6 @@ public class SettingPanel : BasePanel
 
     public override IEnumerator HidePanelTweenEffect()
     {
-        yield return UITween.Instance.UIDoMove(Root, Vector2.zero, new Vector2(0,-2000),transTime/2);
-        yield return UITween.Instance.UIDoFade(transform, 1, 0, transTime / 2);
-        yield return base.HidePanelTweenEffect();
+        yield return uiTweener.UIEaseOutTo(E_Dir.下, transform, UIRoot, transTime);
     }
-
-    public override void ShowPanel()
-    {
-        base.ShowPanel();
-    }
-
-    public override IEnumerator ShowPanelTweenEffect()
-    {
-        yield return UITween.Instance.UIDoFade(transform, 0, 1, transTime / 2);
-        yield return UITween.Instance.UIDoMove(Root,new Vector2(0,-2000),Vector2.zero,transTime/2);
-    }
-
-    public override void GamePadClose()
-    {
-        base.GamePadClose();
-        UIManager.Instance.HidePanel<SettingPanel>();
-        PlayerInputManager.Instance.SettingMenuChange();
-    }
-
 }

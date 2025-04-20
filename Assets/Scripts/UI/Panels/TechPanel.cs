@@ -5,13 +5,12 @@ using UnityEngine.InputSystem;
 
 public class TechPanel : BasePanel
 {
-    public Transform Root;
     int index;
     
-    public override void GamePadClose()
-    {
-        base.GamePadClose();
-    }
+    //public override void GamePadClose()
+    //{
+    //    base.GamePadClose();
+    //}
 
     public override void HidePanel()
     {
@@ -22,9 +21,9 @@ public class TechPanel : BasePanel
 
     public override IEnumerator HidePanelTweenEffect()
     {
-        yield return UITween.Instance.UIDoMove(Root, new Vector3(-4000, 0, 0), new Vector3(-6000, 0, 0), transTime / 2);
+        yield return UITween.Instance.UIDoMove(UIRoot, new Vector3(-4000, 0, 0), new Vector3(-6000, 0, 0), transTime / 2);
         yield return UITween.Instance.UIDoFade(transform, 1, 0, transTime / 3);
-        Root.transform.position = new Vector2(4000,0);
+        UIRoot.transform.position = new Vector2(4000,0);
     }
 
     public override void ShowPanel()
@@ -45,7 +44,7 @@ public class TechPanel : BasePanel
     public override IEnumerator ShowPanelTweenEffect()
     {
         yield return UITween.Instance.UIDoFade(transform,0,1,transTime/3);
-        yield return UITween.Instance.UIDoMove(Root,new Vector3(2000,0,0),Vector3.zero,transTime/3);
+        yield return UITween.Instance.UIDoMove(UIRoot,new Vector3(2000,0,0),Vector3.zero,transTime/3);
     }
 
     IEnumerator NextPage()
@@ -60,7 +59,7 @@ public class TechPanel : BasePanel
             yield break ;
         }
         Debug.Log("ÏÂÒ»Ò³");
-        yield return UITween.Instance.UIDoLocalMove(Root, new Vector3(-2000, 0, 0),transTime / 3);
+        yield return UITween.Instance.UIDoLocalMove(UIRoot, new Vector3(-2000, 0, 0),transTime / 3);
         canAct=true;
     }
 

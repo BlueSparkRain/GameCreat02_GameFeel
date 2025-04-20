@@ -114,7 +114,6 @@ public class ComboController : MonoBehaviour
         comboDurationTimer = comboDuration;
         StartCoroutine(ComboSetUp());
         yield return new WaitForSeconds(comboDuration);
-
         Destroy(bigRythm);
     }
 

@@ -1,14 +1,10 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class TestPanel : BasePanel
 {
     public Transform root;
-    public override void GamePadClose()
-    {
-        base.GamePadClose();
-    }
+
 
     public override void HidePanel()
     {
@@ -17,16 +13,9 @@ public class TestPanel : BasePanel
 
     public override IEnumerator HidePanelTweenEffect()
     {
-
         yield return UITween.Instance.UIDoMove(root, Vector2.zero, new Vector2(0, -2000), transTime / 3);
         yield return UITween.Instance.UIDoFade(transform, 1, 0, transTime / 2);
         GetComponent<CanvasGroup>().interactable = false;
-        yield  return base.HidePanelTweenEffect();
-    }
-
-    public override void InitGamePadMap()
-    {
-        base.InitGamePadMap();
     }
 
     public override void ShowPanel()

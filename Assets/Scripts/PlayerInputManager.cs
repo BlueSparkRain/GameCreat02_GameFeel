@@ -1,38 +1,34 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Threading;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.InputSystem;
 using UnityEngine.UI;
 public class PlayerInputManager : MonoSingleton<PlayerInputManager>
-{    
+{
     public PlayerInput playerInput;
-    public bool MoveUp {  get; private set; }
-    public bool MoveDown {  get; private set; }
-    public bool MoveLeft {  get; private set; }
-    public bool MoveRight {  get; private set; }
-    public bool ColorationUp {  get; private set; }
-    public bool ColorationDown {  get; private set; }
-    public bool ColorationLeft {  get; private set; }
-    public bool ColorationRight {  get; private set; }
+    public bool MoveUp { get; private set; }
+    public bool MoveDown { get; private set; }
+    public bool MoveLeft { get; private set; }
+    public bool MoveRight { get; private set; }
+    public bool ColorationUp { get; private set; }
+    public bool ColorationDown { get; private set; }
+    public bool ColorationLeft { get; private set; }
+    public bool ColorationRight { get; private set; }
 
-    public bool SettingPause {  get; private set; }
+    public bool SettingPause { get; private set; }
 
-    public bool  MouseClick {  get; private set; } 
+    public bool MouseClick { get; private set; }
 
     bool settingUIPanelIsOpen;
 
     public GameObject currentUISelectGameObj;
 
-    public Stack<GameObject>  selectUIObjs=new Stack<GameObject>();
+    public Stack<GameObject> selectUIObjs = new Stack<GameObject>();
     public BasePanel currentPanel;
 
     public bool UISelect;
     public bool UIClose { get; private set; }
 
-    public void ClearObjStack() 
+    public void ClearObjStack()
     {
         selectUIObjs.Clear();
         SetCurrentSelectGameObj(null);
@@ -52,13 +48,13 @@ public class PlayerInputManager : MonoSingleton<PlayerInputManager>
         selectUIObjs.Push(obj);//新的面板上的按钮
     }
 
-    public void LostCurrentSelectGameObj() 
+    public void LostCurrentSelectGameObj()
     {
         Debug.Log(EventSystem.current.currentSelectedGameObject);
-        if(selectUIObjs.Count == 0)
+        if (selectUIObjs.Count == 0)
             return;
         selectUIObjs.Pop();
-        Debug.Log("弹出后剩余"+selectUIObjs.Count);
+        Debug.Log("弹出后剩余" + selectUIObjs.Count);
 
         if (selectUIObjs.Count > 0 && selectUIObjs.Peek())
         {
@@ -70,13 +66,13 @@ public class PlayerInputManager : MonoSingleton<PlayerInputManager>
         }
         Debug.Log(EventSystem.current.currentSelectedGameObject);
     }
-   
 
-    public  Vector2  SliderValue;
+
+    public Vector2 SliderValue;
 
 
     public bool AnyAct;
-    public void GamepadUI(GameObject firstButton) 
+    public void GamepadUI(GameObject firstButton)
     {
         EventSystem.current.SetSelectedGameObject(firstButton);
         Debug.Log(EventSystem.current.currentSelectedGameObject);
@@ -85,7 +81,7 @@ public class PlayerInputManager : MonoSingleton<PlayerInputManager>
     protected override void InitSelf()
     {
         base.InitSelf();
-        if(playerInput == null) 
+        if (playerInput == null)
         {
             playerInput = new PlayerInput();
             playerInput.Enable();
@@ -98,7 +94,7 @@ public class PlayerInputManager : MonoSingleton<PlayerInputManager>
         if (EventSystem.current.currentSelectedGameObject != currentUISelectGameObj)
         {
 
-            if (currentUISelectGameObj && currentUISelectGameObj?.GetComponentInChildren<MylevelSelectButton>())
+            if (currentUISelectGameObj && currentUISelectGameObj?.GetComponentInChildren<LevelSelectScreen>())
             {
                 currentUISelectGameObj.transform.parent.GetComponent<Image>().enabled = false;
             }
@@ -113,22 +109,22 @@ public class PlayerInputManager : MonoSingleton<PlayerInputManager>
             }
             if (currentUISelectGameObj)
             {
-                if(currentPanel!=null)
-                currentPanel.GetComponent<CanvasGroup>().interactable = false;
+                if (currentPanel != null)
+                    currentPanel.GetComponent<CanvasGroup>().interactable = false;
 
                 currentPanel = currentUISelectGameObj.transform.GetComponentInParent<BasePanel>();
             }
         }
 
-            if (currentPanel != null)
+        if (currentPanel != null)
             currentPanel.GetComponent<CanvasGroup>().interactable = true;
 
 
         if (currentUISelectGameObj != null)
         {
-            if (currentUISelectGameObj?.GetComponentInChildren<MylevelSelectButton>()) 
+            if (currentUISelectGameObj?.GetComponentInChildren<LevelSelectScreen>())
             {
-             currentUISelectGameObj.transform.parent.GetComponent<Image>().enabled = true;
+                currentUISelectGameObj.transform.parent.GetComponent<Image>().enabled = true;
             }
 
             UISelect = playerInput.UI.UISelect.WasPressedThisFrame();
@@ -141,28 +137,28 @@ public class PlayerInputManager : MonoSingleton<PlayerInputManager>
         }
 
         if (currentPanel != null && UIClose)
-        { 
-           currentPanel.GamePadClose();
+        {
+            //currentPanel.GamePadClose();
         }
         ///////////////////////////////////
 
 
-       SettingPause = playerInput.GamePlay.SettingPause.WasPressedThisFrame();
+        SettingPause = playerInput.GamePlay.SettingPause.WasPressedThisFrame();
 
-       //移动操作输入检测
-       MoveUp=playerInput.GamePlay.UpMove.WasPressedThisFrame();
-       MoveDown = playerInput.GamePlay.DownMove.WasPressedThisFrame();
-       MoveLeft=playerInput.GamePlay.LeftMove.WasPressedThisFrame();
-       MoveRight=playerInput.GamePlay.RightMove.WasPressedThisFrame();
-        
-       //染色操作输入检测
-       ColorationUp = playerInput.GamePlay.UpColoration.WasPressedThisFrame();
-       ColorationDown = playerInput.GamePlay.DownColoration.WasPressedThisFrame();
-       ColorationLeft = playerInput.GamePlay.LeftColoration.WasPressedThisFrame();
-       ColorationRight = playerInput.GamePlay.RightColoration.WasPressedThisFrame();
+        //移动操作输入检测
+        MoveUp = playerInput.GamePlay.UpMove.WasPressedThisFrame();
+        MoveDown = playerInput.GamePlay.DownMove.WasPressedThisFrame();
+        MoveLeft = playerInput.GamePlay.LeftMove.WasPressedThisFrame();
+        MoveRight = playerInput.GamePlay.RightMove.WasPressedThisFrame();
+
+        //染色操作输入检测
+        ColorationUp = playerInput.GamePlay.UpColoration.WasPressedThisFrame();
+        ColorationDown = playerInput.GamePlay.DownColoration.WasPressedThisFrame();
+        ColorationLeft = playerInput.GamePlay.LeftColoration.WasPressedThisFrame();
+        ColorationRight = playerInput.GamePlay.RightColoration.WasPressedThisFrame();
 
         //玩家输入检测
-        MouseClick=playerInput.GamePlay.MouseClick.WasPressedThisFrame();
+        MouseClick = playerInput.GamePlay.MouseClick.WasPressedThisFrame();
 
         if (MoveUp || MoveDown || MoveLeft || MoveRight || ColorationUp || ColorationDown || ColorationLeft || ColorationRight)
             AnyAct = true;
@@ -171,13 +167,13 @@ public class PlayerInputManager : MonoSingleton<PlayerInputManager>
 
 
         SettingPanelOpenCheck();
-      
+
     }
 
     /// <summary>
     /// 检测设置面板的开闭
     /// </summary>
-    void SettingPanelOpenCheck() 
+    void SettingPanelOpenCheck()
     {
         if (SettingPause)
         {
@@ -191,15 +187,10 @@ public class PlayerInputManager : MonoSingleton<PlayerInputManager>
         }
     }
 
-    public  void SettingMenuChange()
+    public void SettingMenuChange()
     {
         settingUIPanelIsOpen = !settingUIPanelIsOpen;
     }
 
-
-    private void OnEnable()
-    {
-
-    }
 
 }

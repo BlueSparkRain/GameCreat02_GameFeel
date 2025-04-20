@@ -49,14 +49,14 @@ public class ArrayGenerator
     // 打印数组的辅助方法
     public void PrintArray(int[,] grid)
     {
-        for (int i = 0; i < rows; i++)
-        {
-            for (int j = 0; j < cols; j++)
-            {
-                Debug.Log(grid[i, j]);
-            }
-            Console.WriteLine();
-        }
+        //for (int i = 0; i < rows; i++)
+        //{
+        //    for (int j = 0; j < cols; j++)
+        //    {
+        //        Debug.Log(grid[i, j]);
+        //    }
+        //    Console.WriteLine();
+        //}
     }
 
     // 示例用法

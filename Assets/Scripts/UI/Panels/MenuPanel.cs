@@ -6,8 +6,8 @@ public class MenuPanel : BasePanel
 {
     [Header("游玩按钮")]
     public Button PlayButton;
-    [Header("图鉴按钮")]
-    public Button BookButton;
+    [Header("成就按钮")]
+    public Button AchievementButton;
     [Header("设置按钮")]
     public Button SettingButton;
     [Header("鸣谢按钮")]
@@ -15,15 +15,39 @@ public class MenuPanel : BasePanel
     [Header("退出按钮")]
     public Button QuitButton;
 
-    [Header("面板根")]
-    public Transform root;
-
+    /// <summary>
+    /// 游玩按钮
+    /// </summary>
     void OnClickPlayButton()
     {
-        UIManager.Instance.ShowPanel<SceneTransPanel>(panel => panel.SceneLoadingTrans(1));
-        UIManager.Instance.HidePanel<MenuPanel>();
+        uiManager.ShowPanel<GameProfilePanel>(null,true);
     }
 
+    /// <summary>
+    /// 成就面板
+    /// </summary>
+    void OnClickAchievementButtonButton()
+    {
+        uiManager.ShowPanel<AchievementsPanel>(null,true);
+    }
+    /// <summary>
+    /// 设置面板
+    /// </summary>
+    void OnClickSettingButton() 
+    {
+        uiManager.ShowPanel<SettingPanel>(null,true);
+    }
+    /// <summary>
+    /// 鸣谢面板
+    /// </summary>
+    void OnClickThankYouButton() 
+    {
+        uiManager.ShowPanel<ThankYouPanel>(null,true);
+    }
+
+    /// <summary>
+    /// 退出游戏
+    /// </summary>
     void OnClickQuitButton()
     {
         Application.Quit();
@@ -36,9 +60,8 @@ public class MenuPanel : BasePanel
 
     public override IEnumerator HidePanelTweenEffect()
     {
-        yield return UITween.Instance.UIDoMove(root, Vector2.zero, new Vector2(0, -2000), transTime / 3);
-        yield return UITween.Instance.UIDoFade(transform, 1, 0, transTime / 2);
-        GetComponent<CanvasGroup>().interactable = false;
+        yield return uiTweener.UIEaseOutTo(E_Dir.下, transform, UIRoot, transTime);
+        //GetComponent<CanvasGroup>().interactable = false;
     }
 
 
@@ -49,51 +72,22 @@ public class MenuPanel : BasePanel
 
     public override IEnumerator ShowPanelTweenEffect()
     {
-        yield return UITween.Instance.UIDoFade(transform, 0, 1, transTime / 3);
-        yield return UITween.Instance.UIDoMove(root, new Vector2(0, -2000), Vector2.zero, transTime / 2);
+        yield return uiTweener.UIEaseInFrom(E_Dir.下, transform, UIRoot, transTime);
     }
+    bool init;
 
     protected override void Init()
     {
         base.Init();
-        //PlayButton.onClick.AddListener(OnClickPlayButton);
-        //QuitButton.onClick.AddListener(OnClickQuitButton);
 
-
-        PlayButton.onClick.AddListener(() =>  {
-
-            Debug.Log("What going on");
-            uiManager.ShowPanel<TestPanel>(null,true); });
-
-
-        StartCoroutine(WaitUnLock());
-    }
-
-    bool  Ilock;
-
-    IEnumerator WaitUnLock()
-    {
-        Ilock=true;
-        yield return new WaitForSeconds(1);
-        Ilock=false;
-        GetComponent<CanvasGroup>().interactable = true;
-    }
-    private void Update()
-    {
-        //if(uiManager!=null)
-        //Debug.Log(uiManager.currentPanel);
-
-        if (Ilock) 
+        if (!init)
         {
-            GetComponent<CanvasGroup>().interactable = false;
+            init = true;
+            PlayButton.onClick.AddListener(OnClickPlayButton);
+            ThankYouButton.onClick.AddListener(OnClickThankYouButton);
+            AchievementButton.onClick.AddListener(OnClickAchievementButtonButton);
+            SettingButton.onClick.AddListener(OnClickSettingButton);
+            QuitButton.onClick.AddListener(OnClickQuitButton);
         }
-        if (Input.GetKeyDown(KeyCode.Space)) 
-        {
-        
-        }
-    }
-    public override void GamePadClose()
-    {
-        base.GamePadClose();
     }
 }

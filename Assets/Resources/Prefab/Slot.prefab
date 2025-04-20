@@ -103,6 +103,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isFull: 0
   currentSquare: {fileID: 0}
+  selfColumn: {fileID: 0}
+  isDownEmpty: 0
 --- !u!61 &4147009567100082188
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -147,7 +149,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.834291, y: 0.35241717}
+  m_Size: {x: 0.9480138, y: 0.91667897}
   m_EdgeRadius: 0
 --- !u!50 &4097295133932343943
 Rigidbody2D:

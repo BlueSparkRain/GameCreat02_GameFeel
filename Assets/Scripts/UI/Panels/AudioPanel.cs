@@ -12,9 +12,6 @@ public class AudioPanel : BasePanel
     [Header("背景音乐音量滑动条")]
     public Slider BGMSlder;
 
-    [Header("面板根")]
-    public Transform Root;
-
     [Header("返回按钮")]
     public Button ReturnButton;
 
@@ -41,11 +38,6 @@ public class AudioPanel : BasePanel
         }
     }
 
-    public override void HidePanel()
-    {
-        base.HidePanel();
-    }
-
     /// <summary>
     /// 背景音乐音量控制
     /// </summary>
@@ -62,12 +54,12 @@ public class AudioPanel : BasePanel
     void OnClickReturnButton() =>
       UIManager.Instance.HidePanel<AudioPanel>();
 
-    public override IEnumerator HidePanelTweenEffect()
+    protected override void Init()
     {
-        yield return UITween.Instance.UIDoMove(Root, Vector2.zero, new Vector2(2000, 0), transTime/3);
-        yield return UITween.Instance.UIDoFade(transform, 1, 0, transTime/3);
-        yield return base.HidePanelTweenEffect();
-
+        base.Init();
+        SFXSlder.onValueChanged.AddListener(OnSFXSliderValueChnage);
+        BGMSlder.onValueChanged.AddListener(OnBGMSliderValueChnage);
+        ReturnButton.onClick.AddListener(OnClickReturnButton);
     }
 
     public override void ShowPanel()
@@ -77,24 +69,17 @@ public class AudioPanel : BasePanel
 
     public override IEnumerator ShowPanelTweenEffect()
     {
-        StartCoroutine(UITween.Instance.UIDoFade(transform, 0, 1, transTime / 2));
-        yield return UITween.Instance.UIDoMove(Root, new Vector2(-2000, 0 ),Vector2.zero,transTime / 2);
-    }
-
-    protected override void Init()
-    {
-        base.Init();
-        SFXSlder.onValueChanged.AddListener(OnSFXSliderValueChnage);
-        BGMSlder.onValueChanged.AddListener(OnBGMSliderValueChnage);
-        ReturnButton.onClick.AddListener(OnClickReturnButton);
-        //EventSystem.current.SetSelectedGameObject(BGMSlder.gameObject);
+        yield return uiTweener.UIEaseInFrom(E_Dir.下, transform, UIRoot, transTime);
     }
 
 
-    public override void GamePadClose()
+    public override void HidePanel()
     {
-        base.GamePadClose();
-       
-        UIManager.Instance.HidePanel<AudioPanel>();
+        base.HidePanel();
+    }
+
+    public override IEnumerator HidePanelTweenEffect()
+    {
+        yield return uiTweener.UIEaseOutTo(E_Dir.上, transform, UIRoot, transTime);
     }
 }

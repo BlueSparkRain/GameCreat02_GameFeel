@@ -28,6 +28,12 @@ public class GameCol : MonoBehaviour
     }
 #endif
 
+    private void Start()
+    {
+        
+    }
+
+
 
 
 

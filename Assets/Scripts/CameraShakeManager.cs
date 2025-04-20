@@ -7,6 +7,14 @@ using UnityEngine;
 /// </summary>
 public class CameraShakeManager : MonoSingleton<CameraShakeManager>
 {
+
+    bool canScreenShake;
+
+    public void SwitchShake()
+    {
+        canScreenShake = !canScreenShake;
+    }
+
     private CameraShakeSO shakeProfile;
     [Header("一般是当前激活的虚拟相机上挂载震动监听")]
     private CinemachineImpulseListener impulseListener;
@@ -29,7 +37,6 @@ public class CameraShakeManager : MonoSingleton<CameraShakeManager>
         if (!sourecDic.ContainsKey(sourceName))
         {
             sourecDic.Add(sourceName, source);
-            //Debug.Log("添加" + source.name);
         }
     }
 

@@ -1,25 +1,47 @@
 using System.Collections;
-using Unity.IO.LowLevel.Unsafe;
 using UnityEngine;
+
+public enum E_CustomDir 
+{
+上,下,左,右,
+}
 
 public class Square : MonoBehaviour, ICanEffect
 {
-    Rigidbody2D rb;
+    SimpleRigibody rb;
     [HideInInspector]
     public bool HasFather;
+
     [Header("基础得分")]
     public int BaseScore = 50;
 
     [Header("本地块可以移动")]
     public bool canMove = true;
-    protected GameObject particalPrefab => Resources.Load<GameObject>("Prefab/SquarePartical");
 
+    public bool canSwap;
+
+    [Header("色块消除爆汁粒子预制件")]
+    public GameObject particalPrefab;
+
+    Vector3 looseSpeed;
+    public Vector3 LooseSpeed => looseSpeed;
+    
     protected Slot slot;
-
-    protected virtual  void Awake()
+    /// <summary>
+    /// 设置下落速度
+    /// </summary>
+    /// <param name="_looseSpeed"></param>
+    public void SetLooseSpeed(Vector3 _looseSpeed)
     {
-        rb = GetComponent<Rigidbody2D>();
-        
+        looseSpeed = _looseSpeed;
+    }
+
+
+    protected virtual void Awake()
+    {
+        //rb = GetComponent<Rigidbody2D>();
+        rb = GetComponent<SimpleRigibody>();
+        particalPrefab = Resources.Load<GameObject>("Prefab/SquareExplodePartical");
     }
 
     private void Start()
@@ -36,7 +58,6 @@ public class Square : MonoBehaviour, ICanEffect
         }
     }
 
-
     /// <summary>
     /// 使本方块移动至目标槽位置
     /// </summary>
@@ -50,8 +71,8 @@ public class Square : MonoBehaviour, ICanEffect
         }
 
         HasFather = true;
-        rb.isKinematic = true;
-        rb.velocity = Vector3.zero;
+
+        rb.GetSlot();
 
         Vector3 truePos = new Vector3(slotPos.x, slotPos.y, -0.1f);
         if (transform.parent != null && transform.parent.GetComponent<Slot>() != null)
@@ -62,20 +83,20 @@ public class Square : MonoBehaviour, ICanEffect
                 slot.selfColumn.UpdateColumnSquares(this, transform.parent.GetSiblingIndex());
                 FindAnyObjectByType<SquareGroup>().UpdateRowSquares(transform.GetComponentInChildren<Square>(), slot.transform.parent.GetSiblingIndex(), slot.transform.GetSiblingIndex());
             }
-            StartCoroutine(TweenHelper.MakeLerp(transform.position, truePos, 0.15f, val => transform.position = val));
+            StartCoroutine(TweenHelper.MakeLerp(transform.position, truePos, 0.1f, val => transform.position = val));
         }
     }
+
+
     /// <summary>
     /// 松掉本方块
     /// </summary>
     public virtual void LooseSelf()
     {
-        if (GetComponent<PlayerController>() != null && GetComponent<PlayerController>().isSwaping)
-            return;
-
         transform.SetParent(null);
+        Debug.Log("松了"+ transform.name);
         HasFather = false;
-        rb.velocity = new Vector3(0, -60);
+        rb.SetLooseVelocity(looseSpeed);
     }
 
     /// <summary>
@@ -84,7 +105,6 @@ public class Square : MonoBehaviour, ICanEffect
     /// <returns></returns>
     protected virtual IEnumerator SquareBornAnim()
     {
-
         yield return null;
     }
 
@@ -114,9 +134,7 @@ public class Square : MonoBehaviour, ICanEffect
     public virtual IEnumerator BeRemoved()
     {
         yield return null;
-        Debug.Log("方块被消除");
-        FindAnyObjectByType<PitchTest>().DingDong();
-
+        //Debug.Log("方块被消除");
     }
 
     /// <summary>
@@ -124,16 +142,28 @@ public class Square : MonoBehaviour, ICanEffect
     /// </summary>
     public virtual void DoSelfEffect()
     {
-        Debug.Log("方块效果触发");
+        //Debug.Log("方块效果触发");
         //加分
         EventCenter.Instance.EventTrigger(E_EventType.E_GetSquareScore, BaseScore);
-        ExplodeEffect();
+        PlayExplodeEffect();
+        PlayRemoveSound();
     }
 
     /// <summary>
-    /// 方块自身被去除时的爆炸效果
+    /// 播放消除音效
     /// </summary>
-    protected virtual void ExplodeEffect()
+    void PlayRemoveSound() 
+    {
+        //消除音效
+        FindAnyObjectByType<PitchTest>().DingDong();
+    
+    }
+
+
+    /// <summary>
+    /// 播放方块自身被去除时的爆炸效果
+    /// </summary>
+    void PlayExplodeEffect()
     {
         if (!GetComponent<PlayerController>())
         {

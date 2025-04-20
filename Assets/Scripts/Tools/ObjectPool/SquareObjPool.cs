@@ -177,7 +177,6 @@ public class SquareObjPool : MonoBehaviour
          square.transform.SetParent(transform);
          square.GetComponent<SpriteRenderer>().color=Color.white;
          square.myData = null;
-         square.transform.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Kinematic;
          square.transform.localPosition = Vector3.zero;
          square.transform.localRotation = Quaternion.identity;
     }

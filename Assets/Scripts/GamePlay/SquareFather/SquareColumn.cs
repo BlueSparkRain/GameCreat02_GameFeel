@@ -18,6 +18,44 @@ public class SquareColumn : MonoBehaviour
     public List<Square> columnSquares = new List<Square>();
     public List<Slot> columnSlots = new List<Slot>();
 
+    [Header("本列方块的移动方向")]
+    public E_CustomDir  MoveDir;
+
+    Vector3 gravityDir;
+    Vector3 looseSpeed;
+
+    SquareObjPool  squarePool;
+
+    /// <summary>
+    /// 默认松动速度
+    /// </summary>
+    [Header("默认松动速度")]
+    public float squareLooseSpeed = 50;
+
+
+    void GetLoosepeed()
+    {
+        switch (MoveDir)
+        {
+            case E_CustomDir.上:
+                gravityDir = Vector3.up;
+                break;
+            case E_CustomDir.下:
+                gravityDir = Vector3.down;
+                break;
+            case E_CustomDir.左:
+                gravityDir = Vector3.left;
+                break;
+            case E_CustomDir.右:
+                gravityDir = Vector3.right;
+                break;
+            default:
+                 break;
+        }
+        looseSpeed = gravityDir * squareLooseSpeed;
+    }
+
+
     /// <summary>
     /// 本列中容纳方块的最上层槽的序列索引
     /// </summary>
@@ -31,7 +69,7 @@ public class SquareColumn : MonoBehaviour
     /// <summary>
     /// 方块的消除间隔
     /// </summary>
-    private float removeInterval = 0.3f;
+    private float removeInterval = 0.25f;
 
 
     [Header("本列色块补充最大容量")]
@@ -47,14 +85,16 @@ public class SquareColumn : MonoBehaviour
 
     private void Awake()
     {
+        GetLoosepeed();
         squareSpawner = transform.GetChild(8);
+
+        squarePool=FindAnyObjectByType<SquareObjPool>();
 
         //预缓存槽对象，性能优化
         for (int i = 0; i < 8; i++)
         {
           columnSlots.Add(transform.GetChild(i).GetComponent<Slot>());
         }
-
 
         for (int i = 0; i <columnSlots.Count ; i++)
         {
@@ -66,11 +106,10 @@ public class SquareColumn : MonoBehaviour
 
     void Start()
     {
-        for (int i = 7; i >= 0; i--)
+        for (int i = columnSlots.Count; i >= 0; i--)
         {
             if (transform.GetChild(i).childCount != 0)
             {
-                UpdateTopSlot(i);
                 maxSpawnNum--;
             }
         }
@@ -86,18 +125,22 @@ public class SquareColumn : MonoBehaviour
         WaitForSeconds delay=  new WaitForSeconds(0.2f);
         for (int i = 0; i < maxSpawnNum; i++)
         {
-
+            //玩家产生
             if (playerBornData.IsPlayerBornColumn && i == playerBornData.BornIndex)
             {
                 GameObject player = Instantiate(Resources.Load<GameObject>("Prefab/PlayerSquare"), squareSpawner.position, Quaternion.identity, null);
-                player.GetComponent<Square>().LooseSelf();
+                 StartCoroutine(ColFallOneSquare(player));
+                //ColFallOneSquare(player);
+
+                //player.GetComponent<Square>().LooseSelf();
                 yield return delay;
                 continue;
             }
 
-
-            GameObject newSquare = transform.parent.parent?.GetComponent<SquareGroup>().SquarePool.GetTargetSquare(soList[i]);
-            StartCoroutine(FallNewSquare(newSquare));
+            Debug.Log("还是哈收到");
+            GameObject newSquare = squarePool.GetTargetSquare(soList[i]);
+            StartCoroutine(ColFallOneSquare(newSquare));
+            //ColFallOneSquare(newSquare);
             yield return delay;
         }
 
@@ -119,6 +162,8 @@ public class SquareColumn : MonoBehaviour
         isRemoving = false;
     }
 
+
+    int currentSquareNum;
     /// <summary>
     /// 更新本列方块
     /// </summary>
@@ -132,7 +177,7 @@ public class SquareColumn : MonoBehaviour
         {
             if (!columnSquares[i])
             {
-                ColFull = false;
+                //ColFull = false;
                 break;
             }
             ColFull = true;
@@ -140,6 +185,16 @@ public class SquareColumn : MonoBehaviour
 
         if (!ColFull)
             return;
+        currentSquareNum = 0;
+        for (int i = 0; i < columnSquares.Count; i++)
+        {
+            if (columnSquares[i])
+            {
+                currentSquareNum++;
+            }
+        }
+        SquareNum = currentSquareNum;
+
     }
     bool canCheck = true;
 
@@ -148,29 +203,37 @@ public class SquareColumn : MonoBehaviour
         if (ColFull)
             RemoveSquares();
 
-        //测试
-        if (!isRemoving && !GetComponent<SquareRow>().isRemoving && canCheck && ColFull)
+        if (timer > 0)
         {
-            if (SquareNum != 8 && !isRemoving)
+            timer -= Time.deltaTime;
+            //重置检测
+            if(!canCheck && isRemoving)
             {
-                canCheck = false;
-                StartCoroutine(AddWholeSquares());
+                Debug.Log("补空推迟");
+                StopCoroutine(emptyCheck);
+                timer = 0;
+                canCheck = true;
             }
         }
-    }
-
-    IEnumerator AddWholeSquares() 
-    {
-        WaitForSeconds delay=new WaitForSeconds(0.8f);
-        yield return delay;
-        yield return new WaitForSeconds(2);
-        for (int i = 0; i <8-SquareNum ; i++)
+        if (!isRemoving && SquareNum != 8 && !GetComponent<SquareRow>().isRemoving && canCheck && ColFull)
         {
-            yield return delay;
-            if (SquareNum < 8)
-                ColumnAddOneSquare();
-            else
-                break;
+            canCheck = false;
+            timer = 3;//5s内检测
+            emptyCheck = StartCoroutine(AddWholeSquares());
+        }
+    }
+    float timer; 
+
+
+    Coroutine emptyCheck;
+    IEnumerator AddWholeSquares() 
+    {        
+        WaitForSeconds delay=new WaitForSeconds(2f);
+        yield return delay;
+        for (int i = 0; i < 8 - SquareNum; i++)
+        {
+           ColumnAddOneRandomSquare();
+           yield return new WaitForSeconds(0.8f);;
         }
         canCheck = true;
     }
@@ -291,16 +354,14 @@ public class SquareColumn : MonoBehaviour
             StartCoroutine(WaitRemoveSpawen());
 
             yield return new WaitForSeconds(removeInterval);
-            //ColumnAddOneSquare();
         }
-
         callback?.Invoke();
     }
 
     IEnumerator WaitRemoveSpawen() 
     {
-        yield return new WaitForSeconds (1f);
-            ColumnAddOneSquare();
+        yield return new WaitForSeconds (0.8f);
+            ColumnAddOneRandomSquare();
 
     }
 
@@ -326,51 +387,11 @@ public class SquareColumn : MonoBehaviour
                 removeIndex = columnSquares.Count - 2;
 
             yield return columnSquares[removeIndex].BeRemoved();
-            ColumnAddOneSquare();
+            ColumnAddOneRandomSquare();
             yield return new WaitForSeconds(0.02f);
         }
     }
 
-
-    /// <summary>
-    /// 更新最上层的空槽索引
-    /// </summary>
-    /// <param name="index"></param>
-    public void UpdateTopSlot(int index)
-    {
-        GetOneSquare();
-
-        FirstEmptySlotIndex = index;
-
-        if (ColFull)
-        {
-            for (int i = 0; i < columnSquares.Count; i++)
-            {
-                if (transform.GetChild(i).childCount != 0)
-                {
-                    FirstEmptySlotIndex = i;
-                    SquareNum = 8 - FirstEmptySlotIndex;
-                    break;
-                }
-            }
-        }
-
-
-        if (FirstEmptySlotIndex == 0)
-            return;
-        transform.GetChild(FirstEmptySlotIndex - 1).gameObject.SetActive(true);
-    }
-
-
-    /// <summary>
-    /// 当一个槽被填满，解锁上方的一个槽
-    /// </summary>
-    public void ActiveNewSlot(int _SquareIndex)
-    {
-        if (_SquareIndex - 1 < 0)
-            return;
-        transform.GetChild(_SquareIndex - 1).gameObject.SetActive(true);
-    }
 
     /// <summary>
     /// 本列生成一个新方块
@@ -381,38 +402,31 @@ public class SquareColumn : MonoBehaviour
         square.GetComponent<Square>().LooseSelf();
     }
 
-    public void LooseOneSquare()
+    /// <summary>
+    /// 本列新增加一个随机颜色色块，初始化并落下
+    /// </summary>
+    public void ColumnAddOneRandomSquare()
     {
-        if (SquareNum - 1 >= 0)
-            SquareNum--;
-
-        FirstEmptySlotIndex = 8 - SquareNum;
+        GameObject newSquare = squarePool.GetRandomSquare();
+        StartCoroutine(ColFallOneSquare(newSquare));
+        //ColFallOneSquare(newSquare);
     }
 
-    public void GetOneSquare()
+    //本列最新方块控制器
+    SquareController  newSquareController;
+
+    /// <summary>
+    /// 让一个方块初始化并下坠
+    /// </summary>
+    /// <param name="square"></param>
+    /// <returns></returns>
+    IEnumerator ColFallOneSquare(GameObject square)
     {
-        if (SquareNum + 1 <= 8)
-            SquareNum++;
-
-        FirstEmptySlotIndex = 8 - SquareNum;
-
-        if (SquareNum <= 8)
-            canCheck = true;
-    }
-
-    //public IEnumerator ColumnAddOneSquare()
-    public void ColumnAddOneSquare()
-    {
-
-        GameObject newSquare = transform.parent.parent?.GetComponent<SquareGroup>().SquarePool.GetRandomSquare();
-        StartCoroutine(FallNewSquare(newSquare));
-
-    }
-
-    IEnumerator FallNewSquare(GameObject square)
-    {
-        yield return new WaitForSeconds(0.1f);
-        AppearNewSquare(square);
+        //yield return new WaitForSeconds(0.1f);
+        yield return null;
+        newSquareController = square.GetComponent<SquareController>();
+        newSquareController.InitSquare(squareSpawner.position,gravityDir,looseSpeed);
+        newSquareController.SquareLoose();
     }
 }
 

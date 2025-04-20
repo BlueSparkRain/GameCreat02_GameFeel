@@ -22,16 +22,11 @@ public class Gamepad_ModeManager : MonoSingleton<Gamepad_ModeManager>
         //由于按钮的自动导航，在面板上浏览时，currentSelectObj跟进赋值
         currentSelectObj=EventSystem.current.currentSelectedGameObject;
     }
-
-
     private void Update()
     {
         if( currentSelectObj!=null && currentSelectObj!= EventSystem.current.currentSelectedGameObject)
             SetSelfCurrentObj();
-
     }
-
-
 }
 
 

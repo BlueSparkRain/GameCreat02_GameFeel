@@ -33,5 +33,5 @@ public class PlayerCollectablesMode
 
 public enum E_Collectable
 {
-    ±´¿Ç, ÕÂÓã, ½ğ±Ò, Òô·û
+    ×ÏÒô·û,ºìÒô·û,À¶Òô·û
 }

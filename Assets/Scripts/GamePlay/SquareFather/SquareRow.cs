@@ -15,7 +15,7 @@ public class SquareRow : MonoBehaviour
 
     public bool isRemoving;
 
-    private float removeInterval = 0.3f;
+    private float removeInterval = 0.25f;
 
 
     /// <summary>
@@ -36,7 +36,7 @@ public class SquareRow : MonoBehaviour
 
             Transform targetCol = rowSquares[i].transform?.parent.parent;
             yield return rowSquares[i].BeRemoved();
-            targetCol?.GetComponent<SquareColumn>().ColumnAddOneSquare();
+            targetCol?.GetComponent<SquareColumn>().ColumnAddOneRandomSquare();
             yield return new WaitForSeconds(removeInterval);
         }
     }
@@ -188,7 +188,7 @@ public class SquareRow : MonoBehaviour
     /// </summary>
     public void RemoveRowLine3()
     {
-        Debug.Log("完成3消");
+        //Debug.Log("完成3消");
 
         //5消机制
     }
@@ -199,7 +199,7 @@ public class SquareRow : MonoBehaviour
     /// </summary>
     public void RemoveRowLine4()
     {
-        Debug.Log("完成4消");
+        //Debug.Log("完成4消");
 
         //5消机制
     }
@@ -210,7 +210,7 @@ public class SquareRow : MonoBehaviour
     /// </summary>
     public void RemoveRowLine5()
     {
-        Debug.Log("完成5消");
+        //Debug.Log("完成5消");
 
         //5消机制
     }
@@ -233,7 +233,6 @@ public class SquareRow : MonoBehaviour
                 targetCol?.IsColumnRemoving();
                 StartCoroutine(toRemoveSquares[i].BeRemoved());
 
-
                 StartCoroutine(WaitRemoveSpawen(targetCol));
                 yield return new WaitForSeconds(removeInterval);
                 //targetCol?.ColumnAddOneSquare();
@@ -247,8 +246,8 @@ public class SquareRow : MonoBehaviour
 
     IEnumerator WaitRemoveSpawen(SquareColumn col)
     {
-        yield return new WaitForSeconds(0.8f);
-        col?.ColumnAddOneSquare();
+        yield return new WaitForSeconds(0.6f);
+        col?.ColumnAddOneRandomSquare();
 
     }
 

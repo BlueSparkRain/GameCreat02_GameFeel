@@ -3,7 +3,6 @@ using UnityEngine;
 
 public class ColorSquare : Square
 {
-    //public int hitTime = 1;
     public ColorSquareSO myData;
 
     public void ColorSelf()
@@ -33,14 +32,15 @@ public class ColorSquare : Square
         //Debug.Log("É«¿é±»Ïû³ý");
 
         if (transform.parent != null && slot)
+        {
+            Debug.Log("ColorSquare-BeRemovedËÉ" + transform.name);
             slot.ThrowSquare();
+        }
 
         if (transform.GetComponent<PlayerController>())
             yield break;
         FindAnyObjectByType<SquareObjPool>().ReturnPool(this);
     }
-
-  
     private void OnMouseEnter()
     {
         StartCoroutine(TweenHelper.MakeLerp(transform.localScale, Vector3.one * 1.8f, 0.1f, val => transform.localScale = val));
@@ -48,7 +48,6 @@ public class ColorSquare : Square
     private void OnMouseExit()
     {
         StartCoroutine(TweenHelper.MakeLerp(transform.localScale, Vector3.one * 1.6f, 0.1f, val => transform.localScale = val));
-    }
-
+    }  
 }
 

@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Level1Techer : MonoBehaviour
 {
-    // Start is called before the first frame update
     void Start()
     {
         StartCoroutine(Wait());
@@ -17,9 +16,4 @@ public class Level1Techer : MonoBehaviour
 
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }
