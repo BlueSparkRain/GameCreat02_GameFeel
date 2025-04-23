@@ -7,6 +7,7 @@ public class ArrayGenerator
     private readonly int cols = 8;
     private readonly int minNumber = 1;
     private readonly int maxNumber = 6;
+    //private readonly int maxNumber = 3;
     private readonly System.Random rand = new System.Random();
 
     public int[,] GenerateValidArray()

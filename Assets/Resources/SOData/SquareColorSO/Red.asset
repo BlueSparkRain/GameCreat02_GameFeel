@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   E_Color: 0
   SquareColor: {r: 1, g: 0, b: 0, a: 1}
-  ColorSquareSprite: {fileID: 21300000, guid: 3f79cd715ef0a754bb1c46e78d4e8546, type: 3}
+  ColorSquareSprite: {fileID: 21300000, guid: 90af973f9c815924191b9facdf63466b, type: 3}

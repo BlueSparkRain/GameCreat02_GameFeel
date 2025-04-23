@@ -225,9 +225,14 @@ public interface IEventInfo { }
 public enum E_EventType
 {
     /// <summary>
-    /// 参数：player
+    /// 方块消除
     /// </summary>
     E_ColorSquareRemove,
+
+    /// <summary>
+    /// 卡拍得分
+    /// </summary>
+    E_GetHitScore,
 
     /// <summary>
     /// 方块得分
@@ -238,6 +243,11 @@ public enum E_EventType
     /// 保存游戏数据
     /// </summary>
     E_DataSave,
+
+    /// <summary>
+    /// 玩家卡拍
+    /// </summary>
+    E_PlayerHit,
 }
 
 

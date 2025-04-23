@@ -7,8 +7,6 @@ public enum E_ColorSquare
 {
  赤,橙,黄,绿,青,蓝,紫
 }
-
-
 public class SquareObjPool : MonoBehaviour
 {
     [Header("池容量")]
@@ -20,7 +18,6 @@ public class SquareObjPool : MonoBehaviour
 
     [Header("无色方块预制件")]
     public GameObject WhiteSquarePrefab;
-
     void Start()
     {
         FullWholePool();
@@ -40,11 +37,11 @@ public class SquareObjPool : MonoBehaviour
       List<ColorSquareSO> soList = new List<ColorSquareSO>();
       for(int i = 0;i < intList.Count; i++) 
       {
+            Debug.Log( intList[i]);
             soList.Add(prototyppeSODataList[intList[i]]);
       }
       return soList;
     }
-
 
     public GameObject GetTargetSquare(ColorSquareSO soData)
     {
@@ -97,6 +94,9 @@ public class SquareObjPool : MonoBehaviour
         return colorSquare;
     }
 
+
+    int randSeed;
+    ColorSquareSO newColorSo;
     /// <summary>
     /// 加工并返回完成的色块
     /// </summary>
@@ -105,10 +105,10 @@ public class SquareObjPool : MonoBehaviour
     {
         GameObject colorSquare = GetInstnce();
         //七种颜色随机
-        int randSeed = Random.Range(0, 6);
-        ColorSquareSO so = prototyppeSODataList[randSeed];
+        randSeed = Random.Range(0, 6);
+        newColorSo = prototyppeSODataList[randSeed];
 
-        ColorWhiteSquare(colorSquare,so);
+        ColorWhiteSquare(colorSquare,newColorSo);
         StartCoroutine(AppearTrail(colorSquare));
         return colorSquare;
     }
@@ -120,29 +120,29 @@ public class SquareObjPool : MonoBehaviour
         colorSquare.transform.GetChild(0).gameObject.SetActive(true);
     }
 
+
+
+    GameObject currentInstnce;
     /// <summary>
     /// 从池中返回一个实例
     /// </summary>
     /// <returns></returns>
     GameObject GetInstnce() 
     {
-        GameObject instnce;
         //如果池中存在未激活的方块，取出一个空闲方块
         for (int i = 0; i < pool.Count; i++) 
         {
             if (!pool[i].activeInHierarchy) 
             {
-                instnce = pool[i];
-                //pool.RemoveAt(i);
-                instnce.SetActive(true);
-                return  instnce;
+                currentInstnce = pool[i];
+                currentInstnce.SetActive(true);
+                return  currentInstnce;
             }
         }
         //池中已满,生成新方块
-        instnce=CreatNewInstance();
-        //pool.Remove(instnce);
-        instnce.SetActive(true);
-        return instnce;
+        currentInstnce=CreatNewInstance();
+        currentInstnce.SetActive(true);
+        return currentInstnce;
     }
 
     void ColorWhiteSquare(GameObject whiteSquare,ColorSquareSO so) 
@@ -170,8 +170,6 @@ public class SquareObjPool : MonoBehaviour
     /// </summary>
     public void ReturnPool(ColorSquare square) 
     {
-         //Debug.Log("回池+1");
-         //pool.Add(square.gameObject);
          square.transform.localScale = Vector3.one*1.6f;
          square.gameObject.SetActive(false);
          square.transform.SetParent(transform);

@@ -1326,7 +1326,7 @@ MonoBehaviour:
     m_DissipationMode: 2
     m_DissipationDistance: 100
     m_PropagationSpeed: 343
-  m_DefaultVelocity: {x: -0.2, y: -0.1, z: 0}
+  m_DefaultVelocity: {x: 0.2, y: -0.1, z: 0}
 --- !u!1 &804108864 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5507514637558252832, guid: 3bdd87c869ef3cc4eb1c12cc9a3f9292, type: 3}
@@ -2690,11 +2690,11 @@ MonoBehaviour:
   prototyppeSODataList:
   - {fileID: 11400000, guid: 28d53d3f1137b2c4ab16778899cf78bf, type: 2}
   - {fileID: 11400000, guid: 06296397f4dceac4882a9f1d3df9ea4b, type: 2}
-  - {fileID: 11400000, guid: 33b8fd5be2e2c0543bcb9097b5316ad7, type: 2}
-  - {fileID: 11400000, guid: 9f38aad06855ece46adbbc259efbc8a0, type: 2}
-  - {fileID: 11400000, guid: 97de0db59dff7da4a8d0c5ae7b0d4a6b, type: 2}
   - {fileID: 11400000, guid: 7b3430ce88f792244893fc55e7dfde5a, type: 2}
   - {fileID: 11400000, guid: 34a8137015ba525459ba6aef46e2caea, type: 2}
+  - {fileID: 11400000, guid: 9f38aad06855ece46adbbc259efbc8a0, type: 2}
+  - {fileID: 11400000, guid: 97de0db59dff7da4a8d0c5ae7b0d4a6b, type: 2}
+  - {fileID: 11400000, guid: 33b8fd5be2e2c0543bcb9097b5316ad7, type: 2}
   WhiteSquarePrefab: {fileID: 5183128317832653379, guid: 4b59c96c19518584ba7d913410c0527d, type: 3}
 --- !u!4 &1508569245
 Transform:
@@ -4854,6 +4854,10 @@ PrefabInstance:
       propertyPath: SquareNum
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2480477238372756607, guid: 3bdd87c869ef3cc4eb1c12cc9a3f9292, type: 3}
+      propertyPath: squareLooseSpeed
+      value: 60
+      objectReference: {fileID: 0}
     - target: {fileID: 3063235298451676083, guid: 3bdd87c869ef3cc4eb1c12cc9a3f9292, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.3
@@ -4903,6 +4907,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4226389763353816032, guid: 3bdd87c869ef3cc4eb1c12cc9a3f9292, type: 3}
+      propertyPath: squareLooseSpeed
+      value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 4226389763353816032, guid: 3bdd87c869ef3cc4eb1c12cc9a3f9292, type: 3}
       propertyPath: playerBornData.BornIndex
       value: 0
       objectReference: {fileID: 0}
@@ -4914,9 +4922,21 @@ PrefabInstance:
       propertyPath: SquareNum
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4292620514945925805, guid: 3bdd87c869ef3cc4eb1c12cc9a3f9292, type: 3}
+      propertyPath: squareLooseSpeed
+      value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 5153229061141832418, guid: 3bdd87c869ef3cc4eb1c12cc9a3f9292, type: 3}
+      propertyPath: squareLooseSpeed
+      value: 60
+      objectReference: {fileID: 0}
     - target: {fileID: 5201331688436728601, guid: 3bdd87c869ef3cc4eb1c12cc9a3f9292, type: 3}
       propertyPath: SquareNum
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5201331688436728601, guid: 3bdd87c869ef3cc4eb1c12cc9a3f9292, type: 3}
+      propertyPath: squareLooseSpeed
+      value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 5507514637558252832, guid: 3bdd87c869ef3cc4eb1c12cc9a3f9292, type: 3}
       propertyPath: m_Name
@@ -4927,12 +4947,24 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7324526494189606500, guid: 3bdd87c869ef3cc4eb1c12cc9a3f9292, type: 3}
+      propertyPath: squareLooseSpeed
+      value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 7324526494189606500, guid: 3bdd87c869ef3cc4eb1c12cc9a3f9292, type: 3}
       propertyPath: playerBornData.BornIndex
       value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 7324526494189606500, guid: 3bdd87c869ef3cc4eb1c12cc9a3f9292, type: 3}
       propertyPath: playerBornData.IsPlayerBornColumn
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7843040146288684386, guid: 3bdd87c869ef3cc4eb1c12cc9a3f9292, type: 3}
+      propertyPath: squareLooseSpeed
+      value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 9198104325075141430, guid: 3bdd87c869ef3cc4eb1c12cc9a3f9292, type: 3}
+      propertyPath: squareLooseSpeed
+      value: 60
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

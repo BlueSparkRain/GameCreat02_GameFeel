@@ -3,7 +3,7 @@ using UnityEngine;
 
 public enum E_CustomDir 
 {
-上,下,左,右,
+ 上,下,左,右,
 }
 
 public class Square : MonoBehaviour, ICanEffect
@@ -35,11 +35,8 @@ public class Square : MonoBehaviour, ICanEffect
     {
         looseSpeed = _looseSpeed;
     }
-
-
     protected virtual void Awake()
     {
-        //rb = GetComponent<Rigidbody2D>();
         rb = GetComponent<SimpleRigibody>();
         particalPrefab = Resources.Load<GameObject>("Prefab/SquareExplodePartical");
     }
@@ -87,14 +84,12 @@ public class Square : MonoBehaviour, ICanEffect
         }
     }
 
-
     /// <summary>
     /// 松掉本方块
     /// </summary>
     public virtual void LooseSelf()
     {
         transform.SetParent(null);
-        Debug.Log("松了"+ transform.name);
         HasFather = false;
         rb.SetLooseVelocity(looseSpeed);
     }
@@ -143,8 +138,10 @@ public class Square : MonoBehaviour, ICanEffect
     public virtual void DoSelfEffect()
     {
         //Debug.Log("方块效果触发");
-        //加分
+
+        //基础消除加分
         EventCenter.Instance.EventTrigger(E_EventType.E_GetSquareScore, BaseScore);
+
         PlayExplodeEffect();
         PlayRemoveSound();
     }

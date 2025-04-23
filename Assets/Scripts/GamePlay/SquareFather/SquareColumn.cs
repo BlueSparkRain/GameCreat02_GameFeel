@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -31,7 +32,6 @@ public class SquareColumn : MonoBehaviour
     /// </summary>
     [Header("默认松动速度")]
     public float squareLooseSpeed = 50;
-
 
     void GetLoosepeed()
     {
@@ -66,10 +66,8 @@ public class SquareColumn : MonoBehaviour
     [Header("本列正在消除中")]
     public bool isRemoving;
 
-    /// <summary>
-    /// 方块的消除间隔
-    /// </summary>
-    private float removeInterval = 0.25f;
+
+    WaitForSeconds removeDelay = new WaitForSeconds(0.15f);
 
 
     [Header("本列色块补充最大容量")]
@@ -137,7 +135,6 @@ public class SquareColumn : MonoBehaviour
                 continue;
             }
 
-            Debug.Log("还是哈收到");
             GameObject newSquare = squarePool.GetTargetSquare(soList[i]);
             StartCoroutine(ColFallOneSquare(newSquare));
             //ColFallOneSquare(newSquare);
@@ -194,35 +191,97 @@ public class SquareColumn : MonoBehaviour
             }
         }
         SquareNum = currentSquareNum;
-
     }
-    bool canCheck = true;
 
+    bool canCheck = true;
+    float timer;
+
+    float removeTimer;
+    float removeTimerInterval = 0.4f;//消除行为在0.5s内未重复触发时
+    WaitForSeconds bornDelay = new WaitForSeconds(0.2f);
+    bool canAddNeedSquare=true;
+
+    /// <summary>
+    /// 向列发送填充请求：重置消除计时器
+    /// </summary>
+    public void ColPrepareNeededSquare()
+    {
+            newRemoveBegin = true;
+            needAddNum++;
+            Debug.Log("消除事件重置！");
+            removeTimer = removeTimerInterval;
+            //Test
+            canAddNeedSquare = true;
+    }
+
+    bool newRemoveOver;//一连串消除事件结束
+    int needAddNum;//需要添加的方块
+
+    /// <summary>
+    /// 待最上方方块入槽后
+    /// </summary>
+    /// <returns></returns>
+    IEnumerator BornNeedToAddSquare()
+    {
+        Debug.Log("开始生成需要方块："+needAddNum);
+        for (int i = 0; i <= needAddNum; i++)
+        {
+            if(SquareNum>=8)
+               yield break;  
+            
+            needAddNum--;
+            ColumnAddOneRandomSquare();
+            yield return bornDelay;
+        }
+        canAddNeedSquare = true;
+        //每次补充完毕后
+    }
+
+    /// <summary>
+    /// 松掉一个槽时，继续推迟补充时刻
+    /// </summary>
+    public void LooseASlot() 
+    {
+        Debug.Log("松槽推迟");
+        //newRemoveBegin = true;
+        removeTimer = removeTimerInterval;
+    }
+
+    void ColAddNeededSquare()
+    {
+        StartCoroutine(BornNeedToAddSquare());
+    }
+    bool newRemoveBegin;
     private void Update()
     {
         if (ColFull)
+        {
             RemoveSquares();
 
-        if (timer > 0)
-        {
-            timer -= Time.deltaTime;
-            //重置检测
-            if(!canCheck && isRemoving)
+            //消除事件开始 && 每次触发消除，重置计时
+            if (newRemoveBegin && removeTimer >= 0)
+                removeTimer -= Time.deltaTime;
+            else
             {
-                Debug.Log("补空推迟");
-                StopCoroutine(emptyCheck);
-                timer = 0;
-                canCheck = true;
+                Debug.Log("消除事件结束");
+                newRemoveOver = true;
+                newRemoveBegin = false;
             }
-        }
-        if (!isRemoving && SquareNum != 8 && !GetComponent<SquareRow>().isRemoving && canCheck && ColFull)
-        {
-            canCheck = false;
-            timer = 3;//5s内检测
-            emptyCheck = StartCoroutine(AddWholeSquares());
+
+            if (newRemoveOver && canAddNeedSquare)
+            {
+                newRemoveOver=false;
+                if (!newRemoveBegin && canAddNeedSquare)
+                {
+                    canAddNeedSquare = false;
+                    //列生成只触发一次，等待下次消除
+                    ColAddNeededSquare();
+                }
+
+            }
+
         }
     }
-    float timer; 
 
 
     Coroutine emptyCheck;
@@ -237,7 +296,6 @@ public class SquareColumn : MonoBehaviour
         }
         canCheck = true;
     }
-
     public void RemoveSquares()
     {
         if (CheckRemoveList() != null)
@@ -351,20 +409,14 @@ public class SquareColumn : MonoBehaviour
             }
             StartCoroutine(toRemoveSquares[i].BeRemoved());
 
-            StartCoroutine(WaitRemoveSpawen());
+            ColPrepareNeededSquare();
 
-            yield return new WaitForSeconds(removeInterval);
+            yield return removeDelay;
         }
         callback?.Invoke();
     }
 
-    IEnumerator WaitRemoveSpawen() 
-    {
-        yield return new WaitForSeconds (0.8f);
-            ColumnAddOneRandomSquare();
-
-    }
-
+  
     /// <summary>
     /// 连线5消：消除+生成色块闪电：清除所有相同颜色色块
     /// </summary>
@@ -409,7 +461,6 @@ public class SquareColumn : MonoBehaviour
     {
         GameObject newSquare = squarePool.GetRandomSquare();
         StartCoroutine(ColFallOneSquare(newSquare));
-        //ColFallOneSquare(newSquare);
     }
 
     //本列最新方块控制器

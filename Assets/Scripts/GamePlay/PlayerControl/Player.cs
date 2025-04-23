@@ -18,8 +18,7 @@ public class Player : MonoBehaviour
     [Header(" ‰»ÎºÏ≤‚º‰∏Ù")]
     public float actInterval = 0.25f;
 
-    //Rigidbody2D rb;
-
+    [Header("ÕÊº“ºÏ≤‚æ‡¿Î")]
     public float targetSquareChecckDistance=1.2f;
 
     public bool isSwaping = false;
@@ -38,7 +37,6 @@ public class Player : MonoBehaviour
     private void Start()
     {
         square = GetComponent<ColorSquare>();
-        //rb = GetComponent<Rigidbody2D>();
         VCam = FindAnyObjectByType<CinemachineVirtualCamera>().transform;
         StartCoroutine(SleepWake());
     }

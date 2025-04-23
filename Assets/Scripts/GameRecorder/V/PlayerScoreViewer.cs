@@ -1,5 +1,4 @@
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,17 +13,17 @@ public class PlayerScoreViewer : MonoBehaviour
     [Header("本局游戏剩余时长时间条")]
     public Image gameTimerFillment;
 
-    public void SetScoreText(int score) 
+    public void SetScoreText(int score)
     {
         scoreText.text = score.ToString();
     }
 
-    public void GetTimeText(int remainTime) 
+    public void GetTimeText(int remainTime)
     {
-        gameTimerText.text =remainTime.ToString();
+        gameTimerText.text = remainTime.ToString();
     }
 
-    public  void SetFillImage( float gameTimer,float gameDuration) 
+    public void SetFillImage(float gameTimer, float gameDuration)
     {
         gameTimerFillment.fillAmount = gameTimer / gameDuration;
     }

@@ -18,5 +18,4 @@ public class Player_Command:ICommand
         if (self.parent == null)
             return;
     }
-
 }

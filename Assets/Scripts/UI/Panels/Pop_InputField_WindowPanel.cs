@@ -38,9 +38,8 @@ public class Pop_InputField_WindowPanel : BasePanel
 
     public override IEnumerator ShowPanelTweenEffect()
     {
-            yield return uiTweener.UIEaseInFrom(E_Dir.об, transform, UIRoot, transTime);
+        yield return uiTweener.UIEaseInFrom(E_Dir.об, transform, UIRoot, transTime);
     }
-
 
     public void InputToConfirm(UnityAction<string> inputOnValueAction, UnityAction confirmAnaction)
     {

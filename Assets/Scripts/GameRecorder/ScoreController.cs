@@ -40,6 +40,7 @@ public class ScoreController : MonoBehaviour
         uiManager = UIManager.Instance;
         GameStart();
     }
+
     public void GameStart()
     {
         gameTimer = gameDuration;
@@ -52,7 +53,6 @@ public class ScoreController : MonoBehaviour
             gameTimer -= Time.deltaTime;
             scoreViewer.GetTimeText((int)gameTimer);
             scoreViewer.SetFillImage(gameTimer, gameDuration);
-
             yield return null;
         }
         if (!gameOver)

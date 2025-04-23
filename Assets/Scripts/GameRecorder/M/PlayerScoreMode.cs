@@ -1,6 +1,4 @@
 using System;
-using UnityEngine;
-
 
 [Serializable]
 public class PlayerScoreMode
@@ -10,9 +8,8 @@ public class PlayerScoreMode
     /// </summary>
     public int playerCurrentScore;
 
-    public void GetScore( float multi ,int score) 
+    public void GetScore(float multi, int score)
     {
-        playerCurrentScore += (int)(multi*score);
+        playerCurrentScore += (int)(multi * score);
     }
-
 }

@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class ColorSquareManager : MonoSingleton<ColorSquareManager>
 {
+
     void Start()
     {
         ArrayGenerator generator = new ArrayGenerator();

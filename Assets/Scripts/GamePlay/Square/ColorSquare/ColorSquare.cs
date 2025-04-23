@@ -33,7 +33,6 @@ public class ColorSquare : Square
 
         if (transform.parent != null && slot)
         {
-            Debug.Log("ColorSquare-BeRemovedÀ…" + transform.name);
             slot.ThrowSquare();
         }
 

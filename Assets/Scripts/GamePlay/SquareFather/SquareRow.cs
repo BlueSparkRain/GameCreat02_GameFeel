@@ -15,7 +15,7 @@ public class SquareRow : MonoBehaviour
 
     public bool isRemoving;
 
-    private float removeInterval = 0.25f;
+    WaitForSeconds removeDelay=new WaitForSeconds(0.15f);
 
 
     /// <summary>
@@ -37,7 +37,7 @@ public class SquareRow : MonoBehaviour
             Transform targetCol = rowSquares[i].transform?.parent.parent;
             yield return rowSquares[i].BeRemoved();
             targetCol?.GetComponent<SquareColumn>().ColumnAddOneRandomSquare();
-            yield return new WaitForSeconds(removeInterval);
+            yield return removeDelay;
         }
     }
 
@@ -233,22 +233,12 @@ public class SquareRow : MonoBehaviour
                 targetCol?.IsColumnRemoving();
                 StartCoroutine(toRemoveSquares[i].BeRemoved());
 
-                StartCoroutine(WaitRemoveSpawen(targetCol));
-                yield return new WaitForSeconds(removeInterval);
-                //targetCol?.ColumnAddOneSquare();
+                targetCol?.ColPrepareNeededSquare();
+
+                yield return removeDelay;
                 targetCol?.StopColumnRemoving();
             }
         }
-
         callback?.Invoke();
     }
-
-
-    IEnumerator WaitRemoveSpawen(SquareColumn col)
-    {
-        yield return new WaitForSeconds(0.6f);
-        col?.ColumnAddOneRandomSquare();
-
-    }
-
 }
