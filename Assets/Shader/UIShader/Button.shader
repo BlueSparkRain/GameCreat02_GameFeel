@@ -1,4 +1,4 @@
-Shader "Unlit/NewUnlitShader"
+Shader "Unlit/Button"
 {
     Properties
     {
@@ -11,7 +11,7 @@ Shader "Unlit/NewUnlitShader"
     }
     SubShader
     {
-        Tags { "RenderType"="Opaque" }
+        Tags { "RenderType"="Opaque" "RenderPipeline"="UniversalRenderPipeline" }
         LOD 100
 
         Pass
@@ -60,17 +60,24 @@ Shader "Unlit/NewUnlitShader"
                  float2 mousePosScreenSpace = _MousePos.xy / _ScreenParams.xy;
                  float2 pixelPosScreenSpace = i.vertex.xy / _ScreenParams.xy;
                  mousePosScreenSpace.y *=_ScreenParams.y/ _ScreenParams.x;
-                 pixelPosScreenSpace.y = pixelPosScreenSpace.y*-1*_ScreenParams.y/ _ScreenParams.x+_ScreenParams.y/ _ScreenParams.x;
+                 pixelPosScreenSpace.y *= _ScreenParams.y/ _ScreenParams.x;
                  float distance = length(mousePosScreenSpace - pixelPosScreenSpace);
                  fixed4 col;
                  col = fixed4(min(mousePosScreenSpace.x,0.8),min(mousePosScreenSpace.y,0.8),1,1);
                  _R=_R*(abs(sin(40*_Time.x)))*0.3+0.08;
                   
                 //col*=tex2D(_MainTex, i.uv);
+
                 if(_levelStar >= 1)
                     col*=tex2D(_LevelStatusTex, scrolledUV);
                 else
                     col*=tex2D(_LevelStatusTex, i.uv);
+                if(_levelStar == -1)
+                {
+                    float noise = frac(sin(dot(i.uv, float2(12.9898,78.233))) * 43758.5453 + _Time.y );
+                    float bw = step(0.5, noise);
+                    col=fixed4(bw,bw,bw,1);
+                }
                     if(distance < _R&&(tex2D(_alpha,i.uv).a>0.9))
                 {
                     //col =col+(col*(0.1,0.3,1,1)*(1/_R)*(_R-distance))/(1-(0.1,0.3,1,1)*(1/_R)*(_R-distance));
