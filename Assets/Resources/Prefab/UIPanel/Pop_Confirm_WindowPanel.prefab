@@ -842,7 +842,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc263515dea412c428037dd261b949cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  transTime: 1
+  transTime: 0.5
   FirstSelectButton: {fileID: 0}
   UIRoot: {fileID: 1909202942105503889}
   NeedPausePanel: 0

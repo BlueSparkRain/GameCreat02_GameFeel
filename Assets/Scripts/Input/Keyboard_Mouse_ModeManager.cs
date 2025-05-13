@@ -8,6 +8,8 @@ public class Keyboard_Mouse_ModeManager : MonoSingleton<Keyboard_Mouse_ModeManag
 
     void Start()
     {
+        return;
+
         // 设置自定义光标
         cursorData = Resources.Load<CursorSettingSO>("SOData/CursorSettingSO/cursor-s");
         Cursor.SetCursor(cursorData.customCursor, hotspot, CursorMode.Auto);
@@ -15,6 +17,8 @@ public class Keyboard_Mouse_ModeManager : MonoSingleton<Keyboard_Mouse_ModeManag
 
     void Update()
     {
+        return;
+
         if (PlayerInputManager.Instance.MouseClick)
         {
             StartCoroutine(WaitToNormalCursor());

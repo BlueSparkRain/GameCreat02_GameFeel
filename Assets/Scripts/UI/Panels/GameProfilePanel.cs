@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameProfilePanel : BasePanel
 {
@@ -10,6 +12,8 @@ public class GameProfilePanel : BasePanel
     [SerializeField] private Transform elementsFather;
 
     GameProfileElement currentProfileElement;
+
+    public Button ReturnButton;
 
     /// <summary>
     /// ¶³½áËùÓÐ´æµµÔªËØ
@@ -44,15 +48,17 @@ public class GameProfilePanel : BasePanel
         currentProfileElement.UpdateView();
     }
 
-
-
     bool init;
     protected override void Init()
     {
         base.Init();
         if (!init)
         {
-            //Ô¤»º´æ
+            ReturnButton.onClick.AddListener(() =>
+            {
+                uiManager.HidePanel<GameProfilePanel>();
+            });
+        //Ô¤»º´æ
             for (int i = 0; i < elementsFather.childCount; i++)
             {
                 profileElements.Add(
@@ -65,12 +71,18 @@ public class GameProfilePanel : BasePanel
 
     public override void ShowPanel()
     {
+        if(canClosePanel)
+            return;
         base.ShowPanel();
     }
 
     public override IEnumerator ShowPanelTweenEffect()
     {
+        if (canClosePanel)
+            yield break;
+
         yield return uiTweener.UIEaseInFrom(E_Dir.ÏÂ, transform, UIRoot, transTime);
+        canClosePanel = true;
     }
 
     public override void HidePanel()
@@ -81,6 +93,7 @@ public class GameProfilePanel : BasePanel
     public override IEnumerator HidePanelTweenEffect()
     {
         yield return uiTweener.UIEaseOutTo(E_Dir.ÏÂ, transform, UIRoot, transTime);
+        canClosePanel=false;    
     }
 
 

@@ -3,14 +3,12 @@ using UnityEngine;
 
 public class ArrayGenerator
 {
-    private readonly int rows = 8;
-    private readonly int cols = 8;
-    private readonly int minNumber = 1;
+    private readonly int minNumber = 0;
     private readonly int maxNumber = 6;
     //private readonly int maxNumber = 3;
     private readonly System.Random rand = new System.Random();
 
-    public int[,] GenerateValidArray()
+    public int[,] GenerateValidArray(int rows, int cols)
     {
         int[,] grid = new int[rows, cols];
 
@@ -27,6 +25,7 @@ public class ArrayGenerator
                 grid[i, j] = candidate;
             }
         }
+    
         return grid;
     }
 
@@ -47,24 +46,4 @@ public class ArrayGenerator
         return true;
     }
 
-    // 打印数组的辅助方法
-    public void PrintArray(int[,] grid)
-    {
-        //for (int i = 0; i < rows; i++)
-        //{
-        //    for (int j = 0; j < cols; j++)
-        //    {
-        //        Debug.Log(grid[i, j]);
-        //    }
-        //    Console.WriteLine();
-        //}
-    }
-
-    // 示例用法
-    public static void Main()
-    {
-        ArrayGenerator generator = new ArrayGenerator();
-        int[,] validArray = generator.GenerateValidArray();
-        generator.PrintArray(validArray);
-    }
 }

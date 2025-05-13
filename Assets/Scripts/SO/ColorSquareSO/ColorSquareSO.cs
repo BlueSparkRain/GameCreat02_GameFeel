@@ -12,5 +12,5 @@ public class ColorSquareSO : ScriptableObject
 
 public enum E_Color 
 {
-    赤,橙,黄,绿,青,蓝,紫,白
+    光盘,警告,信件,爱心,耳机,星星,电视,白
 }

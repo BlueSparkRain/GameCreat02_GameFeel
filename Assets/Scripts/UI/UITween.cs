@@ -124,8 +124,8 @@ public class UITween : BaseSingleton<UITween>
                 moveTargetPos = new Vector2(0, 2000);
                 break;
         }
-        monoManager.StartCoroutine(UIDoFade(canvasGroup, 0, 1, transTime / 2));
-        yield return UIDoMove(uiRoot, moveTargetPos, Vector2.zero, transTime / 2);
+        monoManager.StartCoroutine(UIDoFade(canvasGroup, 0, 1, transTime));
+        yield return UIDoMove(uiRoot, moveTargetPos, Vector2.zero, transTime);
     }
 
 
@@ -162,8 +162,17 @@ public class UITween : BaseSingleton<UITween>
                 break;
         }
 
-        yield return UIDoMove(uiRoot, Vector2.zero, moveTargetPos, transTime / 2);
-        yield return UIDoFade(canvasGroup, 1, 0, transTime / 2);
+        yield return UIDoMove(uiRoot, Vector2.zero, moveTargetPos, transTime);
+        yield return UIDoFade(canvasGroup, 1, 0, transTime);
+    }
+
+
+    public IEnumerator UIDoScale(bool toBigger,Transform root, float transtime,AnimationCurve animCurve=null) 
+    {
+        if(toBigger)
+        yield return TweenHelper.MakeLerp(Vector3.zero, Vector3.one, transtime, val => root.localScale = val,animCurve);
+        else
+        yield return TweenHelper.MakeLerp( Vector3.one, Vector3.zero, transtime, val => root.localScale = val,animCurve);
     }
 }
 

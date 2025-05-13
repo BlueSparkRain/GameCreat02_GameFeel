@@ -20,7 +20,7 @@ public class ChartCheckManager : MonoSingleton<ChartCheckManager>
     [Header("好节拍")]
     public int GoodScore = 20;
 
-    ChartObjPoolManager chartPoolInstance;
+    WholeObjPoolManager objPoolManager;
     EventCenter eventCenter;
 
     Transform player;
@@ -38,22 +38,22 @@ public class ChartCheckManager : MonoSingleton<ChartCheckManager>
     {
         base.InitSelf();
         //预缓存
-        chartPoolInstance=ChartObjPoolManager.Instance;
+        objPoolManager = WholeObjPoolManager.Instance;
+
         eventCenter = EventCenter.Instance;
     }
 
-
-
     private void OnEnable()
     {
-        eventCenter.AddEventListener<E_ChartHitState>(E_EventType.E_PlayerHit, GetPlayerHit);
+        EventCenter.Instance.AddEventListener<E_ChartHitState>(E_EventType.E_PlayerHit, GetPlayerHit);
     }
 
     private void OnDisable()
     {
-        eventCenter.RemoveEventListener<E_ChartHitState>(E_EventType.E_PlayerHit, GetPlayerHit);
+        EventCenter.Instance.RemoveEventListener<E_ChartHitState>(E_EventType.E_PlayerHit, GetPlayerHit);
     }
 
+    GameObject partical;
     /// <summary>
     /// 玩家卡上拍
     /// </summary>
@@ -62,21 +62,36 @@ public class ChartCheckManager : MonoSingleton<ChartCheckManager>
         switch (state)
         {
             case E_ChartHitState.Perfact:
+                //播放完美效果
                 eventCenter.EventTrigger(E_EventType.E_GetHitScore, PerfactScore);
+
+                player.GetComponent<Player>().P.Play();
+                //partical=objPoolManager.GetTargetPartical(E_ParticalType.玩家卡点完美);
+
                 break;
             case E_ChartHitState.Nice:
+                //播放Nice效果
                 eventCenter.EventTrigger(E_EventType.E_GetHitScore, NiceScore);
+                
+                player.GetComponent<Player>().N.Play();
+                //partical=objPoolManager.GetTargetPartical(E_ParticalType.玩家卡点完美);
                 break;
             case E_ChartHitState.Good:
+                //播放Good效果
                 eventCenter.EventTrigger(E_EventType.E_GetHitScore, GoodScore);
+                
+                player.GetComponent<Player>().G.Play();
+                //partical=objPoolManager.GetTargetPartical(E_ParticalType.玩家卡点完美);
+                
                 break;
             default:
                 break;
         }
+
     }
 
     [Header("预计到达采样点时间")]
-    [SerializeField] private float prepareTime = 1;
+    [SerializeField] private float prepareTime = 4;
 
     /// <summary>
     /// 正在进行一段乐曲
@@ -99,19 +114,30 @@ public class ChartCheckManager : MonoSingleton<ChartCheckManager>
     /// </summary>
     /// <param name="triggerChartTimeList">采样点时刻列表</param>
     /// <returns></returns>
-    public IEnumerator SetUpNewMusic(List<int> triggerChartTimeList)
+    public IEnumerator SetUpNewMusic(List<float> triggerChartTimeList)
     {
         currentChartIndex = 0;
+        chartTimer = 0;
         newMusic = true;
 
-        player??=FindAnyObjectByType<Player>().transform;
+        player ??=FindAnyObjectByType<Player>().transform;
 
+        //while (chartTimer < triggerChartTimeList[triggerChartTimeList.Count-1]) 
         while (newMusic) 
         {
-            chartTimer += Time.time;
-            if(chartTimer > triggerChartTimeList[currentChartIndex]-prepareTime)
+            chartTimer += Time.deltaTime;
+
+            if(currentChartIndex< triggerChartTimeList.Count && 
+                chartTimer > triggerChartTimeList[currentChartIndex]-prepareTime)
             {
+                currentChartIndex++;
                 SetUpNewChart();
+            }
+
+            if(currentChartIndex >= triggerChartTimeList.Count)
+            {
+                newMusic = false;
+                Debug.Log("生成完毕");
             }
             yield return null;
         }
@@ -123,7 +149,7 @@ public class ChartCheckManager : MonoSingleton<ChartCheckManager>
     void SetUpNewChart()
     {
         //生成新的收缩判定圈
-        GameObject newChartObj = chartPoolInstance.GetChartInstnceFromPool();
+        GameObject newChartObj = objPoolManager.GetChart();
         //判定圈设置玩家父对象
         newChartObj.transform.SetParent(player);
         newChartObj.transform.localPosition = Vector3.zero;

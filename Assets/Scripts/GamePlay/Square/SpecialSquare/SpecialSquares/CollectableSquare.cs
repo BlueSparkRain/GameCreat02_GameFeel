@@ -52,16 +52,6 @@ public class CollectableSquare : SpecicalSquare
 
     public override IEnumerator BeRemoved()
     {
-        yield return base.BeRemoved();
-        FindAnyObjectByType<CollectablesController>().GetCollectable(type);//记录收集物
-        if (transform.parent && transform.parent.parent.GetComponent<SquareColumn>())
-        {
-            transform?.parent.parent.GetComponent<SquareColumn>().AddMaxSpawnNum();//恢复列最大容量
-            transform?.parent.GetComponent<Slot>().ThrowSquare();
-            //粒子特效
-            //音效
-            yield return new WaitForSeconds(0.2f);
-            DestroyImmediate(gameObject);
-        }
+        yield return null;
     }
 }

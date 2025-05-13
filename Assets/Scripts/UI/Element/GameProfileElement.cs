@@ -43,12 +43,13 @@ public class GameProfileElement : MonoBehaviour
         LoadProfileButton.onClick.AddListener(() =>
         {
             //加载存档信息，进入关卡选择界面【不支持关卡内进度存档！！！】
-            if (canOpenWindow)
-            {
-                canOpenWindow = false;
-                LoadCurrentProfile();
-            }
 
+            //if (canOpenWindow)
+            //{
+            //    canOpenWindow = false;
+            //}
+
+            LoadCurrentProfile();
         });
 
         ClearProfileButton.onClick.AddListener(() =>
@@ -100,7 +101,6 @@ public class GameProfileElement : MonoBehaviour
             TimeText.text = "———???———";
             CurrentLevelText.text = "0";
         }
-
     }
 
     /// <summary>
@@ -122,8 +122,10 @@ public class GameProfileElement : MonoBehaviour
         else //历史存档
         {
             //点击进入关卡选择
-
-
+            Debug.Log("加载历史存档");
+            gameProfileSaveManager.SelectNewProfile(profileSaveData);
+            //确认当前存档为全局
+            SceneLoadManager.Instance.TransToLoadScene(1,E_SceneTranType.过场图过渡);
         }
     }
 
@@ -152,6 +154,7 @@ public class GameProfileElement : MonoBehaviour
         GetProfileData(newData, profileID);
         //解锁其他存档元素
         canOpenWindow = true;
+
         (uiManager.GetPanel<GameProfilePanel>() as GameProfilePanel).UnLockAllElements();
     }
 
@@ -160,7 +163,6 @@ public class GameProfileElement : MonoBehaviour
     /// </summary>
     void ClearDisposeAction()
     {
-
         (uiManager.GetPanel<GameProfilePanel>() as GameProfilePanel).UnLockAllElements();
     }
 
@@ -208,8 +210,6 @@ public class GameProfileElement : MonoBehaviour
         yield return delay;
         canvasGroup.interactable = true;
     }
-
-
 
     /// <summary>
     /// 程序关闭，自动写入存档文件

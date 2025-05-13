@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 1533216156170067930}
   - component: {fileID: 7069973028954697046}
   - component: {fileID: 962167018322222237}
-  m_Layer: 8
+  m_Layer: 6
   m_Name: ColorSquare
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -107,7 +107,7 @@ BoxCollider2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 768
+    m_Bits: 832
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
@@ -152,8 +152,6 @@ MonoBehaviour:
   HasFather: 0
   BaseScore: 50
   canMove: 1
-  canSwap: 0
-  particalPrefab: {fileID: 7098130871053541430, guid: 5df62d289e9a7254c840e6cbd8f3c04f, type: 3}
   myData: {fileID: 0}
 --- !u!114 &7069973028954697046
 MonoBehaviour:
@@ -168,6 +166,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   square: {fileID: 1533216156170067930}
+  isSwaping: 0
 --- !u!114 &962167018322222237
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -193,7 +192,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9141803049810424766}
   - component: {fileID: 4241455539069707366}
-  m_Layer: 8
+  m_Layer: 6
   m_Name: Trail
   m_TagString: Untagged
   m_Icon: {fileID: 0}

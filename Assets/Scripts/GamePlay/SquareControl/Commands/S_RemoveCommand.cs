@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class S_RemoveCommand : SquareCommand
 {
-    public S_RemoveCommand(Square square, SquareGroup squareGroup) : base(square, squareGroup)
+    public S_RemoveCommand(Square square) : base(square)
     {
     }
 
@@ -16,7 +16,7 @@ public class S_RemoveCommand : SquareCommand
 
     void Remove() 
     {
-        square.BeRemoved();
+        controlSquare.BeRemoved();
     
     }
 

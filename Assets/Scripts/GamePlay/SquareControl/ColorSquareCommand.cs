@@ -5,9 +5,8 @@ using UnityEngine;
 public class ColorSquareCommand : SquareCommand
 {
     protected ColorSquare colorSquare;
-    public ColorSquareCommand(ColorSquare square, SquareGroup squareGroup) : base(square,squareGroup)
+    public ColorSquareCommand(ColorSquare square) : base(square)
     {
         colorSquare = square;
     }
-
 }

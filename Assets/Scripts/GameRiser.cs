@@ -4,10 +4,16 @@ using UnityEngine;
 
 public class GameRiser : MonoBehaviour
 {
-    // Start is called before the first frame update
     void Start()
     {
         MusicManager.Instance.PlayBKMusic("BK1");
-        UIManager.Instance.ShowPanel<MenuPanel>(null);
+        StartCoroutine(WaitOpen());
     }
+    IEnumerator WaitOpen()
+    {
+        yield return new WaitForSeconds(2.6f);
+        //UIManager.Instance.ShowPanel<MenuPanel>(null);
+        UIManager.Instance.ShowPanel<NewMenuPanel>(null);
+    }
+
 }

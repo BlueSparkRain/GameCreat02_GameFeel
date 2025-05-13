@@ -1,9 +1,6 @@
-using UnityEngine;
-using static UnityEngine.RuleTile.TilingRuleOutput;
-
 public class S_ColorCommand : ColorSquareCommand
 {
-    public S_ColorCommand(ColorSquare square,  SquareGroup squareGroup) : base(square, squareGroup)
+    public S_ColorCommand(ColorSquare square) : base(square)
     {
 
     }
@@ -14,7 +11,7 @@ public class S_ColorCommand : ColorSquareCommand
     }
 
 
-    void ColoeSelf() 
+    void ColoeSelf()
     {
         colorSquare.ColorSelf();
     }

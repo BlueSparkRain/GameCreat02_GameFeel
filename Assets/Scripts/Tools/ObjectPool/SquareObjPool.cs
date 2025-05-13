@@ -10,7 +10,7 @@ public enum E_ColorSquare
 public class SquareObjPool : MonoBehaviour
 {
     [Header("池容量")]
-    public int poolCapcity=81;
+    public int poolCapcity=64;
     public List<GameObject> pool = new List<GameObject>();
 
     [Header("各色块数据集合")]
@@ -37,7 +37,6 @@ public class SquareObjPool : MonoBehaviour
       List<ColorSquareSO> soList = new List<ColorSquareSO>();
       for(int i = 0;i < intList.Count; i++) 
       {
-            Debug.Log( intList[i]);
             soList.Add(prototyppeSODataList[intList[i]]);
       }
       return soList;
@@ -94,7 +93,6 @@ public class SquareObjPool : MonoBehaviour
         return colorSquare;
     }
 
-
     int randSeed;
     ColorSquareSO newColorSo;
     /// <summary>
@@ -107,7 +105,6 @@ public class SquareObjPool : MonoBehaviour
         //七种颜色随机
         randSeed = Random.Range(0, 6);
         newColorSo = prototyppeSODataList[randSeed];
-
         ColorWhiteSquare(colorSquare,newColorSo);
         StartCoroutine(AppearTrail(colorSquare));
         return colorSquare;
@@ -119,8 +116,6 @@ public class SquareObjPool : MonoBehaviour
         yield return new WaitForSeconds(0.2f);
         colorSquare.transform.GetChild(0).gameObject.SetActive(true);
     }
-
-
 
     GameObject currentInstnce;
     /// <summary>
@@ -147,9 +142,7 @@ public class SquareObjPool : MonoBehaviour
 
     void ColorWhiteSquare(GameObject whiteSquare,ColorSquareSO so) 
     {
-
-        whiteSquare.GetComponent<ColorSquare>().myData = so;
-        whiteSquare.GetComponent<ColorSquare>().ColorSelf();
+        whiteSquare.GetComponent<ColorSquare>().SetColorData(so);
     }
 
     /// <summary>
@@ -168,14 +161,23 @@ public class SquareObjPool : MonoBehaviour
     /// <summary>
     /// 方块重置入池
     /// </summary>
-    public void ReturnPool(ColorSquare square) 
+    public void ReturnPool(ColorSquare square)
     {
-         square.transform.localScale = Vector3.one*1.6f;
-         square.gameObject.SetActive(false);
-         square.transform.SetParent(transform);
-         square.GetComponent<SpriteRenderer>().color=Color.white;
-         square.myData = null;
-         square.transform.localPosition = Vector3.zero;
-         square.transform.localRotation = Quaternion.identity;
+        //Debug.Log("方块回池");
+        square.transform.localScale = Vector3.one * 1.6f;
+        square.gameObject.SetActive(false);
+        square.transform.SetParent(transform);
+        //将层重置为Square
+        square.gameObject.layer = 6;
+
+        if(square.transform.childCount>1)
+            Destroy(square.transform.GetChild(1).gameObject);
+
+
+        square.GetComponent<SpriteRenderer>().color = Color.white;
+        square.myData = null;
+
+        square.transform.localPosition = Vector3.zero;
+        square.transform.localRotation = Quaternion.identity;
     }
 }

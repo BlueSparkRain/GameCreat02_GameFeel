@@ -42,8 +42,9 @@ Material:
     m_Ints: []
     m_Floats:
     - _ColorMask: 15
+    - _MaskRot: 0
     - _RimHardness: 0.5001
-    - _RimScale: 1.1
+    - _RimScale: 0
     - _Stencil: 0
     - _StencilComp: 8
     - _StencilOp: 0
@@ -53,7 +54,8 @@ Material:
     - _UIMaskSoftnessY: 1
     m_Colors:
     - _ClipRect: {r: 0, g: 0, b: 0, a: 0}
-    - _MaskOffset: {r: -0.45, g: 0.02, b: 0, a: 0}
-    - _MaskTilling: {r: 1.81, g: 1, b: 0, a: 0}
+    - _MainCoilor: {r: 1, g: 1, b: 1, a: 0}
+    - _MaskOffset: {r: -0.45, g: 0.93, b: 0, a: 0}
+    - _MaskTilling: {r: 1.97, g: 1.1, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

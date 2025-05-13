@@ -4,7 +4,7 @@ using UnityEngine;
 /// <summary>
 /// 特殊方块
 /// </summary>
-public class SpecicalSquare : Square, ICanSpecical
+public class SpecicalSquare : Square
 {
     [Header("特殊地块精灵")]
     public Sprite SpecicalSprite;
@@ -28,7 +28,7 @@ public class SpecicalSquare : Square, ICanSpecical
 
     public override void DoSelfEffect()
     {
-     
+     base .DoSelfEffect();
     }
 
     public override IEnumerator BeRemoved()
@@ -38,11 +38,5 @@ public class SpecicalSquare : Square, ICanSpecical
             yield break;
 
     }
-
-    public virtual void DoSelfSpecical()
-    {
-        Debug.Log("特殊地块特殊功能");
-    }
-
    
 }

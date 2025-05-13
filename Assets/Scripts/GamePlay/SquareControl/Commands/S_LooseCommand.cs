@@ -1,16 +1,27 @@
+using UnityEngine;
 public class S_LooseCommand : SquareCommand
 {
-    public S_LooseCommand(Square square, SquareGroup squareGroup) : base(square, squareGroup){ 
+    public S_LooseCommand(Square square, SimpleRigibody rb) : base(square){
+        this.rb = rb;
     }
 
+    Vector3 looseSpeed;
+    SimpleRigibody rb;
     public override void Excute()
     {
         base.Excute();
         LooseSelf();
     }
 
-    public void LooseSelf()
+    public void SetLooseSpeed(Vector3 looseSpeed) 
     {
-      square.LooseSelf();
+        this.looseSpeed = looseSpeed;
+    }
+
+    public virtual void LooseSelf()
+    {
+        controlSelf.SetParent(null);
+        controlSquare.HasFather = false;
+        rb.SetLooseVelocity(looseSpeed);
     }
 }

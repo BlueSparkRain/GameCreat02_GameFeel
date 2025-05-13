@@ -24,6 +24,9 @@ public class UIManager : BaseSingleton<UIManager>
     /// </summary>
     public BasePanel currentPanel;
 
+
+    private List<BasePanel> HistoryPanels=new List<BasePanel>();
+
     /// <summary>
     /// 获取到目标面板
     /// </summary>
@@ -54,8 +57,18 @@ public class UIManager : BaseSingleton<UIManager>
         //如果不是子面板，关闭当前的面板
         if (!isSubPanel && currentPanel != null)
         {
+            Debug.Log("关闭"+ currentPanel.GetType().Name);
+
+            Debug.Log(HistoryPanels.Count+"历史父面板");
+            for (int i = 0; i < HistoryPanels.Count; i++) 
+            {
+                MonoManager.Instance.StartCoroutine(PanelHideEnd(HistoryPanels[i]));             
+            }
+               MonoManager.Instance.StartCoroutine(PanelHideEnd(panelDic[currentPanel.GetType().Name]));
+
             MonoManager.Instance.StartCoroutine(PanelHideEnd(panelDic[currentPanel.GetType().Name]));
         }
+       
 
         //获取面板名，预制体名和面板类名需保持一致
         string panelName = typeof(T).Name;
@@ -67,8 +80,14 @@ public class UIManager : BaseSingleton<UIManager>
             if (!panel.gameObject.activeSelf)
                 panel.gameObject.SetActive(true);
 
+            //如果已经存在父面板，其发出打开子面板的指令
+            if(isSubPanel)
+                HistoryPanels.Add(currentPanel);
+
             if(!isPopWindow)
                 currentPanel = panel;
+            
+
 
             panel.ShowPanel();
             MonoManager.Instance.StartCoroutine(panel.ShowPanelTweenEffect());
@@ -85,6 +104,10 @@ public class UIManager : BaseSingleton<UIManager>
 
         //获取对应UI组件返回
         panel = panelobj.GetComponent<BasePanel>();
+
+
+        if (isSubPanel)
+            HistoryPanels.Add(currentPanel);
 
         if (!isPopWindow)
             currentPanel = panel;

@@ -46,9 +46,11 @@ public class SceneTransPanel : BasePanel
         switch (type)
         {
             case E_SceneTranType.过场图过渡:
+                Debug.Log("7");
                 StartCoroutine(ShaderTransLoading(sceneIndex));
                 break;
             case E_SceneTranType.黑屏过渡:
+                Debug.Log("8");
                 StartCoroutine(BlackTransLoading(sceneIndex));
                 break;
             case E_SceneTranType.未知:

@@ -2,18 +2,16 @@ using UnityEngine;
 
 public class SquareCommand : ICommand
 {
-    protected readonly Square square;
-    protected Transform self;
-    protected Transform father;
-    protected Slot slot;
+    protected readonly Square controlSquare;
+    protected Transform controlSelf;
+    protected Transform controlFather;
+    protected WalkableSlot controlSlot;
     protected MonoManager mono;
-    protected SquareGroup  squareGroup;    
 
-    public SquareCommand(Square square,SquareGroup squareGroup)
+    public SquareCommand(Square square)
     {
-        this.square = square;
-        this.squareGroup = squareGroup;
-        self = square.transform;
+        controlSquare = square;
+        controlSelf = square.transform;
         mono = MonoManager.Instance;
     }
 

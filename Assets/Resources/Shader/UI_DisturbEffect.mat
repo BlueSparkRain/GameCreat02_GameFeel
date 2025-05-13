@@ -46,11 +46,11 @@ Material:
     m_Ints: []
     m_Floats:
     - _ColorMask: 15
-    - _ColorMaskHardness: 0.771
-    - _ColorMaskScale: 0.94
-    - _NoiseIntensity: 0.136
-    - _RimNoise: 0.606
-    - _SampleNoiseScale: 87
+    - _ColorMaskHardness: 0.828
+    - _ColorMaskScale: 0.84
+    - _NoiseIntensity: 0.269
+    - _RimNoise: 1
+    - _SampleNoiseScale: 79
     - _Stencil: 0
     - _StencilComp: 8
     - _StencilOp: 0
@@ -58,7 +58,7 @@ Material:
     - _StencilWriteMask: 255
     - _UIMaskSoftnessX: 1
     - _UIMaskSoftnessY: 1
-    - _VoronoiDensity: 4.3
+    - _VoronoiDensity: 3.4
     - _VoronoiNoiseIntensity: 0.23
     m_Colors:
     - _ClipRect: {r: 0, g: 0, b: 0, a: 0}

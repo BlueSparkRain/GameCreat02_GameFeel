@@ -25,17 +25,23 @@ public static class TweenHelper
         updateZ?.Invoke(targetValue);
     }
     public static IEnumerator MakeLerp(Vector3 startPosition, Vector3 targetPosition, float lerpTime,
-    Action<Vector3> updatePosition)
+    Action<Vector3> updatePosition,AnimationCurve animCurve=null)
     {
         float elapsedTime = 0f;
-
+        Vector3 currentPosition=Vector3.zero;
         while (elapsedTime < lerpTime)
         {
-            float t = elapsedTime / lerpTime; // 计算插值因子
-            Vector3 currentPosition = Vector3.Lerp(startPosition, targetPosition, t);
-
+            if (animCurve == null)
+            {
+                float t = elapsedTime / lerpTime; // 计算插值因子
+                currentPosition = Vector3.Lerp(startPosition, targetPosition, t);
+            }
             //if (updatePosition == null)
             //    yield break;
+            else 
+            {
+                currentPosition = Vector3.Lerp(startPosition, targetPosition, animCurve.Evaluate(elapsedTime/lerpTime));
+            }
 
             updatePosition?.Invoke(currentPosition); // 更新位置
             elapsedTime += Time.unscaledDeltaTime;

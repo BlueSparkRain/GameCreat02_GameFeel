@@ -13,12 +13,15 @@ public abstract class BasePanel : MonoBehaviour
     [Header("暂停时间")]
     public bool NeedPausePanel;
 
+    public AnimationCurve AnimCurve=AnimationCurve.EaseInOut(0,0,1,1);
+
     protected UIManager uiManager;
     protected UITween uiTweener;
     protected GameInputModeManager gameInputModeManager;
     protected GameProfileSaveManager gameProfileSaveManager;
 
     protected bool initSelf;
+    protected bool canClosePanel;
 
     public IEnumerator LockSelf()
     {
@@ -59,7 +62,7 @@ public abstract class BasePanel : MonoBehaviour
 
         if (FirstSelectButton)
         {
-            PlayerInputManager.Instance.SetCurrentSelectGameObj(FirstSelectButton);
+           PlayerInputManager.Instance.SetCurrentSelectGameObj(FirstSelectButton);
         }
     }
 
@@ -79,7 +82,6 @@ public abstract class BasePanel : MonoBehaviour
     /// </summary>
     /// <returns></returns>
     public abstract IEnumerator ShowPanelTweenEffect();
-
 
     /// <summary>
     /// 面板退出调用：执行等级1

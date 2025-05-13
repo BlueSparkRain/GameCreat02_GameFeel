@@ -39,28 +39,28 @@ public class PlayerController : MonoBehaviour
         {
             if(player.isSwaping)
                 return;
-            player.targetDir = E_TargetDir.上;
+            player.targetDir = E_CustomDir.上;
             movePartical.transform.eulerAngles = new Vector3(90,-90,-90);
             movePartical?.Play();
             _moveCommand.Excute();
         }
         else if (PlayerInputManager.Instance.MoveDown)
         {
-            player.targetDir = E_TargetDir.下;
+            player.targetDir = E_CustomDir.下;
             movePartical.transform.eulerAngles = new Vector3(-90, -90, -90);
             movePartical?.Play();
             _moveCommand.Excute();
         }
         else if (PlayerInputManager.Instance.MoveLeft)
         {
-            player.targetDir = E_TargetDir.左;
+            player.targetDir = E_CustomDir.左;
             movePartical.transform.eulerAngles = new Vector3(180, -90, -90);
             movePartical?.Play();
             _moveCommand.Excute();
         }
         else if (PlayerInputManager.Instance.MoveRight)
         {
-            player.targetDir = E_TargetDir.右;
+            player.targetDir = E_CustomDir.右;
             movePartical.transform.eulerAngles = new Vector3(0, -90, -90);
             movePartical?.Play();
             _moveCommand.Excute();
@@ -71,22 +71,22 @@ public class PlayerController : MonoBehaviour
     {
         if (PlayerInputManager.Instance.ColorationUp)
         {
-            player.targetDir = E_TargetDir.上;
+            player.targetDir = E_CustomDir.上;
             _colorationCommand.Excute();
         }
         else if (PlayerInputManager.Instance.ColorationDown)
         {
-            player.targetDir = E_TargetDir.下;
+            player.targetDir = E_CustomDir.下;
             _colorationCommand.Excute();
         }
         else if (PlayerInputManager.Instance.ColorationLeft)
         {
-            player.targetDir = E_TargetDir.左;
+            player.targetDir = E_CustomDir.左;
             _colorationCommand.Excute();
         }
         else if (PlayerInputManager.Instance.ColorationRight)
         {
-            player.targetDir = E_TargetDir.右;
+            player.targetDir = E_CustomDir.右;
             _colorationCommand.Excute();        
         }
     }

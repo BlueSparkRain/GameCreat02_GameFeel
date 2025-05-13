@@ -4,39 +4,53 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    [Header("移动动画曲线")]
     public AnimationCurve moveCurve;
+    [Header("控制色块")]
     public ColorSquare square;
+    SquareController playerSquareController;
 
     [Header("执行操作的目标方块")]
     public GameObject targetSquare;
 
+    [Header("方块层")]
     public LayerMask whatIsSquare;
-    float timer = 0;
-    bool canAct = true;
+    [Header("敌人层")]
+    public LayerMask whatIsEnemy;
 
+    #region 可操作 Info
+    bool canAct = true;
     public bool CanAct=> canAct;
+    float actTimer = 0;
     [Header("输入检测间隔")]
     public float actInterval = 0.25f;
+    #endregion
 
-    [Header("玩家检测距离")]
-    public float targetSquareChecckDistance=1.2f;
-
+    #region 交换 Info
     public bool isSwaping = false;
-
     bool canswap = true;
+    float swapTimer;
+    float swapInterval = 0.3f;
+    #endregion
 
-    float interval = 0.2f;
+    [Header("玩家移动射线检测距离")]
+    public float targetSquareChecckDistance=1.4f;
 
     Transform VCam;
 
     bool sleep;
     [HideInInspector]
-    public E_TargetDir targetDir;
+    public E_CustomDir targetDir;
 
+
+    public ParticleSystem P;
+    public ParticleSystem N;
+    public ParticleSystem G;
 
     private void Start()
     {
         square = GetComponent<ColorSquare>();
+        playerSquareController= GetComponent<SquareController>();
         VCam = FindAnyObjectByType<CinemachineVirtualCamera>().transform;
         StartCoroutine(SleepWake());
     }
@@ -46,62 +60,33 @@ public class Player : MonoBehaviour
         sleep = false;
     }
 
-    float swapTimer;
-    float swapInterval=0.3f;
-
     void Update()
     {
         if (sleep)
             return;
-        if (timer >= 0)
-            timer -= Time.deltaTime;
+        //玩家操作冷却
+        if (actTimer >= 0)
+            actTimer -= Time.deltaTime;
         else
             canAct = true;
-
+        //交换期间
         if (swapTimer > 0) 
-        {
           swapTimer -= Time.deltaTime;
-        }
         else 
-        {
            isSwaping = false;
-        }
-
+        
     }
 
-    /// <summary>
-    /// 获取目标方向的方块对象
-    /// </summary>
-    /// <param name="targetDir"></param>
-    /// <returns></returns>
-    public GameObject CheckTarget(E_TargetDir targetDir)
+    public IEnumerator Swap(SquareController otherSquareControl)
     {
-        switch (targetDir)
-        {
-            case E_TargetDir.上:
-                return (Physics2D.Raycast(transform.position, Vector2.up, targetSquareChecckDistance, whatIsSquare).collider?.gameObject);
-            case E_TargetDir.下:
-                return (Physics2D.Raycast(transform.position, Vector2.down, targetSquareChecckDistance, whatIsSquare).collider?.gameObject);
-            case E_TargetDir.左:
-                return (Physics2D.Raycast(transform.position, Vector2.left, targetSquareChecckDistance, whatIsSquare).collider?.gameObject);
-            case E_TargetDir.右:
-                return (Physics2D.Raycast(transform.position, Vector2.right, targetSquareChecckDistance, whatIsSquare).collider?.gameObject);
-            default:
-                return null;
-        }
-    }
-
-    public IEnumerator Swap(Square otherSquare)
-    {
-        if (!canswap || !otherSquare.transform.parent || otherSquare.transform.parent.childCount > 1 || !otherSquare.transform.parent.GetComponent<Slot>().isFull || !otherSquare.GetComponent<Square>().canMove)
+        if (!canswap || !otherSquareControl.transform.parent || otherSquareControl.transform.parent.childCount > 1 || !otherSquareControl.transform.parent.GetComponent<WalkableSlot>().isFull || !otherSquareControl.GetComponent<Square>().canMove)
         {
             Debug.Log("无法交换！");
             yield break;
         }
-        if (transform.parent == null || !transform.parent.GetComponent<Slot>().isFull)
+        if (transform.parent == null || !transform.parent.GetComponent<WalkableSlot>().isFull)
             yield break;
-
-        if (!transform.parent || !otherSquare.transform.parent || !otherSquare.transform.parent.GetComponent<Slot>() || !transform.parent.GetComponent<Slot>())
+        if (!transform.parent || !otherSquareControl.transform.parent || !otherSquareControl.transform.parent.GetComponent<WalkableSlot>() || !transform.parent.GetComponent<WalkableSlot>())
             yield break;
 
         IsSwapingCheck();
@@ -112,29 +97,30 @@ public class Player : MonoBehaviour
 
         canswap = false;
         Transform mySlot = transform.parent;
-        otherSquare.HasFather = false;
+        otherSquareControl.square.HasFather = false;
         square.HasFather = false;
-        transform.SetParent(otherSquare.transform.parent);
-        otherSquare.transform.SetParent(mySlot);
+        transform.SetParent(otherSquareControl.transform.parent);
+        otherSquareControl.transform.SetParent(mySlot);
 
-        if (transform.parent != null && transform.parent.GetComponent<Slot>())
-            square.MoveToSlot(transform.parent.position);
+        if (transform.parent != null && transform.parent.GetComponent<WalkableSlot>())
+            playerSquareController.SquareMoveToSlot(transform.parent.position);
 
-        if (otherSquare != null && mySlot != null)
+        if (otherSquareControl != null && mySlot != null)
         {
-            otherSquare.MoveToSlot(mySlot.position);
+            otherSquareControl.SquareMoveToSlot(mySlot.position);
         }
         if (transform.parent != null)
         {
             StartCoroutine(PlayerMove(transform.position, transform.parent.position, 0.1f));
-            if (transform.parent.GetComponent<Slot>())
+            if (transform.parent.GetComponent<WalkableSlot>())
             {
-                Slot slot = transform.parent.GetComponent<Slot>();
-                slot.transform.parent.GetComponent<SquareColumn>().UpdateColumnSquares(square, slot.transform.GetSiblingIndex());
-                FindAnyObjectByType<SquareGroup>().UpdateRowSquares(transform.GetComponentInChildren<Square>(), slot.transform.parent.GetSiblingIndex(), slot.transform.GetSiblingIndex());
+                WalkableSlot slot = transform.parent.GetComponent<WalkableSlot>();
+
+                slot.transform.parent.GetComponent<SubCol>().UpdateSubColumnSquares(square, slot.transform.GetSiblingIndex());
+                FindAnyObjectByType<GameMap>().UpdateRowSquares(square, slot.transform.parent.parent.GetSiblingIndex(), slot.mapIndex);
             }
             canAct = false;
-            timer = actInterval;
+            actTimer = actInterval;
             canswap = true;
             yield return square.SquareMoveAnim();
         }
@@ -156,9 +142,7 @@ public class Player : MonoBehaviour
     void IsSwapingCheck()
     {
         if (isSwaping)
-        {
             swapTimer = swapInterval;
-        }
         else
         {
             swapTimer = swapInterval;  
@@ -166,8 +150,7 @@ public class Player : MonoBehaviour
         }
     }
 
-
-    public void Coloration(ColorSquare otherSquare)
+    public void Coloration(SquareController otherSquare)
     {
         if (VCam)
             StartCoroutine(Shake());
@@ -176,27 +159,25 @@ public class Player : MonoBehaviour
             return;
         canAct = false;
 
-        square.myData = otherSquare.myData;
-        square.MoveToSlot(transform.parent.position);
+        square.myData = (otherSquare.square as ColorSquare).myData;
+        playerSquareController.SquareMoveToSlot(transform.parent.position);
         MusicManager.Instance.PlaySound("coloration");
 
-        if (transform.parent.GetComponent<Slot>())
+        if (transform.parent.GetComponent<WalkableSlot>())
         {
-            Slot slot = transform.parent.GetComponent<Slot>();
-            slot.transform.parent.GetComponent<SquareColumn>().UpdateColumnSquares(square, slot.transform.GetSiblingIndex());
-            FindAnyObjectByType<SquareGroup>().UpdateRowSquares(transform.GetComponentInChildren<Square>(), slot.transform.parent.GetSiblingIndex(), slot.transform.GetSiblingIndex());
+            WalkableSlot slot = transform.parent.GetComponent<WalkableSlot>();
+            slot.transform.parent.GetComponent<SubCol>().UpdateSubColumnSquares(square, slot.transform.GetSiblingIndex());
+            FindAnyObjectByType<GameMap>().UpdateRowSquares(square, slot.transform.parent.parent.GetSiblingIndex(), slot.mapIndex);
         }
         square.ColorSelf();
         StartCoroutine(PlayerColorationScaleAnim());
-        timer = actInterval;
+        actTimer = actInterval;
     }
-
     IEnumerator PlayerColorationScaleAnim()
     {
         yield return TweenHelper.MakeLerp(transform.localScale, Vector3.one * 2.5f, 0.05f, val => transform.localScale = val);
         yield return TweenHelper.MakeLerp(transform.localScale, Vector3.one * 1.6f, 0.05f, val => transform.localScale = val);
     }
-
     IEnumerator Shake()
     {
         yield return TweenHelper.MakeLerp(Vector3.zero, new Vector3(0, 0, 0.8f), 0.08f, val => VCam.eulerAngles = val);
@@ -205,7 +186,4 @@ public class Player : MonoBehaviour
     }
 }
 
-public enum E_TargetDir
-{
-    上, 下, 左, 右,
-}
+

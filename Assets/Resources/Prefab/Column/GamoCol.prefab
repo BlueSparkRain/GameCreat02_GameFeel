@@ -1,0 +1,72 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5947076900692022820
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 493377691977655797}
+  - component: {fileID: 459818944463007994}
+  - component: {fileID: 6830773818141044163}
+  m_Layer: 0
+  m_Name: GamoCol
+  m_TagString: Untagged
+  m_Icon: {fileID: 2488908585195742037, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &493377691977655797
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5947076900692022820}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -9.232338, y: 5.66, z: -0.0006155162}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &459818944463007994
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5947076900692022820}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1efc0d6b5f77600498db99c7681bcd02, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  createSlotNum: 8
+  WalkableSlotPrefab: {fileID: 4779412920413682090, guid: f2879b4ac60c6a34f95d9ceb859bfda6, type: 3}
+  SpawnerSlotPrefab: {fileID: 3168294511489860188, guid: 2e7da6aac672dba499c17f094a7c7a43, type: 3}
+  ObstacleSlotPrefab: {fileID: 3305736041738501873, guid: ef85a5376e9963b409536003481823c4, type: 3}
+  playerBornData:
+    IsPlayerBornColumn: 0
+    SubColIndex: 0
+    BornIndex: 0
+  MoveDir: 0
+  squareLooseSpeed: 40
+  mapSlots: []
+--- !u!114 &6830773818141044163
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5947076900692022820}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ac7b1016ad0f2145bc23f46ad634299, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rowSquares: []
+  isRemoving: 0

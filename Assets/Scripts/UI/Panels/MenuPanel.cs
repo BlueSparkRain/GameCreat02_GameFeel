@@ -60,19 +60,29 @@ public class MenuPanel : BasePanel
 
     public override IEnumerator HidePanelTweenEffect()
     {
-        yield return uiTweener.UIEaseOutTo(E_Dir.下, transform, UIRoot, transTime);
+        //yield return uiTweener.UIEaseOutTo(E_Dir.下, transform, UIRoot, transTime);
+        yield return uiTweener.UIDoScale(false,UIRoot,transTime,AnimCurve);
+        canClosePanel = false;
         //GetComponent<CanvasGroup>().interactable = false;
+
     }
 
 
     public override void ShowPanel()
     {
+        if (canClosePanel)
+           return;
         base.ShowPanel();
     }
 
     public override IEnumerator ShowPanelTweenEffect()
     {
-        yield return uiTweener.UIEaseInFrom(E_Dir.下, transform, UIRoot, transTime);
+        if(canClosePanel)
+            yield break;
+
+        yield return uiTweener.UIDoScale(true,UIRoot,transTime,AnimCurve);
+        //yield return uiTweener.UIEaseInFrom(E_Dir.下, transform, UIRoot, transTime);
+        canClosePanel = true;
     }
     bool init;
 

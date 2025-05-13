@@ -31,10 +31,10 @@ public class SquareKiller : MonoBehaviour
             pool.ReturnPool(other.gameObject.GetComponent<ColorSquare>());
         }
     }
-    IEnumerator Wait() 
-    {
-        yield return new WaitForSeconds(2f);
-        col.ColumnAddOneRandomSquare();
-        Debug.Log("ТЉЭјжЎгу");
-    }
+    //IEnumerator Wait() 
+    //{
+    //    yield return new WaitForSeconds(2f);
+    //    col.ColumnAddOneRandomSquare();
+    //    Debug.Log("ТЉЭјжЎгу");
+    //}
 }

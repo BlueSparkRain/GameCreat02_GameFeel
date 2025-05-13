@@ -1,52 +1,56 @@
+using NUnit.Framework.Constraints;
 using System.Collections;
 using UnityEngine;
 
 public class ColorSquare : Square
 {
     public ColorSquareSO myData;
-
-    public void ColorSelf()
-    {
-        GetComponent<SpriteRenderer>().sprite = myData.ColorSquareSprite;
-        if (transform.GetComponentInChildren<TrailRenderer>())
-        transform.GetComponentInChildren<TrailRenderer>().startColor = myData.SquareColor;
-    }
+    SquareObjPool pool;
+    SpriteRenderer spriteRenderer;
 
     protected override void Awake()
     {
         base.Awake();
-
-        if(myData!=null)
-            ColorSelf();
+        pool=FindAnyObjectByType<SquareObjPool>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
     }
-    
+
+    public void SetColorData(ColorSquareSO so) 
+    {
+      myData= so;
+      ColorSelf();
+    }
+
+    public void ColorSelf()
+    {
+        spriteRenderer.sprite = myData.ColorSquareSprite;
+        if (transform.GetComponentInChildren<TrailRenderer>())
+            transform.GetComponentInChildren<TrailRenderer>().startColor = myData.SquareColor;
+    }
     public override IEnumerator BeRemoved()
     {
         yield return base.BeRemoved();
         EventCenter.Instance.EventTrigger(E_EventType.E_ColorSquareRemove, transform);
-        if (transform.GetComponent<PlayerController>())
-            yield break;
 
+        if (transform.GetComponent<PlayerController>())
+        {
+            //yield return new WaitForSeconds(0.4f);
+            //StartCoroutine(slot.WaitLoose(0.6f));
+            yield break;
+        }
         DoSelfEffect();
         yield return SquareReMoveAnim();
-        //Debug.Log("É«¿é±»Ïû³ý");
 
         if (transform.parent != null && slot)
         {
+            transform.SetParent(null);
             slot.ThrowSquare();
         }
 
         if (transform.GetComponent<PlayerController>())
             yield break;
-        FindAnyObjectByType<SquareObjPool>().ReturnPool(this);
-    }
-    private void OnMouseEnter()
-    {
-        StartCoroutine(TweenHelper.MakeLerp(transform.localScale, Vector3.one * 1.8f, 0.1f, val => transform.localScale = val));
-    }
-    private void OnMouseExit()
-    {
-        StartCoroutine(TweenHelper.MakeLerp(transform.localScale, Vector3.one * 1.6f, 0.1f, val => transform.localScale = val));
+
+        pool.ReturnPool(this);
     }  
 }
 
