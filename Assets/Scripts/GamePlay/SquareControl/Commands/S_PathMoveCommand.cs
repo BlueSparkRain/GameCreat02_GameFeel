@@ -18,8 +18,8 @@ public class S_PathMoveCommand : SquareCommand
     {
         if (controlSquare != null)
         {
-            if(RayChecker.CheckTargetLayerObj(LayerMask.GetMask("Square"), controlSquare.transform.position, dir)!=null)
-            targetSquare = RayChecker.CheckTargetLayerObj(LayerMask.GetMask("Square"), controlSquare.transform.position, dir).GetComponent<Square>();
+            if(RayChecker.CheckTargetLayerObj(LayerMask.GetMask("Square"), 0.5f ,controlSquare.transform.position, dir)!=null)
+            targetSquare = RayChecker.CheckTargetLayerObj(LayerMask.GetMask("Square"), 0.5f, controlSquare.transform.position, dir).GetComponent<Square>();
             //Debug.Log("要交换目标:" +targetSquare +"-"+ (targetSquare as ColorSquare).myData.E_Color);
         }
     }

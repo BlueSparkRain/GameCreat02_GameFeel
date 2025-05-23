@@ -12,6 +12,7 @@ public class SquareController : MonoBehaviour
     S_RemoveCommand _removeCommand;
     S_PathMoveCommand _pathMoveCommand;
     S_ParticalExplodeCommand _particalExplodeCommand;
+    S_ScaleCommand _scaleCommand;
 
     SquareDecorator squareDecorator;
 
@@ -25,8 +26,8 @@ public class SquareController : MonoBehaviour
             sstr += (" " + i + ":" + (squareDecorator.iAmSpecial as ToPlayerMovePower).moveTasks[i]);
         }
         Debug.Log(sstr);
-
     }
+
 
     /// <summary>
     /// 重置方块装饰器
@@ -42,7 +43,38 @@ public class SquareController : MonoBehaviour
       squareDecorator=new SquareMoverDecorator(new ToPlayerMovePower(this));
       gameObject.layer = 3;
       squareDecorator.PowerInit();
-      //Debug.Log("追击！");
+    }
+
+    bool isSuper;
+    public void GetSuperMarkPower( E_SuperMarkType superType,bool isColDir,bool isRowDir) 
+    {
+        if (isSuper)
+            return;
+        isSuper=true;
+        GameObject SuperMarkObj=null;
+        SubCol col = square.slot.selfColumn;
+
+        switch (superType)
+        {
+            case E_SuperMarkType.整行or整列:
+        SuperMarkObj = Resources.Load<GameObject>("Prefab/SuperMark/Remove4Mark");
+        squareDecorator = new SquareSuperMarkDecorator(new Super4RemovePower(SuperMarkObj,square,isColDir, isRowDir));
+                break;
+            case E_SuperMarkType.整行And整列:
+        SuperMarkObj = Resources.Load<GameObject>("Prefab/SuperMark/Remove5Mark");
+        squareDecorator = new SquareSuperMarkDecorator(new Super5RemovePower(SuperMarkObj,square, true, true));
+                break;
+            default:
+                break;
+        }
+
+        squareDecorator.PowerInit();
+    }
+
+    public void RemoveDecoratorTrigger()
+    {
+        //Debug.Log("hahahha-"+squareDecorator+"666");
+        squareDecorator?.TriggerPower();
     }
 
     private void Update()
@@ -61,18 +93,17 @@ public class SquareController : MonoBehaviour
      isSwaping=false;
     }
 
-    /// <summary>
-    /// 对于已经布置在场景中的方块
-    /// </summary>
-    public void PrepareSquareInit() 
-    {
-        if (transform.parent && transform.parent.GetComponent<WalkableSlot>())
-        {
-           SquareMoveToSlot(transform.parent.position);
-           square.slot.transform.parent.parent.GetChild(transform.parent.GetSiblingIndex()).GetComponent<GameMap>().UpdateRowSquares(square, square.slot.transform.parent.parent.GetSiblingIndex(),  square.slot.mapIndex);
-        }
-
-    }
+    ///// <summary>
+    ///// 对于已经布置在场景中的方块
+    ///// </summary>
+    //public void PrepareSquareInit() 
+    //{
+    //    if (transform.parent && transform.parent.GetComponent<WalkableSlot>())
+    //    {
+    //       SquareMoveToSlot(transform.parent.position);
+    //       square.slot.transform.parent.parent.GetChild(transform.parent.GetSiblingIndex()).GetComponent<GameMap>().UpdateRowSquares(square, square.slot.transform.parent.parent.GetSiblingIndex(),  square.slot.mapIndex);
+    //    }
+    //}
 
     public void InitSquare(Vector3 bornPos,Vector3 gravity ,Vector3 looseSpeed) 
     {
@@ -84,6 +115,7 @@ public class SquareController : MonoBehaviour
     public void SetSquarPos(Vector3 targetPos) 
     {
        square.transform.position = targetPos;
+       square.transform.localScale = Vector3.one*0.45f;
     }
 
     void SetLooseSpeed(Vector3 looseSpeed) 
@@ -99,24 +131,16 @@ public class SquareController : MonoBehaviour
         square ??= GetComponent<Square>();
         _moveTSlotCommand = new S_MoveTSlotCommand(square, rb, gamemap);
         _looseCommand = new S_LooseCommand(square, rb);
+        
+        if(GetComponent<ColorSquare>())
         _colorCommand = new S_ColorCommand(GetComponent<ColorSquare>());
+        
         _removeCommand = new S_RemoveCommand(square);
         _pathMoveCommand = new S_PathMoveCommand(square, gamemap);
         _particalExplodeCommand = new S_ParticalExplodeCommand(square);
+        _scaleCommand=new S_ScaleCommand(square);
     }
 
-    private void Start()
-    {
-        //gamemap = FindAnyObjectByType<GameMap>();
-        //rb = GetComponent<SimpleRigibody>();
-        //square ??=GetComponent<Square>();
-        //_moveTSlotCommand =new S_MoveTSlotCommand(square,rb, gamemap);
-        //_looseCommand = new S_LooseCommand(square,rb);
-        //_colorCommand = new S_ColorCommand(GetComponent<ColorSquare>());
-        //_removeCommand=new S_RemoveCommand(square);
-        //_pathMoveCommand = new S_PathMoveCommand(square, gamemap);
-        //_particalExplodeCommand = new S_ParticalExplodeCommand(square);
-    }
 
 
     /// <summary>
@@ -143,9 +167,13 @@ public class SquareController : MonoBehaviour
     public void SqaureRemove() 
     {
         _removeCommand.Excute();
-
     }
-    
+
+    public void SquareDoScale(Vector3 startValue, Vector3 endValue, float tranTine = 0.3f) 
+    {
+        _scaleCommand.GetScaleTask(startValue,endValue,tranTine);
+        _scaleCommand.Excute();
+    }
 
     /// <summary>
     /// 方块移向父槽
@@ -165,8 +193,6 @@ public class SquareController : MonoBehaviour
         isSwaping = true;
         yield return new WaitForSeconds(0.12f);
         isSwaping = false;
-
-
     }
 
     /// <summary>

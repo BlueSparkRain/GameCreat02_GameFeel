@@ -27,7 +27,8 @@ public class S_MoveTSlotCommand : SquareCommand
         controlSquare.HasFather = true;
         rb.GetSlot();
         controlFather = controlSquare.transform.parent;
-        truePos = new Vector3(targetPos.x, targetPos.y, -0.1f);
+        //truePos = new Vector3(targetPos.x, targetPos.y, -0.1f);
+        truePos = targetPos;
 
         if (controlFather != null && controlFather.GetComponent<WalkableSlot>() != null)
         {

@@ -11,8 +11,8 @@ public class P_ColorationCommand : Player_Command
 
     public void ColorationOnce()
     {
-        targetSquare = RayChecker.CheckTargetLayerObj(player.whatIsSquare,player.transform.position,player.targetDir);
-        targetSquare ??= RayChecker.CheckTargetLayerObj(player.whatIsEnemy, player.transform.position, player.targetDir);
+        targetSquare = RayChecker.CheckTargetLayerObj(player.whatIsSquare,player.targetSquareChecckDistance ,player.transform.position,player.targetDir);
+        targetSquare ??= RayChecker.CheckTargetLayerObj(player.whatIsEnemy, player.targetSquareChecckDistance, player.transform.position, player.targetDir);
         //  player.CheckTarget(player.targetDir);
         if (targetSquare && targetSquare?.GetComponent<ColorSquare>())
             //player.Coloration(targetSquare?.GetComponent<ColorSquare>());

@@ -32,20 +32,25 @@ public class SubCol : MonoBehaviour
     WalkableSlot upSlot;
     WalkableSlot downSlot;
 
+    public void RemoveWholeSubCol() 
+    {
+        if (!isRemoving)
+        {
+            PostProcessManager.Instance.LenDistortionFlash();
+            StartCoroutine(RemoveSquares(subColSquares,true));
+        }
+    }
+
     /// <summary>
     /// 在目标槽处产生特殊方块
     /// </summary>
     /// <param name="so"></param>
     /// <param name="slotIndex"></param>
-   IEnumerator MakeSuperSquare(Square SuperSquare)
-    {
-        yield return  new WaitForSeconds(0.3f);
+   IEnumerator MakeSuperSquare(Square SuperSquare, E_SuperMarkType superType)
+   {
         yield return SuperSquare.SquareMoveAnim();
-      //yield return SuperSquare.SquareMoveAnim();
-      var superEffect= Instantiate(Resources.Load<GameObject>("Prefab/SuperMark/SuperMark"));
-      superEffect.transform.SetParent(SuperSquare.transform);
-      superEffect.transform.localPosition = Vector3.zero; 
-    }
+        SuperSquare.controller.GetSuperMarkPower(superType,true,false);
+   }
 
 
     public void Init(Vector3 gravityDir, Vector3 looseSpeed)
@@ -53,8 +58,6 @@ public class SubCol : MonoBehaviour
         spawner = subSlots[0].GetComponent<SpawnerSlot>();
         spawner.Init(gravityDir, looseSpeed);
         maxSquareNum = subSlots.Count - 1;
-        //Test
-        //Debug.Log("子列读取完毕");
 
         maxSpawnSquareNum = maxSquareNum;
 
@@ -141,13 +144,17 @@ public class SubCol : MonoBehaviour
 
     public void LooseASlot()
     {
-        //Debug.Log("松槽推迟");
-        removeTimer = removeTimerInterval;
+       delayBornTimer = delayBornTimerInterval;
     }
 
     float checkRemoveTimer;
-    float checkRemoveInterval = 0.35f;
+    float checkRemoveInterval = 0.25f;
     bool canCheckRemove;
+
+
+
+    float removingTimer;
+    float removingInterval = 0.25f;
 
     /// <summary>
     /// 在子列中检测子列是否可消除
@@ -159,17 +166,26 @@ public class SubCol : MonoBehaviour
         else
             canCheckRemove = true;
 
+
+        if (isRemoving && removingTimer >= 0)
+        {
+            removingTimer -= Time.deltaTime;
+        }
+        else
+            isRemoving = false;
+
+
         if (subColFull)
         {
             if (canCheckRemove && subColSquares != null)
             {
-                RemoveSquares();
                 canCheckRemove=false;
+                CheckToRemoveSquares();
                 checkRemoveTimer=checkRemoveInterval;
             }
             //消除事件开始 && 每次触发消除，重置计时
-            if (newRemoveBegin && removeTimer >= 0)
-                removeTimer -= Time.deltaTime;
+            if (newRemoveBegin && delayBornTimer >= 0)  
+                delayBornTimer -= Time.deltaTime;
             else
             {
                 newRemoveOver = true;
@@ -183,12 +199,8 @@ public class SubCol : MonoBehaviour
                 {
                     canAddNeedSquare = false;
 
-                    if (needAddNum == 0 && SquareNum < maxSpawnSquareNum)
-                        needAddNum = 1;
-
-
-                    //列生成只触发一次，等待下次消除
                     ColAddNeededSquare();
+                    //列生成只触发一次，等待下次消除
                 }
             }
         }
@@ -205,15 +217,11 @@ public class SubCol : MonoBehaviour
     /// <returns></returns>
     IEnumerator BornNeedToAddSquare()
     {
-        //Test
-        //Debug.Log("开始生成需要方块：" + needAddNum);
-
-        for (int i = 0; i < needAddNum; ++i)
+        for (int i = 0; i < maxSpawnSquareNum-SquareNum; ++i)
         {
             if (SquareNum > maxSpawnSquareNum)
             {
-                //Test
-                //Debug.Log("调");
+                canAddNeedSquare = true;
                 yield break;
             }
 
@@ -237,36 +245,57 @@ public class SubCol : MonoBehaviour
     /// <returns></returns>
     public IEnumerator SpawneFirstColSquares(List<ColorSquareSO> soList)
     {
-        WaitForSeconds delay = new WaitForSeconds(0.25f);
+        WaitForSeconds delay = new WaitForSeconds(0.35f);
         for (int i = maxSpawnSquareNum-1; i >=0; i--)
         {
             //玩家产生
             if (playerBorn && i == playerBornIndex)
             {
                 GameObject player = Instantiate(Resources.Load<GameObject>("Prefab/PlayerSquare"), spawner.transform.position, Quaternion.identity, null);
-                StartCoroutine(spawner.ColFallOneSquare(player));
-
+                spawner.ColFallOneSquare(player);
+                //StartCoroutine(spawner.ColFallOneSquare(player));
                 yield return delay;
                 continue;
             }
-            spawner.SubColAddTargetSquare(soList[i]);
+            //自定义地图块
+
+
+            spawner.SubColAddTargetColorSquare(soList[i]);
             yield return delay;
         }
     }
 
-    public void RemoveSquares()
+
+    public void GetTargetSlotNewSquare(WalkableSlot slot) 
     {
+        spawner.BornSquareToTargetSlot(slot);
+    }
+
+     void CheckToRemoveSquares()
+    {
+        //if (CheckRemoveList() != null && canRemoveLine)
         if (CheckRemoveList() != null)
         {
-            StartCoroutine(CheckAndRemoveSquares(CheckRemoveList()));
+            //canRemoveLine = false;
+            StartCoroutine(RemoveSquares(CheckRemoveList()));
         }
     }
 
-    IEnumerator CheckAndRemoveSquares(List<Square> removeLists)
+    public void NewRemove()
     {
-        if (!GetComponentInParent<GameRow>().isRemoving && !isRemoving)
+        isRemoving = true;
+        removingTimer = removingInterval;
+    }
+
+    IEnumerator RemoveSquares(List<Square> removeLists,bool isSuperPower=false)
+    {
+        if (!isRemoving)
         {
-            IsColumnRemoving();
+            NewRemove();
+            if (isSuperPower) 
+            {
+                yield return RemoveLine(removeLists, isSuperPower, RemoveColLine5);
+            }
 
             if (removeLists.Count <= 2)
             {
@@ -274,17 +303,16 @@ public class SubCol : MonoBehaviour
             }
             else if (removeLists.Count >= 5)
             {
-                yield return RemoveLine(removeLists, RemoveColLine5);
+                yield return RemoveLine(removeLists, isSuperPower, RemoveColLine5);
             }
             else if (removeLists.Count >= 4)
             {
-                yield return RemoveLine(removeLists, RemoveColLine4);
+                yield return RemoveLine(removeLists, isSuperPower,RemoveColLine4);
             }
             else if (removeLists.Count >= 3)
             {
-                yield return RemoveLine(removeLists, RemoveColLine3);
+                yield return RemoveLine(removeLists, isSuperPower, RemoveColLine3);
             }
-            StopColumnRemoving();
         }
     }
 
@@ -310,91 +338,126 @@ public class SubCol : MonoBehaviour
       
     }
 
-
-    //WaitForSeconds removeDelay = new WaitForSeconds(0.12f);
-    WaitForSeconds removeDelay = new WaitForSeconds(0.1f);
-    IEnumerator RemoveLine(List<Square> toRemoveSquares, UnityAction callback = null)
+    /// <summary>
+    /// 连线5消：消除+生成色块闪电：清除所有相同颜色色块
+    /// </summary>
+    void RemoveColLine5()
     {
+        Debug.Log("完成5消");
+    }
+    
+    void RemoveWholeSubCol666() 
+    {
+       
+    }
+
+
+    WaitForSeconds removeDelay = new WaitForSeconds(0.1f);
+    IEnumerator RemoveLine(List<Square> toRemoveSquares, bool isSuperPower = false, UnityAction callback = null)
+    {
+        //canRemoveLine = false;
         Square SuperSquare=null;
         int superSquareIndex=0;
-        if (toRemoveSquares.Count >= 3)
+        E_SuperMarkType superType= E_SuperMarkType.整行or整列;
+
+        if (!isSuperPower)
         {
-            superSquareIndex = Random.Range(0, toRemoveSquares.Count);
-            while (toRemoveSquares[superSquareIndex].GetComponent<PlayerController>()) 
+            if (toRemoveSquares.Count >= 4)
             {
-               superSquareIndex = Random.Range(1, toRemoveSquares.Count);
+                superSquareIndex = Random.Range(0, toRemoveSquares.Count);
+                
+                if ((toRemoveSquares[superSquareIndex] == null))
+                     yield break;
+                    
+
+                while (toRemoveSquares[superSquareIndex].GetComponent<PlayerController>())
+                {
+                    superSquareIndex = Random.Range(1, toRemoveSquares.Count);
+                }
+
+                SuperSquare = toRemoveSquares[superSquareIndex];
             }
 
-            SuperSquare = toRemoveSquares[superSquareIndex];
+            if (toRemoveSquares.Count >= 5)
+            {
+             superType=E_SuperMarkType.整行And整列;
+                
+            }
+            else if (toRemoveSquares.Count >= 4) 
+            {
+             superType=E_SuperMarkType.整行or整列;
+             }
         }
 
-        for (int i = 0; i < toRemoveSquares.Count; ++i)
+        for (int i = 0; i < toRemoveSquares.Count; i++)
         {
+            if(toRemoveSquares[i]==null)
+                continue;
+
             if (toRemoveSquares[i].GetComponent<PlayerController>())
             {
                 yield return toRemoveSquares[i].BeRemoved();
                 if (i + 1 >= toRemoveSquares.Count)
                     yield break;
                 continue;
-                //i++;
             }
 
-            if (toRemoveSquares.Count >= 3 && i == superSquareIndex)
+            if (!isSuperPower)
             {
-                newRemoveBegin = true;
-                removeTimer = removeTimerInterval;
-                canAddNeedSquare = true;
-                Debug.Log("太六了"+superSquareIndex+"-"+SuperSquare);
-                //yield return removeDelay;
-                continue;
+                if (toRemoveSquares.Count >= 4 && i == superSquareIndex)
+                {
+                    ColDelayBorn();
+                    continue;
+                }
             }
 
             //非玩家且非特殊
-            StartCoroutine(toRemoveSquares[i].BeRemoved());
-            ColPrepareNeededSquare();
-            yield return removeDelay;
-        }
+            if (toRemoveSquares[i] != SuperSquare)
+            {
+                StartCoroutine(toRemoveSquares[i].BeRemoved());
+                NewRemove();
 
+                ColAddPrepareNeededSquare();
+                yield return removeDelay;
+            }
+        }
         //????
         if (SuperSquare!=null)
         {
-        Debug.Log(SuperSquare);
-            StartCoroutine(MakeSuperSquare(SuperSquare));
+            StartCoroutine(MakeSuperSquare(SuperSquare, superType));
         }
-
-
-
         callback?.Invoke();
     }
 
-    float removeTimer;
-    float removeTimerInterval = 0.4f;//消除行为在0.4s内未重复触发时
-    WaitForSeconds bornDelay = new WaitForSeconds(0.2f);
+    float delayBornTimer;
+    float delayBornTimerInterval = 0.5f;//消除行为在0.4s内未重复触发时
+    WaitForSeconds bornDelay = new WaitForSeconds(0.25f);
 
     bool canAddNeedSquare = true;
     bool newRemoveBegin;//新的消除行为触发
     bool newRemoveOver;//一连串消除事件结束
     int needAddNum;//需要添加的方块
 
+
     /// <summary>
-    /// 向列发送填充请求：重置消除计时器
+    /// 延迟产生方块
     /// </summary>
-    public void ColPrepareNeededSquare()
+    public void ColDelayBorn() 
     {
-        needAddNum++;
         newRemoveBegin = true;
-        //Test
-        //Debug.Log("消除事件重置！");
-        removeTimer = removeTimerInterval;
-        canAddNeedSquare = true;
+        delayBornTimer = delayBornTimerInterval;
+        //canAddNeedSquare = true;
+
     }
 
     /// <summary>
-    /// 连线5消：消除+生成色块闪电：清除所有相同颜色色块
+    /// 向列发送填充请求：重置消除计时器
     /// </summary>
-    public void RemoveColLine5()
+    public void ColAddPrepareNeededSquare()
     {
-        Debug.Log("完成5消");
+        needAddNum++;
+        newRemoveBegin = true;
+        delayBornTimer = delayBornTimerInterval;
     }
 
     /// <summary>
@@ -489,3 +552,19 @@ public class SubCol : MonoBehaviour
             return null;
     }
 }
+
+public class SubColCustomSquare 
+{
+    [Header("特殊方块类型")]
+    public E_SpecialSquareType specialType;
+
+    [Header("特殊方块精灵")]
+    public Sprite squareSprite;
+    [TextArea]
+    [Header("特殊方块描述")]
+    public string description;
+
+}
+
+
+

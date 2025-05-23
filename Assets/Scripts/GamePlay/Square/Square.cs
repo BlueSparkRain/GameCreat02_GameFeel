@@ -18,8 +18,10 @@ public class Square : MonoBehaviour, ICanEffect
     public bool canMove = true;
 
 
-    protected SquareController  controller;
-    public WalkableSlot slot ;//{  get; protected set; }
+    public SquareController controller;
+    public WalkableSlot slot ;
+
+    public bool isRemoving;
 
     public void SetSlot(WalkableSlot slot) 
     {
@@ -31,22 +33,17 @@ public class Square : MonoBehaviour, ICanEffect
         rb = GetComponent<SimpleRigibody>();
         controller=GetComponent<SquareController>();
     }
-    private void Start()
-    {
-        //controller.PrepareSquareInit();
-    }
-
+   
     /// <summary>
     /// 色块放缩出生动画
     /// </summary>
     /// <returns></returns>
     public IEnumerator SquareScaleBornAnim() 
     {
-        transform.localScale = Vector3.zero;
+      transform.localScale = Vector3.zero;
       yield return TweenHelper.MakeLerp(Vector3.zero, new Vector3(1.4f,1.8f,1.6f), 0.05f, val => transform.localScale = val);
       yield return TweenHelper.MakeLerp(new Vector3(1.4f,1.8f,1.6f),Vector3.one *1.6f, 0.05f, val => transform.localScale = val);
 
-  
     }
 
     /// <summary>
@@ -63,25 +60,28 @@ public class Square : MonoBehaviour, ICanEffect
     /// 色块在被消除时的动画
     /// </summary>
     /// <returns></returns>
-    public  IEnumerator SquareReMoveAnim()
+    public  IEnumerator SquareRemoveAnim()
     {
-        yield return TweenHelper.MakeLerp(transform.localScale, new Vector3(2.5f, 0.7f, 1.6f), 0.12f, val => transform.localScale = val);
-        yield return TweenHelper.MakeLerp(transform.localScale, new Vector3(0.8f, 2.5f, 1.6f), 0.08f, val => transform.localScale = val);
-        yield return TweenHelper.MakeLerp(transform.localScale, Vector3.one * 1.6f, 0.06f, val => transform.localScale = val);
-        yield return TweenHelper.MakeLerp(transform.localScale, Vector3.one * 2.6f, 0.04f, val => transform.localScale = val);
+        yield return TweenHelper.MakeLerp(transform.localScale, new Vector3(2.5f, 0.7f, 1.6f), 0.10f, val => transform.localScale = val);
+        yield return TweenHelper.MakeLerp(transform.localScale, new Vector3(0.8f, 2.5f, 1.6f), 0.06f, val => transform.localScale = val);
+        yield return TweenHelper.MakeLerp(transform.localScale, Vector3.one * 1.6f, 0.05f, val => transform.localScale = val);
+        yield return TweenHelper.MakeLerp(transform.localScale, Vector3.one * 2.2f, 0.03f, val => transform.localScale = val);
+        yield return TweenHelper.MakeLerp(transform.localScale, Vector3.one * 0.45f, 0.02f, val => transform.localScale = val);
     }
 
     public virtual IEnumerator BeRemoved()
-    {
+    { 
         yield return null;
+        RemoveSelfEffect();
         Debug.Log("方块被消除");
+        controller.RemoveDecoratorTrigger();
         controller.ReSetDecorator();
     }
 
     /// <summary>
     /// 执行方块技能逻辑（加分or其他）
     /// </summary>
-    public virtual void DoSelfEffect()
+    public virtual void RemoveSelfEffect()
     {
         //基础消除加分
         EventCenter.Instance.EventTrigger(E_EventType.E_GetSquareScore, BaseScore);
@@ -98,7 +98,6 @@ public class Square : MonoBehaviour, ICanEffect
         //消除音效
         FindAnyObjectByType<PitchTest>().DingDong();
     }
-
 
     /// <summary>
     /// 播放方块自身被去除时的爆炸效果

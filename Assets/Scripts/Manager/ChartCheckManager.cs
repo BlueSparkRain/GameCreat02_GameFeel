@@ -149,7 +149,7 @@ public class ChartCheckManager : MonoSingleton<ChartCheckManager>
     void SetUpNewChart()
     {
         //生成新的收缩判定圈
-        GameObject newChartObj = objPoolManager.GetChart();
+        GameObject newChartObj = objPoolManager.GetChartObj();
         //判定圈设置玩家父对象
         newChartObj.transform.SetParent(player);
         newChartObj.transform.localPosition = Vector3.zero;

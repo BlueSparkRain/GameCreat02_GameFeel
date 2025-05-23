@@ -1,4 +1,5 @@
 using Mono.Cecil.Cil;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
@@ -20,6 +21,8 @@ public class GameCol : MonoBehaviour
     public GameObject SpawnerSlotPrefab;
     public GameObject ObstacleSlotPrefab;
 
+    public float slotLineWidth = 1;
+
 #if UNITY_EDITOR
     [ContextMenu("为本列创建若干Walkable槽")]
     void CreatWalkableCol()
@@ -28,7 +31,7 @@ public class GameCol : MonoBehaviour
         for (int i = 0; i < createSlotNum; i++)
         {
             //纵向排列，相邻槽间隔距离为2
-            GameObject newSlot = Instantiate(WalkableSlotPrefab, firstSlotPos + new Vector3(0, -2, 0) * (i + 1), Quaternion.identity, transform);
+            GameObject newSlot = Instantiate(WalkableSlotPrefab, firstSlotPos + new Vector3(0, -slotLineWidth, 0) * (i + 1), Quaternion.identity, transform);
             if (i == createSlotNum - 1)
                 firstSlot = newSlot.transform;
         }
@@ -41,7 +44,7 @@ public class GameCol : MonoBehaviour
         for (int i = 0; i < createSlotNum; i++)
         {
             //纵向排列，相邻槽间隔距离为2
-            GameObject newSlot = Instantiate(ObstacleSlotPrefab, firstSlotPos + new Vector3(0, -2, 0) * (i + 1), Quaternion.identity, transform);
+            GameObject newSlot = Instantiate(ObstacleSlotPrefab, firstSlotPos + new Vector3(0, -slotLineWidth, 0) * (i + 1), Quaternion.identity, transform);
             if (i == createSlotNum - 1)
                 firstSlot = newSlot.transform;
         }
@@ -57,7 +60,7 @@ public class GameCol : MonoBehaviour
         else
             firstSlotPos = transform.position;
 
-        GameObject newSlot = Instantiate(SpawnerSlotPrefab, firstSlotPos + new Vector3(0, -2, 0), Quaternion.identity, transform);
+        GameObject newSlot = Instantiate(SpawnerSlotPrefab, firstSlotPos + new Vector3(0, -slotLineWidth, 0), Quaternion.identity, transform);
         firstSlot = newSlot.transform;
     }
 #endif
@@ -99,15 +102,6 @@ public class GameCol : MonoBehaviour
         var soLists = GetSubSOList(soList);
         for (int i= subCols.Count-1; i >=0; i--)
         {
-            //测试
-            //string strs = "子列：" + i.ToString() + ":";
-            //for (int j = soLists[i].Count-1; j >=0; j--)
-            //{
-            //    strs += soLists[i][j].ToString() + soLists[i][j].E_Color + ",";
-            //}
-            //Debug.Log(strs);
-
-            //Debug.Log(i + ":::" + soLists[i].Count);
             StartCoroutine(subCols[i].SpawneFirstColSquares(soLists[i]));
         }
     }
@@ -128,7 +122,6 @@ public class GameCol : MonoBehaviour
             List<ColorSquareSO> subSoList = new List<ColorSquareSO>();
 
             //Debug.Log(transform.GetSiblingIndex() + "列 " + i + " 偏移: " + offset);
-
             // 遍历 mapSlots 并为每个子列表添加 walkableSlot 类型的元素
 
             for (int j = offset; j <= mapSlots.Count; j++) 
@@ -172,6 +165,11 @@ public class GameCol : MonoBehaviour
         for (int i = 0; i < transform.childCount; i++)
         {
             allSlots.Add(transform.GetChild(i).GetComponent<Slot>());
+        }
+
+        for (int i = 0; i < allSlots.Count; i++)
+        {
+            allSlots[i].HideSelf();
         }
 
         CreatAllSubCols();
@@ -251,6 +249,10 @@ public class GameCol : MonoBehaviour
                 var newSubCol = new GameObject("SubCol:" + subColNum).AddComponent<SubCol>();
                 subCols.Add(newSubCol);
                 newSubCol.transform.SetParent(transform);
+                newSubCol.transform.localScale = Vector3.one;
+
+
+
                 newSubCol.GetNewSlot(allSlots[i]);
 
                 currentSubCol = newSubCol;
@@ -273,6 +275,11 @@ public class GameCol : MonoBehaviour
             //正常的槽
             else
             {
+                if (playerBornData.SubColIndex == subColNum)
+                    currentSubCol.IsPlayerCol(playerBornData.BornIndex);
+                //说明一个子列读取完毕,接着结束或进行下一子类
+                //continue;
+                //else
                 //为当前子列添加新的槽
                 currentSubCol.GetNewSlot(allSlots[i]);
             }
@@ -290,3 +297,15 @@ public class GameCol : MonoBehaviour
        
     }
 }
+
+[Serializable]
+public class PlayerBornData
+{
+    [Header("玩家于此列出生")]
+    public bool IsPlayerBornColumn;
+    [Header("出生所在子竖列序号（至小应为1）")]
+    public int SubColIndex = 0;
+    [Header("玩家在子竖列的出生位置【越靠列下方值越大】")]
+    public int BornIndex;
+}
+

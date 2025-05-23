@@ -5,13 +5,13 @@ using UnityEngine;
 public class ColorSquare : Square
 {
     public ColorSquareSO myData;
-    SquareObjPool pool;
+    SquarePoolManager pool;
     SpriteRenderer spriteRenderer;
 
     protected override void Awake()
     {
         base.Awake();
-        pool=FindAnyObjectByType<SquareObjPool>();
+        pool=FindAnyObjectByType<SquarePoolManager>();
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
@@ -27,6 +27,7 @@ public class ColorSquare : Square
         if (transform.GetComponentInChildren<TrailRenderer>())
             transform.GetComponentInChildren<TrailRenderer>().startColor = myData.SquareColor;
     }
+
     public override IEnumerator BeRemoved()
     {
         yield return base.BeRemoved();
@@ -34,15 +35,13 @@ public class ColorSquare : Square
 
         if (transform.GetComponent<PlayerController>())
         {
-            //yield return new WaitForSeconds(0.4f);
-            //StartCoroutine(slot.WaitLoose(0.6f));
             yield break;
         }
-        DoSelfEffect();
-        yield return SquareReMoveAnim();
+        //DoSelfEffect();
 
         if (transform.parent != null && slot)
         {
+            yield return SquareRemoveAnim();
             transform.SetParent(null);
             slot.ThrowSquare();
         }
@@ -50,7 +49,8 @@ public class ColorSquare : Square
         if (transform.GetComponent<PlayerController>())
             yield break;
 
-        pool.ReturnPool(this);
+        WholeObjPoolManager.Instance.ObjReturnPool(E_ObjectPoolType.É«¿é³Ø,this.gameObject);
+        //pool.ReturnPool(gameObject,);
     }  
 }
 

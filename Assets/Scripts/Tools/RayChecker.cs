@@ -5,9 +5,9 @@ using UnityEngine;
 
 public static class RayChecker
 {
-    static  float targetChecckDistance = 1.4f;
+    //static  float targetChecckDistance = 1.4f;
 
-    public static GameObject CheckTargetLayerObj(LayerMask layer,Vector3 checkOriginPos, E_CustomDir targetDir) 
+    public static GameObject CheckTargetLayerObj(LayerMask layer,float targetChecckDistance, Vector3 checkOriginPos, E_CustomDir targetDir) 
     {
 
         switch (targetDir)

@@ -12,9 +12,14 @@ public class Slot : MonoBehaviour
     {
         selfColumn=col;
     }
-
     public void GetPathFindIndex( Vector2Int nodeIndex) 
     {
         NodeIndex=nodeIndex;
+    }
+
+
+    public void HideSelf() 
+    {
+        GetComponent<SpriteRenderer>().color=new Color(0,0,0,0);
     }
 }

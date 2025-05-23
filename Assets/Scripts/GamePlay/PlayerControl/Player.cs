@@ -51,7 +51,8 @@ public class Player : MonoBehaviour
     {
         square = GetComponent<ColorSquare>();
         playerSquareController= GetComponent<SquareController>();
-        VCam = FindAnyObjectByType<CinemachineVirtualCamera>().transform;
+        VCam = Camera.main.transform;
+        //VCam = FindAnyObjectByType<CinemachineVirtualCamera>().transform;
         StartCoroutine(SleepWake());
     }
     IEnumerator SleepWake()
@@ -108,6 +109,7 @@ public class Player : MonoBehaviour
         if (otherSquareControl != null && mySlot != null)
         {
             otherSquareControl.SquareMoveToSlot(mySlot.position);
+            StartCoroutine(otherSquareControl.square.SquareMoveAnim());
         }
         if (transform.parent != null)
         {

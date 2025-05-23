@@ -51,22 +51,6 @@ public class WalkableSlot :Slot
 
     private void Update()
     {
-        if (checkTimer > 0)
-        {
-            checkTimer -= Time.deltaTime;
-            //canCheck=false;
-        }
-        else
-            canCheck = true;
-
-        //if(isFull && downslot) 
-        //{
-        //    if (!downslot.isFull) 
-        //    {
-        //        ThrowSquare();
-        //    }
-        //}
-
         //检测本槽下方是否有空位，有空位则松掉本槽内方块
         if (isFull && canCheck && downslot)
         {
@@ -76,8 +60,6 @@ public class WalkableSlot :Slot
             if (!downslot.isFull)
             {
                 ThrowSquare();
-                //if (transform.childCount != 0)
-                //    transform?.GetChild(0).GetComponent<SquareController>().SquareLoose();
             }
         }
     }
@@ -87,12 +69,10 @@ public class WalkableSlot :Slot
         if (isFull)
             return;
         currentSquare =newSquare;
+        newSquare.transform.SetParent(transform);
         isFull =  true;
         StartCoroutine(WaitLoose());
         newSquare.GetComponent<SquareController>().SquareMoveToSlot(transform.position);
-
-        //if (upslot)
-        //    upslot.isDownEmpty = false;
     }
 
     /// <summary>
@@ -142,7 +122,7 @@ public class WalkableSlot :Slot
     /// <summary>
     /// 抛出当前槽内方块
     /// </summary>
-    public void ThrowSquare(float interval=0.1f)
+    public void ThrowSquare(float interval=0.08f)
     {
         ////本槽掉落，短暂冻结上槽
         if (isFull && upslot)
@@ -158,9 +138,6 @@ public class WalkableSlot :Slot
         {
             upslot.isDownEmpty = true;
             isDownEmpty = false;
-
-            //if(downslot && downslot.isFull)
-            //currentSquare.GetComponent<SquareController>().SquareLoose();
             currentSquare = null;
         }
 
@@ -170,10 +147,12 @@ public class WalkableSlot :Slot
             transform?.GetChild(0).GetComponent<SquareController>().SquareLoose();
 
     }
-    public  IEnumerator WaitLoose(float interval=0.1f)
+    public  IEnumerator WaitLoose(float interval=0.08f)
     {
-        checkTimer = interval;
+        //checkTimer = interval;
         canCheck = false;
+        yield return new WaitForSeconds(interval);
+        canCheck = true;
        
         selfColumn.LooseASlot();
         yield return null;

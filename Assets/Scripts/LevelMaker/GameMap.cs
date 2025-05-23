@@ -27,14 +27,13 @@ public class GameMap : MonoBehaviour
         {
             Rows[i].InitRow(Columns.Count);
         }
-
     }
 
     IEnumerator TestMovePoswer() 
     {
         yield return new WaitForSeconds(3);
-        //Debug.Log("变身");
-        Columns[3].mapSlots[6].GetComponentInChildren<SquareController>().GetMovePower();
+        Debug.Log("变身");
+        //Columns[3].mapSlots[6].GetComponentInChildren<SquareController>().GetMovePower();
     }
    
     void Start()
@@ -52,10 +51,44 @@ public class GameMap : MonoBehaviour
         LoadWholePan();
     }
 
-    public void FirstColSquares(int colIndex, List<ColorSquareSO> soLists)
+
+    /// <summary>
+    /// 根据随机地图装填一列方块
+    /// </summary>
+    /// <param name="colIndex"></param>
+    /// <param name="soLists"></param>
+    void FirstColSquares(int colIndex, List<ColorSquareSO> soLists)
     {
         //修改
         Columns[colIndex].CallSubColsFirstFull(soLists);
+    }
+
+    void BornAllSquares(int W)
+    {
+        int[,] validArray = RandMapGenerator.GetRandomArray(W, W);
+
+        for (int i = 0; i < W; i++)
+        {
+            List<int> intList = new List<int>();
+
+            for (int j = 0; j < W; j++)
+            {
+                intList.Add(validArray[i, j]);
+            }
+
+            List<ColorSquareSO> soList = FindAnyObjectByType<SquarePoolManager>().GetColorSOList(intList);
+
+            ///测试
+            //string strs="列："+i.ToString()+":";
+            //for (int j = 0; j < intList.Count; j++)
+            //{
+            //    strs+=intList[j].ToString()+soList[j].E_Color+",";
+            //}
+            //Debug.Log(strs);
+            ///
+            FirstColSquares(i, soList);
+        }
+
     }
 
     /// <summary>
@@ -64,7 +97,8 @@ public class GameMap : MonoBehaviour
     void LoadWholePan()
     {
         //以列数生成矩形方阵
-        ColorSquareManager.Instance.BornAllSquares(Columns.Count);
+        BornAllSquares(Columns.Count);
+
     }
 
     public E_AStarNodeType[,] AstarTypeMap;
@@ -96,7 +130,6 @@ public class GameMap : MonoBehaviour
         //AStarManager同步更新节点地图
         AStarManager.Instance.InitMap(Columns.Count, InitRowNum, AstarTypeMap);
     }
-
 
     /// <summary>
     /// 更新发生变动的行

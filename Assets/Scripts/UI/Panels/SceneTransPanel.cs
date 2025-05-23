@@ -67,7 +67,7 @@ public class SceneTransPanel : BasePanel
     {
         yield return UITween.Instance.UIDoFade(transform, 1, 0, 0.8f);
         yield return new WaitForSeconds(0.5f);
-
+        loadingBar.transform.parent.gameObject.SetActive(true);
         isSceneTransing = false;
     }
 
@@ -102,16 +102,21 @@ public class SceneTransPanel : BasePanel
     /// <param name="_dealy">黑屏持续时长</param>
     /// <param name="_transTime">黑屏过渡时长</param>
     /// <returns></returns>
-    IEnumerator BlackTransLoading(int sceneIndex, float _dealy = 0.5f, float _transTime = 0.5f)
+    IEnumerator BlackTransLoading(int sceneIndex, float _dealy = 2f, float _transTime = 1f)
     {
+        loadingBar.transform.parent.gameObject.SetActive(false);
         delay = new WaitForSeconds(_dealy);
         //转场开始
         yield return uiTweener.UIDoFade(blackTransImage, 0, 1, _transTime);
         yield return _dealy;
         //加载场景
         yield return sceneLoadManager.LoadNewScene(sceneIndex);
+        loadingBar.transform.parent.gameObject.SetActive(false);
+        yield return _dealy;
+
         //转场结束
         yield return uiTweener.UIDoFade(blackTransImage, 1, 0, _transTime);
+        uiManager.HidePanel<SceneTransPanel>();
     }
 
     /// <summary>

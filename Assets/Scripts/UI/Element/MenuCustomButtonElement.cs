@@ -12,17 +12,15 @@ public class MenuCustomButtonElement : MonoBehaviour,IPointerEnterHandler,IPoint
     Vector3 startPos;
     //UITween uITween;
     [SerializeField] float transTime; 
-    Button button;
     Animator anima;
     [SerializeField]TMP_Text text;
 
-    void Start()
+    private void Awake()
     {
         readyPos = transform.localPosition;
-        startPos= readyPos+new Vector3(-1000, 0,0);
+        startPos = readyPos + new Vector3(-1000, 0, 0);
         transform.localPosition = startPos;
-        button = GetComponent<Button>();
-        anima = GetComponent<Animator>();   
+        anima = GetComponent<Animator>();
     }
 
     public void SelfAppear() 
@@ -35,7 +33,6 @@ public class MenuCustomButtonElement : MonoBehaviour,IPointerEnterHandler,IPoint
         StartCoroutine(TweenHelper.MakeLerp(Vector3.one, Vector3.one * 1.2f, 0.1f, val => transform.localScale = val));
         if(text != null) 
         text.color = Color.yellow;
-        //transform.localScale = Vector3.one * 1.2f;
         if (anima != null)
         {
             anima.SetBool("OnSelect",true);
@@ -52,7 +49,6 @@ public class MenuCustomButtonElement : MonoBehaviour,IPointerEnterHandler,IPoint
         {
             anima.SetBool("DisSelect",true);
             anima.SetBool("OnSelect",false);
-            //transform.localScale = Vector3.one;
         }
     }
 }

@@ -80,7 +80,7 @@ public class Chart : MonoBehaviour
         //缩小到精确采样点
         GetSamplePoint();
         yield return TweenHelper.MakeLerp(Vector3.one * 2.34f, Vector3.zero, prepareTime, val => transform.localScale = val);
-        wholeObjPoolManager.ReturnPool(E_ObjectPoolType.音符池,gameObject);
+        wholeObjPoolManager.ObjReturnPool(E_ObjectPoolType.音符池,gameObject);
     }
 
     IEnumerator SetUpSample()

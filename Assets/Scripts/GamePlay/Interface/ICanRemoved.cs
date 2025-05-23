@@ -3,7 +3,7 @@
 /// </summary>
 public interface ICanEffect
 {
-    public void DoSelfEffect();
+    public void RemoveSelfEffect();
 }
 
 

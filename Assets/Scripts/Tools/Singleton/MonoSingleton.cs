@@ -26,10 +26,11 @@ public class MonoSingleton<T> : MonoBehaviour where T : MonoSingleton<T>
     {
         if (instance != null)
         {
-            Destroy(this);
+            Destroy(this.gameObject);
             return;
         }
         instance = this as T;
+        InitSelf();
         DontDestroyOnLoad(instance.gameObject);
     }
     protected virtual void InitSelf()

@@ -10,22 +10,26 @@ public class GameRow : MonoBehaviour
 
     List<Square> toRemoveSquares = new List<Square>();
 
+    public void RemoveWholeRow()
+    {
+        if (!isRemoving)
+        {
+            PostProcessManager.Instance.LenDistortionFlash();
+            NewRemove();
+            StartCoroutine(RemoveSquares(rowSquares, true));
+        }
+    }
 
     /// <summary>
     /// 在目标槽处产生特殊方块
     /// </summary>
     /// <param name="so"></param>
     /// <param name="slotIndex"></param>
-    IEnumerator MakeSuperSquare(Square SuperSquare)
+    IEnumerator MakeSuperSquare(Square SuperSquare, E_SuperMarkType superType)
     {
         yield return SuperSquare.SquareMoveAnim();
-        var superEffect = Instantiate(Resources.Load<GameObject>("Prefab/SuperMark/SuperMark"));
-        superEffect.transform.SetParent(SuperSquare.transform);
-        superEffect.transform.localPosition = Vector3.zero;
+        SuperSquare.controller.GetSuperMarkPower(superType, false,true);
     }
-
-
-
 
     public void UpdateRowSquare(Square square, int index)
     {
@@ -47,18 +51,39 @@ public class GameRow : MonoBehaviour
             rowSquares.Add(null);
     }
 
-    public bool isRemoving;
-
+    //消除间隔
     WaitForSeconds removeDelay = new WaitForSeconds(0.1f);
-
-  
-
+    //正在行消除
+    public bool isRemoving;
+    //消除检测计时
     float checkRemoveTimer;
-    float checkRemoveInterval=0.2f;
+    float checkRemoveInterval=0.25f;//每0.2s检测是否有可以消除的组合
+    //消除检测计时
     bool canCheckRemove;
+    //开启行检测
+    bool canStartCheck=false;
+
+    IEnumerator CheckStart() 
+    {
+        yield return new WaitForSeconds(4);
+        canStartCheck = true;
+    
+    }
+    private void Start()
+    {
+        StartCoroutine(CheckStart());
+    }
+
+    float removingTimer;
+    float removingInterval=0.25f;
+    
 
     void Update()
     {
+
+
+        if(!canStartCheck)
+            return;
         if (!canCheckRemove && checkRemoveTimer >= 0)
             checkRemoveTimer -= Time.deltaTime;
         else
@@ -66,16 +91,27 @@ public class GameRow : MonoBehaviour
 
         if (canCheckRemove && rowSquares != null)
         {
-            RemoveSquares();
+            CheckToRemoveSquares();
             canCheckRemove=false;
             checkRemoveTimer = checkRemoveInterval;
         }
+
+
+        if (isRemoving && removingTimer >= 0) 
+        {
+            removingTimer -= Time.deltaTime;
+        }
+        else
+            isRemoving = false;
     }
 
-    public void RemoveSquares()
+    public void CheckToRemoveSquares()
     {
-        if (CheckRemoveList() != null)
-            StartCoroutine(CheckAndRemoveSquares(CheckRemoveList()));
+        if (CheckRemoveList() != null && !isRemoving)
+        {
+            NewRemove();
+            StartCoroutine(RemoveSquares(CheckRemoveList()));
+        }
     }
 
     int firstIndex;
@@ -111,11 +147,9 @@ public class GameRow : MonoBehaviour
         { 
             if (!rowSquares[i] || !rowSquares[i].GetComponent<ColorSquare>())
             {
-
                 if (toRemoveSquares.Count >= 3)
                     return toRemoveSquares;
-
-                num = 0;//Test
+                num = 0;
                 continue;
             }
 
@@ -143,7 +177,6 @@ public class GameRow : MonoBehaviour
                     }
                     else
                     {
-
                         canAdd = false;
                     }
                 }
@@ -155,32 +188,50 @@ public class GameRow : MonoBehaviour
             return null;
     }
 
-    IEnumerator CheckAndRemoveSquares(List<Square> removeLists)
+    IEnumerator WaitRowRemove()
     {
+        IsRowRemoving();
+        yield return new WaitForSeconds(0.6f);
+        StopRowRemoving();
+    }
 
-        if (!GetComponentInChildren<SubCol>().isRemoving && !isRemoving)
-        {
-            IsRowRemoving();
-            if (removeLists.Count <= 2)
-            {
+    void NewRemove() 
+    {
+        isRemoving = true;
+        removingTimer = removingInterval;
+    }
 
-            }
-            else if (removeLists.Count >= 5)
-            {
-                yield return RemoveRowLine(removeLists, RemoveRowLine5);
-            }
-            else if (removeLists.Count >= 4)
-            {
-                yield return RemoveRowLine(removeLists, RemoveRowLine4);
-            }
 
-            else if (removeLists.Count >= 3)
-            {
-                yield return RemoveRowLine(removeLists, RemoveRowLine3);
-            }
 
-            StopRowRemoving();
-        }
+    IEnumerator RemoveSquares(List<Square> removeLists,bool isSuperPower=false)
+    {        
+         if (isSuperPower) 
+         {
+            yield return RemoveRowLine(removeLists, isSuperPower, RemoveWholeRow666);
+            yield break;
+         }   
+
+         if (removeLists.Count <= 2)
+         {
+            yield break;
+         }
+         else if (removeLists.Count >= 5)
+         {
+             yield return RemoveRowLine(removeLists, isSuperPower, RemoveRowLine5);
+             yield break;
+         }
+         else if (removeLists.Count >= 4)
+         {
+             yield return RemoveRowLine(removeLists, isSuperPower, RemoveRowLine4);
+            yield break;
+         }
+        
+         else if (removeLists.Count >= 3)
+         {
+             yield return RemoveRowLine(removeLists, isSuperPower, RemoveRowLine3);
+            yield break;
+         }
+        
     }
 
     /// <summary>
@@ -201,7 +252,7 @@ public class GameRow : MonoBehaviour
     /// <summary>
     /// 连线3消：无功能，只积分
     /// </summary>
-    public void RemoveRowLine3()
+    void RemoveRowLine3()
     {
         Debug.Log("完成3消");
 
@@ -212,7 +263,7 @@ public class GameRow : MonoBehaviour
     /// <summary>
     /// 连线4消：消除+生成1个整列炸弹色块
     /// </summary>
-    public void RemoveRowLine4()
+    void RemoveRowLine4()
     {
         Debug.Log("完成4消");
 
@@ -223,75 +274,103 @@ public class GameRow : MonoBehaviour
     /// <summary>
     /// 连线5消：消除+生成色块闪电：清除所有相同颜色色块
     /// </summary>
-    public void RemoveRowLine5()
+    void RemoveRowLine5()
     {
         Debug.Log("完成5消");
 
         //5消机制
     }
 
-    IEnumerator RemoveRowLine(List<Square> toRemoveSquares, UnityAction callback = null)
+    void RemoveWholeRow666() 
+    {
+        Debug.Log("完成整行消除");
+    }
+
+    IEnumerator RemoveRowLine(List<Square> toRemoveSquares,bool isSuperPwer=false, UnityAction callback = null)
     {
         Square SuperSquare = null;
         int superSquareIndex=0;
-        if (toRemoveSquares.Count >= 3)
+        E_SuperMarkType superType = E_SuperMarkType.整行or整列;
+
+        if (!isSuperPwer)
         {
-            superSquareIndex = Random.Range(0, toRemoveSquares.Count);
-            while (toRemoveSquares[superSquareIndex].GetComponent<PlayerController>())
+            if (toRemoveSquares.Count >= 4)
             {
-                superSquareIndex = Random.Range(1, toRemoveSquares.Count);
+                superSquareIndex = Random.Range(0, toRemoveSquares.Count);
+                while (toRemoveSquares[superSquareIndex].GetComponent<PlayerController>())
+                {
+                    superSquareIndex = Random.Range(1, toRemoveSquares.Count);
+                }
+                SuperSquare = toRemoveSquares[superSquareIndex];
             }
 
-            SuperSquare = toRemoveSquares[superSquareIndex];
-        }
+            if (toRemoveSquares.Count >= 5)
+            {
+                superType = E_SuperMarkType.整行And整列;
 
+            }
+            else if (toRemoveSquares.Count >= 4)
+            {
+                superType = E_SuperMarkType.整行or整列;
+            }
+        }
 
         for (int i = 0; i < toRemoveSquares.Count; i++)
         {
+            if(toRemoveSquares[i]==null)
+                continue;
+
             if (toRemoveSquares[i].GetComponent<PlayerController>())
             {
                 StartCoroutine(toRemoveSquares[i].BeRemoved());
                 if (i + 1 >= toRemoveSquares.Count)
                     yield break;
-                //i++;
                 continue;
             }
 
-            if (toRemoveSquares.Count >= 3 && i == superSquareIndex)
+            if (!isSuperPwer)
             {
-                Debug.Log("太六了" + superSquareIndex + "-" + SuperSquare);
-                //yield return removeDelay;
-                continue;
+                if (toRemoveSquares.Count >= 4 && i == superSquareIndex)
+                {
+                    SubCol targetCol = toRemoveSquares[i].transform.GetComponentInParent<SubCol>();
+                    targetCol?.ColDelayBorn();
+                    continue;
+                }
             }
+
 
             if (toRemoveSquares[i].transform.parent != null)
             {
+
                 SubCol targetCol = toRemoveSquares[i].transform.GetComponentInParent<SubCol>(); // parent?.parent?.GetComponent<GameCol>();
-                //targetCol?.IsColumnRemoving();
-                StartCoroutine(toRemoveSquares[i].BeRemoved());
 
-                targetCol?.ColPrepareNeededSquare();
-                StartCoroutine(WaitColRemove(targetCol));
+                if (toRemoveSquares[i] != SuperSquare)
+                {
+                    StartCoroutine(toRemoveSquares[i].BeRemoved());
+                    //新消除
+                    NewRemove();
 
-                yield return removeDelay;
-                
+                    targetCol?.ColAddPrepareNeededSquare();
+                    targetCol?.NewRemove();
+                    //StartCoroutine(WaitColRemove(targetCol));
+                    yield return removeDelay;
+                }
             }
 
             if (SuperSquare != null)
             {
                 Debug.Log(SuperSquare);
-                StartCoroutine(MakeSuperSquare(SuperSquare));
+                StartCoroutine(MakeSuperSquare(SuperSquare, superType));
             }
-
 
         }
         callback?.Invoke();
     }
 
-    IEnumerator WaitColRemove(SubCol targetCol) 
-    {
-        targetCol?.IsColumnRemoving();
-        yield return new WaitForSeconds(0.4f);
-        targetCol?.StopColumnRemoving();
-    }
+    //IEnumerator WaitColRemove(SubCol targetCol) 
+    //{
+    //    targetCol?.IsColumnRemoving();
+    //    yield return new WaitForSeconds(0.4f);
+    //    targetCol?.StopColumnRemoving();
+    //}
 }

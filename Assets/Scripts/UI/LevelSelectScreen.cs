@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
@@ -5,14 +6,20 @@ using UnityEngine.UI;
 
 public class LevelSelectScreen : MonoBehaviour
 {
+    [Header("关卡序号")]
     public int levelNumber = 1;
     public Shader shader;
     private Material material;
+
+    [Header("关卡名字")]
     public string levelName;
+    [Header("关卡名字文本")]
+    public TMP_Text levelNameText;
+
     public int levelStar = -1;
 
     public Texture _locked;
-    public Texture _0Star;
+    public Texture _0Star; 
     public Texture _1Star;
     public Texture _2Star;
     public Texture _3Star;
@@ -21,13 +28,33 @@ public class LevelSelectScreen : MonoBehaviour
     [Header("历史最高分数")]
     public int historyScore;
 
-    [Header("历史评级")]
+
+
+    [Header("历史最高评级")]
     public E_LevelLevel level=E_LevelLevel.None;
 
     /// <summary>
     /// 本关卡正被锁定
     /// </summary>
     public bool isUnLock;
+
+    private void OnMouseEnter()
+    {
+        StartCoroutine(ShakeLevelNameRotAnim());
+        
+    }
+
+    private void OnMouseExit()
+    {
+        
+
+    }
+
+    private void OnMouseUpAsButton()
+    {
+        //StartCoroutine(ShakeLevelNameRotAnim());
+        OnClickUnLockButton();
+    }
 
 
     /// <summary>
@@ -44,15 +71,26 @@ public class LevelSelectScreen : MonoBehaviour
         }
     }
 
+    Transform levelNameTrans;
+    IEnumerator ShakeLevelNameRotAnim()
+    {
+        yield return TweenHelper.MakeLerp(Vector3.zero, new Vector3(0, 90, 5.8f), 0.08f, val => levelNameTrans.localEulerAngles = val);
+        StartCoroutine(TweenHelper.MakeLerp(levelNameTrans.localScale,new Vector3(2,1.2f,2),0.05f,val=> levelNameTrans.localScale=val));
+        yield return TweenHelper.MakeLerp(new Vector3(90, 90, -5.8f), new Vector3(90, 0, 5.8f), 0.08f, val => levelNameTrans.localEulerAngles= val);
+        StartCoroutine(TweenHelper.MakeLerp(levelNameTrans.localScale,Vector3.one*1,0.05f,val=> levelNameTrans.localScale=val));
+        yield return TweenHelper.MakeLerp(new Vector3(0, 90, 5.8f), Vector3.zero, 0.08f, val => levelNameTrans.localEulerAngles = val);
+    }
+
     void Start()
     {
         material = new Material(shader);
-        GetComponent<Image>().material = material;
-        material.SetTexture("_MainTex", GetComponent<Image>().sprite.texture);
+        GetComponent<MeshRenderer>().material = material;
+        material.SetTexture("_MainTex", _locked);
         material.SetTexture("_alpha", alpha);
 
-        GetComponentInChildren<TMP_Text>().text = transform.parent.GetSiblingIndex().ToString();//关卡编号
-        GetComponent<Button>().onClick.AddListener(OnClickUnLockButton);
+        //显示关卡名字
+        levelNameText.text = levelName;
+        levelNameTrans= levelNameText.transform;
         ChangeLeveState(-1);
     }
 
@@ -86,10 +124,12 @@ public class LevelSelectScreen : MonoBehaviour
     {
         if (isUnLock)
         {
+            Debug.Log("未解锁");
             //StartCoroutine(LevelSelectManager.Instance.LockRemindShow());
             return;
         }
-        SceneLoadManager.Instance.LoadNewLevel(transform.parent.GetSiblingIndex() + 2);
+        Debug.Log("未解锁");
+        SceneLoadManager.Instance.TransToLoadScene(2+levelNumber,E_SceneTranType.黑屏过渡);
     }
 
     public void ChangeLeveState(int levelStarNum)

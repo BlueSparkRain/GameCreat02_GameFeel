@@ -719,8 +719,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -0.1}
-  m_LocalScale: {x: 1.6, y: 1.6, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.45000002, y: 0.45000002, z: 0.28125}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 716073458523366139}
   - {fileID: 5079738542890001213}
@@ -850,6 +850,7 @@ MonoBehaviour:
   HasFather: 0
   BaseScore: 50
   canMove: 1
+  slot: {fileID: 0}
   myData: {fileID: 11400000, guid: 0bd0130e2f857444094e0ecb2f6c43a9, type: 2}
 --- !u!114 &-1764890053907615121
 MonoBehaviour:
@@ -911,7 +912,7 @@ MonoBehaviour:
     m_Bits: 8
   actInterval: 0.2
   isSwaping: 0
-  targetSquareChecckDistance: 1.4
+  targetSquareChecckDistance: 0.45
   targetDir: 0
   P: {fileID: 1397789448451516282}
   N: {fileID: 4222435733475761559}

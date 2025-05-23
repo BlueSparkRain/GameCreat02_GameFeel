@@ -23,7 +23,7 @@ public class S_ParticalExplodeCommand : SquareCommand
     public override void Excute()
     {
        base.Excute();
-       particalObj = wholeObjPoolManager.GetTargetPartical(particalType);
+       particalObj = wholeObjPoolManager.GetTargetParticalObj(particalType);
        particle= particalObj.GetComponent<ParticleSystem>();
        particle.transform.position=controlSquare.transform.position;
        particle.textureSheetAnimation.SetSprite(0, controlSquare.GetComponent<SpriteRenderer>().sprite);
@@ -35,16 +35,8 @@ public class S_ParticalExplodeCommand : SquareCommand
     IEnumerator WaitToReturnPool() 
     {
         yield return  returnDelay;
-        wholeObjPoolManager.ReturnPool(E_ObjectPoolType.色块消除爆炸池,particalObj);
+        wholeObjPoolManager.ObjReturnPool(E_ObjectPoolType.色块消除爆炸池,particalObj);
     
     }
 }
 
-public enum E_ParticalType
-{
-    玩家卡点完美,
-    玩家卡点优秀,
-    玩家卡点好,
-    色块消除爆炸,
-
-}

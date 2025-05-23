@@ -15,7 +15,6 @@ public class NewBehaviourScript : MonoBehaviour
     void Start()
     {
         return;
-
         audioSource = GameObject.Find("BKMusic").GetComponent<AudioSource>();
         images = new GameObject[imageCount];
         for (int i = 0; i < imageCount; i++)
@@ -39,11 +38,7 @@ public class NewBehaviourScript : MonoBehaviour
         InvokeRepeating("ScaleLength", 0, changeSpeed);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
 
-    }
     void ScaleLength()
     {
         if (audioSource)

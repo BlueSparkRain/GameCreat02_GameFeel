@@ -74,6 +74,7 @@ public class MusicManager : BaseSingleton<MusicManager>
         bkMusic.loop = true;
         bkMusic.volume = bkMusicValue;
         bkMusic.Play();
+        //return bkMusic;
     }
 
     //Õ£÷π±≥æ∞“Ù¿÷

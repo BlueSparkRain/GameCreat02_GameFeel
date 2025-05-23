@@ -3,13 +3,11 @@ using UnityEngine;
 
 public class SquareKiller : MonoBehaviour
 {
-    SquareObjPool pool;
-    SquareColumn col;
+    WholeObjPoolManager pool;
 
     private void Start()
     {
-        col=GetComponentInParent<SquareColumn>();
-        pool = FindAnyObjectByType<SquareObjPool>();
+        pool ??= WholeObjPoolManager.Instance;
     }
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -21,20 +19,8 @@ public class SquareKiller : MonoBehaviour
                 return;
             }
 
-            //if ( col.SquareNum < 8)
-            //{
-            //    //col.ColumnAddOneSquare();
-            //    //Debug.Log("Â©ÍøÖ®Óã");
-            //    StartCoroutine(Wait());
-            //}
-            
-            pool.ReturnPool(other.gameObject.GetComponent<ColorSquare>());
+        
+            pool.ObjReturnPool(E_ObjectPoolType.É«¿é³Ø, other.gameObject);
         }
     }
-    //IEnumerator Wait() 
-    //{
-    //    yield return new WaitForSeconds(2f);
-    //    col.ColumnAddOneRandomSquare();
-    //    Debug.Log("Â©ÍøÖ®Óã");
-    //}
 }

@@ -85,6 +85,7 @@ public class GamepadShakeManager : MonoSingleton<GamepadShakeManager>
 
     void ExcuteCameraShake(string resName)
     {
+        return;
         CameraShakeManager.Instance.ExcuteCameraShake(resName, GetComponentInChildren<CinemachineImpulseSource>());
     }
 

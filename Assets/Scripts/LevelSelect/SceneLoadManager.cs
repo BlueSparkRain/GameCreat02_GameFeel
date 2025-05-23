@@ -22,7 +22,7 @@ public class SceneLoadManager : MonoSingleton<SceneLoadManager>
     }
 
     /// <summary>
-    /// 卸载当前场景并加载新场景
+    /// 卸载当前场景并加载新场景(建议外界禁止调用)
     /// </summary>
     /// <param name="index"></param>
     /// <returns></returns>
@@ -43,8 +43,7 @@ public class SceneLoadManager : MonoSingleton<SceneLoadManager>
     /// <param name="sceneIndex"></param>
     public void LoadNewLevel(int sceneIndex)
     {
-        //StartCoroutine( LevelSelectManager.Instance.HideLevelSelector());
-        //uiInstance.ShowPanel<SceneTransPanel>(panel =>  panel.SceneLoadingTrans(sceneIndex));
+     
     }
 
     IEnumerator LoadLevel(int unloadSceneIndex, int sceneIndex)

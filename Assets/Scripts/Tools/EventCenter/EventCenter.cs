@@ -248,6 +248,8 @@ public enum E_EventType
     /// Íæ¼Ò¿¨ÅÄ
     /// </summary>
     E_PlayerHit,
+
+    E_LensDistortionFlash
 }
 
 

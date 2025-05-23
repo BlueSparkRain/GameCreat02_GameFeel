@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class AddEffect_Lightning : ICanEffect
 {
-    public void DoSelfEffect()
+    public void RemoveSelfEffect()
     {
         Debug.Log("¥•∑¢…¡µÁ");
     }

@@ -6,7 +6,7 @@ public class SquareDecorator : IHaveSpecialPower
     public IHaveSpecialPower iAmSpecial;
     public SquareDecorator(IHaveSpecialPower power) 
     {
-    iAmSpecial = power;
+       iAmSpecial = power;
     }
 
     public virtual  void PowerInit()

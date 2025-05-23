@@ -13,8 +13,8 @@ public class P_MoveCommand : Player_Command
 
     public void MoveOnce()
     {
-        targetSquare = RayChecker.CheckTargetLayerObj(player.whatIsSquare, player.transform.position, player.targetDir);
-        targetSquare ??= RayChecker.CheckTargetLayerObj(player.whatIsEnemy, player.transform.position, player.targetDir);
+        targetSquare = RayChecker.CheckTargetLayerObj(player.whatIsSquare,player.targetSquareChecckDistance,  player.transform.position, player.targetDir);
+        targetSquare ??= RayChecker.CheckTargetLayerObj(player.whatIsEnemy, player.targetSquareChecckDistance, player.transform.position, player.targetDir);
         if (targetSquare && targetSquare.transform.parent?.GetComponent<WalkableSlot>())
            //mono.StartCoroutine(player.Swap(targetSquare?.GetComponent<Square>()));
         mono.StartCoroutine(player.Swap(targetSquare?.GetComponent<SquareController>()));

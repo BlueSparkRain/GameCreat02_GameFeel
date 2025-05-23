@@ -6,11 +6,12 @@ public class LevelSelectCameraLooking : MonoBehaviour
 {
     private Vector3 lastMousePosition;
     private float rotationSpeedY;
-    private float maxRotationSpeed = 2f;
+    public float maxRotationSpeed = 2f;
     private float dampingFactor = 0.9f;
     private float thresholdAngle = 15f;
     private bool isKeyboardRotating = false;
     float keyboardRotateY = 0f;
+    public float rotSpeed = 0.1f;
     // Start is called before the first frame update
     void Start()
     {
@@ -26,7 +27,8 @@ public class LevelSelectCameraLooking : MonoBehaviour
             Vector3 currentMousePosition = Input.mousePosition;
             Vector3 mouseDelta = currentMousePosition - lastMousePosition;
 
-            rotationSpeedY += mouseDelta.x * 0.05f;
+            //rotationSpeedY += mouseDelta.x * 0.05f;
+            rotationSpeedY += mouseDelta.x * rotSpeed;
 
             rotationSpeedY = Mathf.Clamp(rotationSpeedY, -maxRotationSpeed, maxRotationSpeed);
 

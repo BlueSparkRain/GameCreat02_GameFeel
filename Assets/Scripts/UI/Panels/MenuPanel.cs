@@ -42,7 +42,7 @@ public class MenuPanel : BasePanel
     /// </summary>
     void OnClickThankYouButton() 
     {
-        uiManager.ShowPanel<ThankYouPanel>(null,true);
+        uiManager.ShowPanel<CreditsPanel>(null,true);
     }
 
     /// <summary>

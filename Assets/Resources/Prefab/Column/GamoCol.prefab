@@ -54,7 +54,7 @@ MonoBehaviour:
     SubColIndex: 0
     BornIndex: 0
   MoveDir: 0
-  squareLooseSpeed: 40
+  squareLooseSpeed: 10
   mapSlots: []
 --- !u!114 &6830773818141044163
 MonoBehaviour:

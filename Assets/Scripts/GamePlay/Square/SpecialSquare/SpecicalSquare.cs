@@ -12,10 +12,18 @@ public class SpecicalSquare : Square
     [Header("本地块可摧毁")]
     bool canRemoved;
 
+    protected SubCol selfCol;
+    protected GameRow selfRow;
+
     protected override void Awake()
     {
         base.Awake();
         MyAppear();
+    }
+
+    protected virtual void RemainSelfEffect() 
+    {
+
     }
 
     /// <summary>
@@ -26,17 +34,33 @@ public class SpecicalSquare : Square
         transform.GetComponent<SpriteRenderer>().sprite = SpecicalSprite;
     }
 
-    public override void DoSelfEffect()
+    /// <summary>
+    /// 
+    /// </summary>
+    public override void RemoveSelfEffect()
     {
-     base .DoSelfEffect();
+      base .RemoveSelfEffect();
     }
 
     public override IEnumerator BeRemoved()
     {
-        yield return base.BeRemoved();
-        if(!canRemoved)
+        RemainSelfEffect();
+
+        if (!canRemoved)
+        {
+            RemainSelfEffect();
             yield break;
+        }
+
+        yield return base.BeRemoved();
 
     }
    
+}
+
+public enum E_SpecialSquareType 
+{   
+    消融方块,
+    传送门方块,
+
 }

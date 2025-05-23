@@ -1,5 +1,4 @@
 using System.Collections;
-using Unity.Content;
 using UnityEngine;
 
 /// <summary>
@@ -7,12 +6,11 @@ using UnityEngine;
 /// </summary>
 public class CollectableSquare : SpecicalSquare
 {
-    private BoxCollider2D checkAera;
     public E_Collectable type;
     [Header("需要消除的次数")]
-    public int moveTime=1;
+    public int moveTime = 1;
 
-    bool canTrigger=true;
+    bool canTrigger = true;
 
     private void OnEnable()
     {
@@ -23,17 +21,17 @@ public class CollectableSquare : SpecicalSquare
     {
         EventCenter.Instance.RemoveEventListener<Transform>(E_EventType.E_ColorSquareRemove, CheckSelf);
     }
-    bool canMinus=true;
+    bool canMinus = true;
 
     /// <summary>
     /// 可收集方块周围消除检测，可接收距离3（2.9）为临界最大值
     /// </summary>
     /// <param name="square"></param>
-    void CheckSelf(Transform square) 
+    void CheckSelf(Transform square)
     {
         if (canTrigger && canMinus && Vector2.Distance(square.position, transform.position) <= 3)
         {
-             StartCoroutine(MinusCheck());
+            StartCoroutine(AeraCheck());
             if (moveTime <= 0)
             {
                 canTrigger = false;
@@ -42,16 +40,39 @@ public class CollectableSquare : SpecicalSquare
         }
     }
 
-    IEnumerator MinusCheck() 
+    public override void RemoveSelfEffect()
     {
-       canMinus = false; 
-       moveTime -= 1;
-       yield return new WaitForSeconds(1);
-       canMinus = true;
+        base.RemoveSelfEffect();
+        //消除后锁定上槽+本位生成一个方块
+    }
+
+
+    protected override void RemainSelfEffect()
+    {
+        base.RemainSelfEffect();
+
+
+    }
+
+    IEnumerator AeraCheck()
+    {
+        canMinus = false;
+        moveTime -= 1;
+        yield return new WaitForSeconds(1);
+        canMinus = true;
     }
 
     public override IEnumerator BeRemoved()
     {
-        yield return null;
+        yield return base.BeRemoved();
+
+        if (transform.parent != null && slot)
+        {
+            yield return SquareRemoveAnim();
+            transform.SetParent(null);
+            slot.ThrowSquare();
+        }
+
+        selfCol.GetTargetSlotNewSquare(slot);
     }
 }

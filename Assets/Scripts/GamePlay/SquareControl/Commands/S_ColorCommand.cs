@@ -1,8 +1,9 @@
+using System.Diagnostics;
+
 public class S_ColorCommand : ColorSquareCommand
 {
     public S_ColorCommand(ColorSquare square) : base(square)
     {
-
     }
     public override void Excute()
     {
@@ -12,7 +13,7 @@ public class S_ColorCommand : ColorSquareCommand
 
 
     void ColoeSelf()
-    {
+    { 
         colorSquare.ColorSelf();
     }
 

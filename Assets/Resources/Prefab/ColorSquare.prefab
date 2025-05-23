@@ -107,7 +107,7 @@ BoxCollider2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 832
+    m_Bits: 768
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
@@ -152,6 +152,7 @@ MonoBehaviour:
   HasFather: 0
   BaseScore: 50
   canMove: 1
+  slot: {fileID: 0}
   myData: {fileID: 0}
 --- !u!114 &7069973028954697046
 MonoBehaviour:
