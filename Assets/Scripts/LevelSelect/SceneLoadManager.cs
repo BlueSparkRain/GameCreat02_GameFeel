@@ -36,14 +36,12 @@ public class SceneLoadManager : MonoSingleton<SceneLoadManager>
         yield return SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene());
     }
 
-
     /// <summary>
     /// 从LevelSelect场景进入关卡
     /// </summary>
     /// <param name="sceneIndex"></param>
     public void LoadNewLevel(int sceneIndex)
     {
-     
     }
 
     IEnumerator LoadLevel(int unloadSceneIndex, int sceneIndex)

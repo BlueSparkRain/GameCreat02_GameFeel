@@ -56,11 +56,23 @@ public class WalkableSlot :Slot
         {
             checkTimer = checkInterval;
             canCheck = false;
-
+            if(currentSquare && !currentSquare.canMove)
+            {
+                return;
+            }
             if (!downslot.isFull)
             {
                 ThrowSquare();
             }
+        }
+
+        if (!isFull && transform.childCount==0)
+        {
+            //ThrowSquare();
+            currentSquare = null;
+            if(downslot && downslot.isFull)
+                isDownEmpty=false;
+
         }
     }
 
@@ -133,7 +145,6 @@ public class WalkableSlot :Slot
             }
         }
         isFull = false;
-
         if (currentSquare && upslot)
         {
             upslot.isDownEmpty = true;

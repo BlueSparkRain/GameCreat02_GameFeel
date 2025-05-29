@@ -38,6 +38,7 @@ public class GameProfileElement : MonoBehaviour
     WaitForSeconds delay = new WaitForSeconds(0.3f);
     CanvasGroup canvasGroup;
 
+
     private void Start()
     {
         LoadProfileButton.onClick.AddListener(() =>
@@ -52,6 +53,7 @@ public class GameProfileElement : MonoBehaviour
             LoadCurrentProfile();
         });
 
+        //删除存档按钮绑定
         ClearProfileButton.onClick.AddListener(() =>
         {
             //用户请求删除存档信息
@@ -92,12 +94,12 @@ public class GameProfileElement : MonoBehaviour
                             + " " +
                             profileSaveData.saveTime;
             //存档最新关卡
-            CurrentLevelText.text = profileSaveData.currentLevel.ToString();
+            CurrentLevelText.text = profileSaveData.lastestLevel.ToString();
         }
         else
         {
             TechText.text = "请创建新存档";
-            ProfileNameText.text = "———新存档———";
+            ProfileNameText.text = "——新存档——";
             TimeText.text = "———???———";
             CurrentLevelText.text = "0";
         }
@@ -108,21 +110,25 @@ public class GameProfileElement : MonoBehaviour
     /// </summary>
     void LoadCurrentProfile()
     {
-        transform.parent.GetComponentInParent<GameProfilePanel>().SetElementName(this);
+        transform.parent.GetComponentInParent<GameProfilePanel>().SetCurrentElement(this);
 
         if (profileSaveData.isNewProfile)
         {
-            (uiManager.GetPanel<GameProfilePanel>() as GameProfilePanel).LockAllElemnets();
+           (uiManager.GetPanel<GameProfilePanel>() as GameProfilePanel).LockAllElemnets();
 
             //打开输入弹窗，待玩家输入存档名称后写入json文件
             uiManager.ShowPanel<Pop_InputField_WindowPanel>(panel => panel.InputToConfirm(OnProfileNameSetValueChange, ProfileNameSetUpAction), true, true);
             //当前存档不为新文档
+            profileSaveData.Init();
             profileSaveData.isNewProfile = false;
         }
         else //历史存档
         {
             //点击进入关卡选择
             Debug.Log("加载历史存档");
+
+            uiManager.HidePanel<GameProfilePanel>();
+
             gameProfileSaveManager.SelectNewProfile(profileSaveData);
             //确认当前存档为全局
             SceneLoadManager.Instance.TransToLoadScene(1,E_SceneTranType.过场图过渡);
@@ -143,6 +149,7 @@ public class GameProfileElement : MonoBehaviour
             uiManager.ShowPanel<Pop_Confirm_WindowPanel>(panel => panel.ToConfirm("是否删除存档", ClearCurrentProfile, ClearDisposeAction), true, true);
         }
     }
+
     /// <summary>
     /// 清除当前存档【成空白存档】
     /// </summary>

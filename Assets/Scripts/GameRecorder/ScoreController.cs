@@ -1,20 +1,24 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
 
 public class ScoreController : MonoBehaviour
 {
     public PlayerScoreViewer scoreViewer;
 
-    [Header("本局游戏时长")]
-    public float gameDuration = 60;
+    public float removeScoreMulti = 0.3f;
+    public float chartHitScoreMulti = 0.7f;
 
-    [Header("本局游戏所需分数")]
-    public int GameOverScore = 4000;
+    [Header("本局游戏S评级所需分数")]
+    public int S_LevelScore = 5000;
 
     PlayerScoreMode scoreMode;
-    public int PlayerCurrentScore => scoreMode.playerCurrentScore;
 
-    ComboController comboController;
+    public int PlayerCurrentRemoveScore => scoreMode.currentRemoveScore;
+    public int PlayerCurrentChartHitScore => scoreMode.currentChartHitScore;
+
+    int finalScore;
+    //ComboController comboController;
 
     UIManager uiManager;
     bool gameOver = false;
@@ -25,72 +29,89 @@ public class ScoreController : MonoBehaviour
 
     private void OnEnable()
     {
-        EventCenter.Instance.AddEventListener<int>(E_EventType.E_GetSquareScore, UpdatePlayerScore);
+        EventCenter.Instance.AddEventListener<int>(E_EventType.E_GetSquareRemoveScore, UpdatePlayerRemoveScore);
+        EventCenter.Instance.AddEventListener<int>(E_EventType.E_GetHitChartScore, UpdatePlayerChartHitScore);
     }
 
     private void OnDisable()
     {
-        EventCenter.Instance.RemoveEventListener<int>(E_EventType.E_GetSquareScore, UpdatePlayerScore);
+        EventCenter.Instance.RemoveEventListener<int>(E_EventType.E_GetSquareRemoveScore, UpdatePlayerRemoveScore);
+        EventCenter.Instance.RemoveEventListener<int>(E_EventType.E_GetHitChartScore, UpdatePlayerChartHitScore);
     }
-
-    private void Start()
+    private void Awake()
     {
+        //comboController = FindAnyObjectByType<ComboController>();
         scoreMode = new PlayerScoreMode();
-        comboController = FindAnyObjectByType<ComboController>();
         uiManager = UIManager.Instance;
-        GameStart();
+        scoreViewer.SetSLevelStandard(S_LevelScore);
+        UpdateFinalScore();
     }
 
-    public void GameStart()
+    public void SelfInit(float musicDuration) 
     {
-        gameTimer = gameDuration;
-        StartCoroutine(Gaming());
+        gameTimer = 0;
+        StartCoroutine(GamTimming(musicDuration));
     }
-    IEnumerator Gaming()
+
+    float wholeMusicDuration;
+  
+    IEnumerator GamTimming(float musicDuration)
     {
-        while (gameTimer >= 0)
+        while (gameTimer <musicDuration)
         {
-            gameTimer -= Time.deltaTime;
-            scoreViewer.GetTimeText((int)gameTimer);
-            scoreViewer.SetFillImage(gameTimer, gameDuration);
+            gameTimer += Time.deltaTime;
+            scoreViewer.SetMusicProgressFillImage(gameTimer, musicDuration);
             yield return null;
         }
-        if (!gameOver)
-        {
-            gameOver = true;
-            uiManager.ShowPanel<GameOverPanel>(panel => panel.LostGame(PlayerCurrentScore));
-        }
+
+        GameLevelCheckManager.Instance.EndLevel(finalScore);
     }
 
+    
 
-    void UpdateScore(float multi, int score)
+    void UpdateRemoveScore(float multi, int score)
     {
-        scoreMode.GetScore(multi, score);
-        scoreViewer.SetScoreText(scoreMode.playerCurrentScore);
+        scoreMode.GetRemoveScore(multi, score);
+    }
+    void UpdateChartScore(int score)
+    {
+        scoreMode.GetChartScore(score);
+    }
+
+    /// <summary>
+    /// 更新UI显示-最终得分=a*基础消除得分+b*卡拍得分
+    /// </summary>
+    /// <param name="baseRemoveScore">基础消除得分</param>
+    /// <param name="hitScore">卡拍得分</param>
+    void UpdateFinalScore()
+    {
+        finalScore = (int)(scoreMode.currentRemoveScore * removeScoreMulti +
+                     scoreMode.currentChartHitScore * chartHitScoreMulti);
+        scoreViewer.SetFinalScoreText(finalScore);
+
+        //更新分数时同步更新评级进度
+        scoreViewer.SetScoreLevelProgress((float)finalScore/(float)S_LevelScore);
+        GameLevelCheckManager.Instance.CalculateLevel(finalScore, S_LevelScore);
     }
 
     public void GetCollectData()
     {
-        GetStarNum(1);
-    }
-
-
-    void GetStarNum(int starNum)
-    {
-        highestStarNum += starNum;
     }
 
     /// <summary>
-    /// 更新玩家得分及文本
+    /// 更新玩家消除得分及文本
     /// </summary>
-    public void UpdatePlayerScore(int score)
+    public void UpdatePlayerRemoveScore(int removescore)
     {
-        UpdateScore(comboController.CurrentMulti, score);
-        if (!gameOver && PlayerCurrentScore >= GameOverScore)
-        {
-            GetStarNum(2);
-            gameOver = true;
-            uiManager.ShowPanel<GameOverPanel>(panel => panel.GetPlayerData(gameDuration - gameTimer, PlayerCurrentScore, highestStarNum));
-        }
+        UpdateRemoveScore(1, removescore);
+        UpdateFinalScore();
+    } 
+    /// <summary>
+    /// 更新玩家卡点得分及文本
+    /// </summary>
+    public void UpdatePlayerChartHitScore(int chartScore)
+    {
+        UpdateChartScore(chartScore);
+        UpdateFinalScore();
     }
 }

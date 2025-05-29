@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -26,7 +28,7 @@ public class SceneTransPanel : BasePanel
     [Header("Shader转场黑幕Image")]
     public Transform blackTransImage;
 
-    int curentImageIndex = 0;
+    int curentImageIndex = 1;
 
     [Header("加载场景进度条")]
     public Image loadingBar;
@@ -46,11 +48,9 @@ public class SceneTransPanel : BasePanel
         switch (type)
         {
             case E_SceneTranType.过场图过渡:
-                Debug.Log("7");
                 StartCoroutine(ShaderTransLoading(sceneIndex));
                 break;
             case E_SceneTranType.黑屏过渡:
-                Debug.Log("8");
                 StartCoroutine(BlackTransLoading(sceneIndex));
                 break;
             case E_SceneTranType.未知:
@@ -102,18 +102,17 @@ public class SceneTransPanel : BasePanel
     /// <param name="_dealy">黑屏持续时长</param>
     /// <param name="_transTime">黑屏过渡时长</param>
     /// <returns></returns>
-    IEnumerator BlackTransLoading(int sceneIndex, float _dealy = 2f, float _transTime = 1f)
+    IEnumerator BlackTransLoading(int sceneIndex, float _delay = 1f, float _transTime = 1f)
     {
         loadingBar.transform.parent.gameObject.SetActive(false);
-        delay = new WaitForSeconds(_dealy);
+        delay = new WaitForSeconds(_delay);
         //转场开始
         yield return uiTweener.UIDoFade(blackTransImage, 0, 1, _transTime);
-        yield return _dealy;
+        yield return delay;
         //加载场景
         yield return sceneLoadManager.LoadNewScene(sceneIndex);
         loadingBar.transform.parent.gameObject.SetActive(false);
-        yield return _dealy;
-
+        yield return delay;
         //转场结束
         yield return uiTweener.UIDoFade(blackTransImage, 1, 0, _transTime);
         uiManager.HidePanel<SceneTransPanel>();
@@ -126,7 +125,7 @@ public class SceneTransPanel : BasePanel
     /// <param name="_dealy">转场维持时长</param>
     /// <param name="_transTime">转场过渡时长</param>
     /// <returns></returns>
-    IEnumerator ShaderTransLoading(int sceneIndex, float _dealy = 0.5f, float _transTime = 1f)
+    IEnumerator ShaderTransLoading(int sceneIndex, float _dealy = 0.25f, float _transTime = 1f)
     {
         if (isSceneTransing)
             yield break;
@@ -164,7 +163,7 @@ public class SceneTransPanel : BasePanel
     /// <returns></returns>
     Image GetNextEffectImage()
     {
-        if (curentImageIndex + 1 < shaderTransImages.Count)
+        if (curentImageIndex + 1 > shaderTransImages.Count)
             curentImageIndex++;
         else
             curentImageIndex = 0;

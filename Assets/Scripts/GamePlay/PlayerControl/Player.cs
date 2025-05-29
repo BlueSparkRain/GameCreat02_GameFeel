@@ -161,7 +161,9 @@ public class Player : MonoBehaviour
             return;
         canAct = false;
 
+        if((otherSquare.square as ColorSquare).myData!=null)
         square.myData = (otherSquare.square as ColorSquare).myData;
+
         playerSquareController.SquareMoveToSlot(transform.parent.position);
         MusicManager.Instance.PlaySound("coloration");
 

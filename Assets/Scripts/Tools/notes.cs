@@ -5,19 +5,20 @@ using UnityEngine;
 
 public class notes
 {
-    public float[] MusicNotes;
+    public List<float> MusicNotes=new List<float>();
     public notes(string fileName)
     {
-        string filePath = Path.Combine(Application.streamingAssetsPath,fileName);
+        string filePath = Path.Combine(Application.streamingAssetsPath,fileName+".txt");
         if (File.Exists(filePath))
         {
             string[] lines = File.ReadAllLines(filePath);
-            MusicNotes = new float[lines.Length];
+            //MusicNotes = new float[lines.Length];
             for (int i = 0; i < lines.Length; i++)
             {
-                if (float.TryParse(lines[i], out float note))
+                if (float.TryParse(lines[i], out float noteSampleValue))
                 {
-                    MusicNotes[i] = note;
+                    //MusicNotes[i] = note;
+                    MusicNotes.Add(noteSampleValue);
                 }
                 else
                 {

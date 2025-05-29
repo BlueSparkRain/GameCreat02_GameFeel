@@ -81,7 +81,7 @@ public class LevelSelectScreen : MonoBehaviour
         yield return TweenHelper.MakeLerp(new Vector3(0, 90, 5.8f), Vector3.zero, 0.08f, val => levelNameTrans.localEulerAngles = val);
     }
 
-    void Start()
+    private void Awake()
     {
         material = new Material(shader);
         GetComponent<MeshRenderer>().material = material;
@@ -90,9 +90,21 @@ public class LevelSelectScreen : MonoBehaviour
 
         //显示关卡名字
         levelNameText.text = levelName;
-        levelNameTrans= levelNameText.transform;
+        levelNameTrans = levelNameText.transform;
         ChangeLeveState(-1);
     }
+    //void Start()
+    //{
+    //    material = new Material(shader);
+    //    GetComponent<MeshRenderer>().material = material;
+    //    material.SetTexture("_MainTex", _locked);
+    //    material.SetTexture("_alpha", alpha);
+
+    //    //显示关卡名字
+    //    levelNameText.text = levelName;
+    //    levelNameTrans= levelNameText.transform;
+    //    ChangeLeveState(-1);
+    //}
 
     Vector3 lastFramePos;
 
@@ -109,12 +121,21 @@ public class LevelSelectScreen : MonoBehaviour
     /// <summary>
     /// 解锁本关卡
     /// </summary>
-    public IEnumerator UnLockSelf()
+    public void UnLockSelf()
     {
         //解锁动画
-        yield return null;
+        isUnLock = true;
         Debug.Log("解锁关卡" + transform.parent.GetSiblingIndex());
         ChangeLeveState(0);
+    }
+
+    /// <summary>
+    /// 0:C 1:B 2:A 3:S
+    /// </summary>
+    /// <param name="levelIndex"></param>
+    public void UpdateLevelAppearence(int levelIndex) 
+    {
+        ChangeLeveState(levelIndex);
     }
 
     /// <summary>
@@ -122,14 +143,16 @@ public class LevelSelectScreen : MonoBehaviour
     /// </summary>
     void OnClickUnLockButton()
     {
-        if (isUnLock)
+        if (!isUnLock)
         {
-            Debug.Log("未解锁");
-            //StartCoroutine(LevelSelectManager.Instance.LockRemindShow());
+            Debug.Log("当前关卡未解锁");
+            LevelSelectManager.Instance.LockRemindShow();
             return;
         }
-        Debug.Log("未解锁");
+
+        Debug.Log("当前关卡已解锁");
         SceneLoadManager.Instance.TransToLoadScene(2+levelNumber,E_SceneTranType.黑屏过渡);
+        GameLevelCheckManager.Instance.SetCurrentLevel(levelNumber);
     }
 
     public void ChangeLeveState(int levelStarNum)
@@ -152,15 +175,15 @@ public class LevelSelectScreen : MonoBehaviour
                 material.SetTexture("_LevelStatusTex", _0Star);
                 material.SetInt("_levelStar", 0);
                 break;
-            case 1:
+            case 2:
                 material.SetTexture("_LevelStatusTex", _1Star);
                 material.SetInt("_levelStar", 1);
                 break;
-            case 2:
+            case 3:
                 material.SetTexture("_LevelStatusTex", _2Star);
                 material.SetInt("_levelStar", 2);
                 break;
-            case 3:
+            case 4:
                 material.SetTexture("_LevelStatusTex", _3Star);
                 material.SetInt("_levelStar", 3);
                 break;

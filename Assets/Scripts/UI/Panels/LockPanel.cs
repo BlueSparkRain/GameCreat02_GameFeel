@@ -7,7 +7,7 @@ using UnityEngine;
 public class LockPanel : BasePanel
 {
     bool isAppear;
-    WaitForSeconds delay = new WaitForSeconds(1.5f);
+    WaitForSeconds delay = new WaitForSeconds(1.0f);
     public override void HidePanel()
     {
         base.HidePanel();
@@ -33,8 +33,8 @@ public class LockPanel : BasePanel
             yield break;
         isAppear = true;
 
-        StartCoroutine(ShakeRotAnim());
         yield return uiTweener.UIEaseInFrom(E_Dir.ио, transform, UIRoot, transTime);
+        StartCoroutine(ShakeRotAnim());
 
         StartCoroutine(AppearAWhile());
     }

@@ -10,11 +10,6 @@ public class NewMenuPanel : BasePanel
    
     WaitForSeconds delay=new   WaitForSeconds(0.2f);
 
-    //SceneLoadManager sceneLoadManager;
-
-    
-
-
     public override void HidePanel()
     {
         base.HidePanel();
@@ -22,7 +17,9 @@ public class NewMenuPanel : BasePanel
 
     public override IEnumerator HidePanelTweenEffect()
     {
-       yield return null;
+        yield return null;
+        TitleElement.SelfHide();
+        StartCoroutine(HideButtons());
     }
 
     public override void ShowPanel()
@@ -47,6 +44,15 @@ public class NewMenuPanel : BasePanel
         {
             yield return delay;
             menuCustomButtonElements[i].SelfAppear();
+        }
+    } 
+
+    IEnumerator HideButtons() 
+    {
+        for (int i = 0; i < menuCustomButtonElements.Count; i++) 
+        {
+            yield return delay;
+            menuCustomButtonElements[i].SelfHide();
         }
     }
 

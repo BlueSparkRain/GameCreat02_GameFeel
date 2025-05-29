@@ -29,25 +29,47 @@ public class GameMap : MonoBehaviour
         }
     }
 
-    IEnumerator TestMovePoswer() 
+    public void CreatBoss(int colIndex, int rowIndex) 
     {
-        yield return new WaitForSeconds(3);
-        Debug.Log("±‰…Ì");
-        //Columns[3].mapSlots[6].GetComponentInChildren<SquareController>().GetMovePower();
+        StartCoroutine(TurnSquareToBoss(colIndex,rowIndex));
     }
-   
+    public void CreateEnemy(int colIndex,int rowIndex) 
+    {
+        StartCoroutine(TurnSquareToEnemy(colIndex,rowIndex));
+    
+    }
+    IEnumerator TurnSquareToEnemy(int colIndex, int rowIndex) 
+    {
+        yield return new WaitForSeconds(4);
+        
+        if (Columns[colIndex].mapSlots[rowIndex].GetComponentInChildren<PlayerController>())
+            yield break;
+        if(Columns[colIndex].mapSlots[rowIndex].GetComponentInChildren<SquareController>())
+        StartCoroutine(Columns[colIndex].mapSlots[rowIndex].GetComponentInChildren<SquareController>().GetMoveToPlayerPower());
+    }
+
+    IEnumerator TurnSquareToBoss(int colIndex, int rowIndex)
+    {
+        yield return new WaitForSeconds(4);
+
+        if (Columns[colIndex].mapSlots[rowIndex].GetComponentInChildren<PlayerController>())
+            yield break;
+
+        if (Columns[colIndex].mapSlots[rowIndex].GetComponentInChildren<SquareController>())
+        {
+            Square boss = Columns[colIndex].mapSlots[rowIndex].GetComponentInChildren<Square>();
+            boss.SetBoss();
+            StartCoroutine(boss.GetComponent<SquareController>().GetMoveToPlayerPower());
+        }
+    }
+
     void Start()
     {
         InitMapSlotType();
-
-        StartCoroutine(LoadInitSquarePan());
-
-        StartCoroutine(TestMovePoswer());
     }
 
-    IEnumerator LoadInitSquarePan()
+    public void LoadWholeMap() 
     {
-        yield return new WaitForSeconds(1);
         LoadWholePan();
     }
 
@@ -66,7 +88,6 @@ public class GameMap : MonoBehaviour
     void BornAllSquares(int W)
     {
         int[,] validArray = RandMapGenerator.GetRandomArray(W, W);
-
         for (int i = 0; i < W; i++)
         {
             List<int> intList = new List<int>();
@@ -76,19 +97,10 @@ public class GameMap : MonoBehaviour
                 intList.Add(validArray[i, j]);
             }
 
-            List<ColorSquareSO> soList = FindAnyObjectByType<SquarePoolManager>().GetColorSOList(intList);
+            List<ColorSquareSO> soList = SquarePoolManager.Instance.GetColorSOList(intList);
 
-            ///≤‚ ‘
-            //string strs="¡–£∫"+i.ToString()+":";
-            //for (int j = 0; j < intList.Count; j++)
-            //{
-            //    strs+=intList[j].ToString()+soList[j].E_Color+",";
-            //}
-            //Debug.Log(strs);
-            ///
             FirstColSquares(i, soList);
         }
-
     }
 
     /// <summary>

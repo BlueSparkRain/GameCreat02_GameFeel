@@ -17,8 +17,10 @@ MonoBehaviour:
   canQuickShow: 0
   displayType: 2
   needTypeWithFade: 1
+  needTypeWithScale: 0
   currentIndex: 1
   fadeDuration: 0.1
+  scaleDuration: 0
   eventList: []
   dialogueLine:
   - speaker: ???

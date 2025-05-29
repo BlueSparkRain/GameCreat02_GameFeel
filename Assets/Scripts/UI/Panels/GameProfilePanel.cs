@@ -11,6 +11,7 @@ public class GameProfilePanel : BasePanel
     [Header("存档元素父")]
     [SerializeField] private Transform elementsFather;
 
+    //当前所在的存档
     GameProfileElement currentProfileElement;
 
     public Button ReturnButton;
@@ -38,7 +39,7 @@ public class GameProfilePanel : BasePanel
     }
 
 
-    public void SetElementName(GameProfileElement element)
+    public void SetCurrentElement(GameProfileElement element)
     {
         currentProfileElement = element;
     }
@@ -88,6 +89,7 @@ public class GameProfilePanel : BasePanel
     public override void HidePanel()
     {
         base.HidePanel();
+        //uiManager.HidePanel<NewMenuPanel>();
     }
 
     public override IEnumerator HidePanelTweenEffect()

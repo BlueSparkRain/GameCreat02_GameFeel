@@ -1,5 +1,4 @@
 using System.Collections;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class Chart : MonoBehaviour
@@ -14,11 +13,11 @@ public class Chart : MonoBehaviour
     [SerializeField] private float setUpSampleTime = 2f;
 
     [Header("好采样时长")]
-    [SerializeField] private float goodDuration= 0.8f;
+    [SerializeField] private float goodDuration = 0.8f;
     WaitForSeconds goodDelay = null;
     [Header("优秀采样时长")]
     [SerializeField] private float niceDuration = 0.7f;
-    WaitForSeconds niceDelay=null;
+    WaitForSeconds niceDelay = null;
     [Header("完美采样时长")]
     [SerializeField] private float perfactDuration = 0.5f;
 
@@ -27,28 +26,28 @@ public class Chart : MonoBehaviour
     ChartCheckManager chartCheckManager;
     EventCenter eventCenter;
 
-    WaitForSeconds sampleDelay=null;
+    WaitForSeconds sampleDelay = null;
     WholeObjPoolManager wholeObjPoolManager;
 
     SpriteRenderer spriteRenderer;
     void SetSpriteColor(Color color)
     {
-        return;
-        //Debug.Log("变色"+color);
         spriteRenderer.color = color;
-  
+
     }
 
-    bool canTrigger=true;
+
+
+    bool canTrigger = true;
+
     private void Update()
     {
-        if (canTrigger && Input.GetKeyDown(KeyCode.Space)) 
+        //进入good区才会开启判定
+        if (GoodState && canTrigger && PlayerInputManager.Instance.PlayerAnyAct)
         {
-            Debug.Log("咋呼");
             canTrigger = false;
 
             GetPlayerHit();
-
         }
     }
     private void Awake()
@@ -66,7 +65,23 @@ public class Chart : MonoBehaviour
         niceDelay = new WaitForSeconds(niceDuration);
         perfactDelay = new WaitForSeconds(perfactDuration);
     }
-    
+
+    //private void OnEnable()
+    //{
+    //    eventCenter.AddEventListener(E_EventType.E_CurrentLevelOver, LevelEnd);
+    //}
+    //private void OnDisable()
+    //{
+    //    eventCenter.RemoveEventListener(E_EventType.E_CurrentLevelOver, LevelEnd);
+    //}
+
+    //void LevelEnd() 
+    //{
+    //    WholeObjPoolManager.Instance.ObjReturnPool(E_ObjectPoolType.音符池,gameObject);
+    //}
+
+
+    //private List<IEnumerator> _sceneCoroutines = new List<IEnumerator>();
 
     /// <summary>
     /// 圆环向中心汇聚
@@ -76,11 +91,15 @@ public class Chart : MonoBehaviour
     {
         canTrigger = true;
         StartCoroutine(SetUpSample());
-        yield return TweenHelper.MakeLerp(Vector3.one * 5, Vector3.one*2.34f, prepareTime, val => transform.localScale = val);
+        yield return TweenHelper.MakeLerp(Vector3.one * 5, Vector3.one * 2.34f, prepareTime, val =>
+            transform.localScale = val
+            );
         //缩小到精确采样点
         GetSamplePoint();
-        yield return TweenHelper.MakeLerp(Vector3.one * 2.34f, Vector3.zero, prepareTime, val => transform.localScale = val);
-        wholeObjPoolManager.ObjReturnPool(E_ObjectPoolType.音符池,gameObject);
+        yield return TweenHelper.MakeLerp(Vector3.one * 2.34f, Vector3.zero, prepareTime, val =>
+                transform.localScale = val
+        );
+        wholeObjPoolManager.ObjReturnPool(E_ObjectPoolType.音符池, gameObject);
     }
 
     IEnumerator SetUpSample()
@@ -89,17 +108,17 @@ public class Chart : MonoBehaviour
         //基于玩家的偏移数据
         yield return sampleDelay;
         //开启采样评分
-        StartCoroutine( GetSample());
+        StartCoroutine(GetSample());
     }
 
     bool GoodState;
     bool NiceState;
     bool PerfactState;
-    
+
     IEnumerator GetSample()
     {
         SetSpriteColor(Color.blue);
-        GoodState =  true;
+        GoodState = true;
         yield return goodDelay;
         SetSpriteColor(Color.red);
         NiceState = true;
@@ -107,28 +126,31 @@ public class Chart : MonoBehaviour
         SetSpriteColor(Color.yellow);
         PerfactState = true;
         yield return perfactDelay;
+
+        SetSpriteColor(new Color(0, 0, 0, 0));
+
         yield return perfactDelay;
         PerfactState = false;
 
-        SetSpriteColor(Color.red);
+        //SetSpriteColor(Color.red);
         yield return niceDelay;
         NiceState = false;
-        SetSpriteColor(Color.blue);
-        
+        //SetSpriteColor(Color.blue);
+
         yield return goodDelay;
         GoodState = false;
-        SetSpriteColor(Color.white);
+        //SetSpriteColor(Color.white);
         //ResetHitState();
     }
 
     /// <summary>
     /// 重置卡点状态,接收到玩家输入并结算后
     /// </summary>
-    public void ResetChartState() 
+    public void ResetChartState()
     {
-        GoodState=false;
-        NiceState=false;
-        PerfactState=false;
+        GoodState = false;
+        NiceState = false;
+        PerfactState = false;
     }
 
     /// <summary>

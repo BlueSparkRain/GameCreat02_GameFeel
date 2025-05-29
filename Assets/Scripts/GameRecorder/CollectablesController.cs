@@ -17,21 +17,24 @@ public class CollectablesController : MonoBehaviour
 
     void Start()
     {
-        UIObjPrefab = Resources.Load<GameObject>("Prefab/UIPanel/UIElement/TargetColletableObj");
-
-        for (int i = 0; i < collectableTargetList.Count; i++)
+        if (targetCollectableContainer != null)
         {
-            if (!collectDic.ContainsKey(collectableTargetList[i].targetCollectableType))
+
+            UIObjPrefab = Resources.Load<GameObject>("Prefab/UIPanel/UIElement/TargetColletableObj");
+
+            for (int i = 0; i < collectableTargetList.Count; i++)
+            {
+                if (!collectDic.ContainsKey(collectableTargetList[i].targetCollectableType))
                 collectDic.Add(collectableTargetList[i].targetCollectableType, collectableTargetList[i]);
-        }
+            }
+     
+            foreach (var item in collectDic)
+            {
+                item.Value.targetCollectableObj = Instantiate(UIObjPrefab, targetCollectableContainer).GetComponent<PlayerCollectablesViewer>();
+                item.Value.targetCollectableObj.InitSelf(item.Value.targetNum, item.Value.targetCollectableSprite);
+            }
 
-        foreach (var item in collectDic)
-        {
-            item.Value.targetCollectableObj = Instantiate(UIObjPrefab, targetCollectableContainer).GetComponent<PlayerCollectablesViewer>();
-            item.Value.targetCollectableObj.InitSelf(item.Value.targetNum, item.Value.targetCollectableSprite);
         }
-
-       
     }
 
     /// <summary>

@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class DialogueManager : MonoSingleton<DialogueManager>
@@ -10,7 +9,8 @@ public class DialogueManager : MonoSingleton<DialogueManager>
     DialoguePanel D_Panel;//对话面板
     UIManager uIManager;
 
-    GameObject displayBoardPrefab;
+    GameObject displayBoardPrefab_UI;
+    GameObject displayBoardPrefab_3D;
 
     /// <summary>
     /// 为目标对话线添加委托
@@ -27,25 +27,29 @@ public class DialogueManager : MonoSingleton<DialogueManager>
     /// 创造非交互型独白显示
     /// </summary>
     /// <param name="ID">"StaticData/DialogueLine/UnInteractable/"目录下的ID</param>
-    /// <param name="bornPos"></param>
+    /// <param name="bornTran"></param>
     /// <param name="oneLineLifeTime"></param>
     /// <param name="action"></param>
-    public void CreatNewUnInteractableDialogue(int ID,Vector2 bornPos,Vector3 size,float oneLineLifeTime=3 , float diaAppearDelay=4,Action action = null) 
+    public void CreatNewUnInteractableDialogue(bool is3D, int ID, Transform bornTran, Vector3 size, float oneLineLifeTime = 3, float diaAppearDelay = 4, Action action = null)
     {
         var currentDialogueSq = Resources.Load<DialogueDataSequenceSO>("SOData/DialogueLineSO/UnInteractable/" + ID);
         action?.Invoke();//接收对话委托
-        ShowUnInteractableLine(bornPos, oneLineLifeTime, size , diaAppearDelay, currentDialogueSq);
+        ShowUnInteractableLine(is3D, bornTran, oneLineLifeTime, size, diaAppearDelay, currentDialogueSq);
 
 
     }
 
-    void ShowUnInteractableLine(Vector2 bornPos, float oneLineLifeTime, Vector3 size,float disAppearDelay ,DialogueDataSequenceSO currentDialogueSq)
+    void ShowUnInteractableLine(bool is3D, Transform bornPos, float oneLineLifeTime, Vector3 size, float disAppearDelay, DialogueDataSequenceSO currentDialogueSq)
     {
-        AdvancedDialougueBoared board = Instantiate(displayBoardPrefab, bornPos, Quaternion.identity, null).GetComponent<AdvancedDialougueBoared>();
-        board. transform.GetChild(0). localPosition = bornPos;
-        board. transform.GetChild(0).localScale= size;
+        AdvancedDialougueBoared board = null;
+        if (is3D)
+            board = Instantiate(displayBoardPrefab_3D, bornPos.position, bornPos.rotation, null).GetComponent<AdvancedDialougueBoared>();
+        else
+            board = Instantiate(displayBoardPrefab_UI, bornPos.position, Quaternion.identity, null).GetComponent<AdvancedDialougueBoared>();
+        board.transform.GetChild(0).localPosition = bornPos.position;
+        board.transform.GetChild(0).localScale = size;
 
-        board.StartNewDialogueSequence(oneLineLifeTime, disAppearDelay,size,currentDialogueSq);
+        board.StartNewDialogueSequence(oneLineLifeTime, disAppearDelay, size, currentDialogueSq);
 
     }
 
@@ -53,7 +57,9 @@ public class DialogueManager : MonoSingleton<DialogueManager>
     {
         base.InitSelf();
         uIManager = UIManager.Instance;
-        displayBoardPrefab ??= Resources.Load<GameObject>("Prefab/UIPanel/UIElement/AdvancedDialogueBoardElement");
+        displayBoardPrefab_UI ??= Resources.Load<GameObject>("Prefab/UIPanel/UIElement/AdvancedDialogueBoardElement");
+        displayBoardPrefab_3D ??= Resources.Load<GameObject>("Prefab/UIPanel/UIElement/3D_AdvancedDialogueBoardElement");
+
     }
 
     /// <summary>
@@ -69,7 +75,10 @@ public class DialogueManager : MonoSingleton<DialogueManager>
         {
             panel.ShowInteractableDialogue(currentDialogueSq.dialogueLine[currentDialogueSq.currentIndex].speaker,
                                                                 currentDialogueSq.dialogueLine[currentDialogueSq.currentIndex].content,
-                                                                currentDialogueSq.displayType,currentDialogueSq.needTypeWithFade,currentDialogueSq.fadeDuration,
+                                                                currentDialogueSq.displayType, currentDialogueSq.needTypeWithFade,
+                                                                currentDialogueSq.needTypeWithScale,
+                                                                currentDialogueSq.fadeDuration,
+                                                                currentDialogueSq.scaleDuration,
                                                                 currentDialogueSq.canQuickShow, currentDialogueSq.canAutonNext);
             D_Panel = panel;
         });
@@ -87,7 +96,10 @@ public class DialogueManager : MonoSingleton<DialogueManager>
             currentDialogueSq.currentIndex++;
             D_Panel.ShowInteractableDialogue(currentDialogueSq.dialogueLine[currentDialogueSq.currentIndex].speaker,
                                                           currentDialogueSq.dialogueLine[currentDialogueSq.currentIndex].content,
-                                                          currentDialogueSq.displayType, currentDialogueSq.needTypeWithFade, currentDialogueSq.fadeDuration,
+                                                          currentDialogueSq.displayType, currentDialogueSq.needTypeWithFade,
+                                                          currentDialogueSq.needTypeWithScale,
+                                                          currentDialogueSq.fadeDuration,
+                                                          currentDialogueSq.scaleDuration,
                                                           currentDialogueSq.canQuickShow, currentDialogueSq.canAutonNext);
             Debug.Log(currentDialogueSq.currentIndex);
             ActionCheck();

@@ -15,7 +15,7 @@ public class GameRow : MonoBehaviour
         if (!isRemoving)
         {
             PostProcessManager.Instance.LenDistortionFlash();
-            NewRemove();
+            NewRowRemove();
             StartCoroutine(RemoveSquares(rowSquares, true));
         }
     }
@@ -109,13 +109,13 @@ public class GameRow : MonoBehaviour
     {
         if (CheckRemoveList() != null && !isRemoving)
         {
-            NewRemove();
+            NewRowRemove();
             StartCoroutine(RemoveSquares(CheckRemoveList()));
         }
     }
 
     int firstIndex;
-    E_Color firstCor;
+    E_ColorSquareType firstCor;
 
     int num = 1;
     public List<Square> CheckRemoveList()
@@ -195,7 +195,7 @@ public class GameRow : MonoBehaviour
         StopRowRemoving();
     }
 
-    void NewRemove() 
+    void NewRowRemove() 
     {
         isRemoving = true;
         removingTimer = removingInterval;
@@ -338,39 +338,29 @@ public class GameRow : MonoBehaviour
                 }
             }
 
-
             if (toRemoveSquares[i].transform.parent != null)
             {
 
-                SubCol targetCol = toRemoveSquares[i].transform.GetComponentInParent<SubCol>(); // parent?.parent?.GetComponent<GameCol>();
+                SubCol targetCol = toRemoveSquares[i].transform.GetComponentInParent<SubCol>(); 
 
                 if (toRemoveSquares[i] != SuperSquare)
                 {
                     StartCoroutine(toRemoveSquares[i].BeRemoved());
                     //ÐÂÏû³ý
-                    NewRemove();
+                    NewRowRemove();
 
                     targetCol?.ColAddPrepareNeededSquare();
-                    targetCol?.NewRemove();
-                    //StartCoroutine(WaitColRemove(targetCol));
+                    targetCol?.NewColRemove();
                     yield return removeDelay;
                 }
             }
 
             if (SuperSquare != null)
             {
-                Debug.Log(SuperSquare);
                 StartCoroutine(MakeSuperSquare(SuperSquare, superType));
             }
 
         }
         callback?.Invoke();
     }
-
-    //IEnumerator WaitColRemove(SubCol targetCol) 
-    //{
-    //    targetCol?.IsColumnRemoving();
-    //    yield return new WaitForSeconds(0.4f);
-    //    targetCol?.StopColumnRemoving();
-    //}
 }

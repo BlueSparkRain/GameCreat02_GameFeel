@@ -18,9 +18,9 @@ public class ChartTTT : MonoBehaviour
     IEnumerator Wait() 
     {
         yield return new WaitForSeconds(5);
-        StartCoroutine(ChartCheckManager.Instance.SetUpNewMusic(floatLists));
+        StartCoroutine(ChartCheckManager.Instance.SetUpChartsSample(floatLists));
         yield return new WaitForSeconds(10);
-        StartCoroutine(ChartCheckManager.Instance.SetUpNewMusic(floatLists));        
+        StartCoroutine(ChartCheckManager.Instance.SetUpChartsSample(floatLists));        
 
     }
 

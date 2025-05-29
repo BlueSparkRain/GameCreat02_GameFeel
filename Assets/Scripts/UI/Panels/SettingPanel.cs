@@ -9,8 +9,8 @@ public class SettingPanel : BasePanel
     [Header("音量设置按钮")]
     public Button AudioSettingButton;
 
-    [Header("返回主菜单按钮")]
-    public Button ReturnToMenuButton;
+    [Header("退出本关按钮")]
+    public Button ExitCurrentLevelButton;
 
     [Header("震动设置按钮")]
     public Button ShakeSettingButton;
@@ -19,26 +19,35 @@ public class SettingPanel : BasePanel
     public Button ReturnButton;
 
     /// <summary>
-    /// 回到主菜单按钮绑定
+    /// 退出当前关卡按钮绑定
     /// </summary>
-    void OnClickReturnToMenuButtton()
+    void OnClickExitCurrentLevelButtton()
     {
-
+        //返回关卡选择界面
+        SceneLoadManager.Instance.TransToLoadScene(2,E_SceneTranType.过场图过渡);
     }
 
     /// <summary>
     ///  震动设置按钮绑定
     /// </summary>
-    void OnClickIShakeSettingButton() => uiManager.ShowPanel<TechPanel>(null);
+    void OnClickIShakeSettingButton()
+    {    
+        //uiManager.ShowPanel<TechPanel>(null); 
+    }
 
     /// <summary>
     /// 输入模式设置按钮绑定
     /// </summary>
-    void OnClickAcionSettingButton() => uiManager.ShowPanel<ActionSettingPanel>(null, true);
+    void OnClickAcionSettingButton()
+    {
+        Application.Quit();
+        //uiManager.ShowPanel<ActionSettingPanel>(null, true);
+    
+    }
     /// <summary>
     /// 音乐音效设置按钮绑定
     /// </summary>
-    void OnClickAudioSettingButton() => uiManager.ShowPanel<AudioPanel>(null, true);
+    void OnClickAudioSettingButton() => uiManager.ShowPanel<AudioPanel>(null,true);
 
     /// <summary>
     /// 返回设置按钮绑定
@@ -53,11 +62,12 @@ public class SettingPanel : BasePanel
         //回到persistent场景
         uiManager.ShowPanel<MenuPanel>(null, true);
     }
+    bool hasOpen;
 
     protected override void Init()
     {
         base.Init();
-        ReturnToMenuButton.onClick.AddListener(OnClickReturnToMenuButtton);
+        ExitCurrentLevelButton.onClick.AddListener(OnClickExitCurrentLevelButtton);
         AudioSettingButton.onClick.AddListener(OnClickAudioSettingButton);
         ActionSettingButton.onClick.AddListener(OnClickAcionSettingButton);
         ShakeSettingButton.onClick.AddListener(OnClickIShakeSettingButton);
@@ -65,14 +75,38 @@ public class SettingPanel : BasePanel
     }
     public override void ShowPanel()
     {
-        base.ShowPanel();
+        if(!hasOpen)
+        {
+            hasOpen = true;
+             base.ShowPanel();
+            canTrigger = true;
+            canTrans=false;
+            StartCoroutine(uiTweener.UIEaseInFrom(E_Dir.下, transform, UIRoot, transTime));
+
+        }
+        //hasOpen=true;
     }
+    bool canTrans;
 
     public override IEnumerator ShowPanelTweenEffect()
     {
-        yield return uiTweener.UIEaseInFrom(E_Dir.下, transform, UIRoot, transTime);
+        if (!canTrans)
+        {
+            yield return uiTweener.UIEaseInFrom(E_Dir.下, transform, UIRoot, transTime);
+            canTrans = true;
+        }
+        //}
     }
-
+    bool canTrigger;
+    private void Update()
+    {
+        if (canTrans && canTrigger && Input.GetKeyDown(KeyCode.Escape)) 
+        {
+            canTrans = false;       
+            canTrigger = false;
+            uiManager.HidePanel<SettingPanel>();
+        }
+    }
     public override void HidePanel()
     {
         base.HidePanel();
@@ -81,5 +115,7 @@ public class SettingPanel : BasePanel
     public override IEnumerator HidePanelTweenEffect()
     {
         yield return uiTweener.UIEaseOutTo(E_Dir.下, transform, UIRoot, transTime);
+        hasOpen=false;
+
     }
 }

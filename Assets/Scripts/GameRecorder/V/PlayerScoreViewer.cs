@@ -4,27 +4,36 @@ using UnityEngine.UI;
 
 public class PlayerScoreViewer : MonoBehaviour
 {
-    [Header("玩家得分文本")]
-    public TMP_Text scoreText;
-
-    [Header("本局游戏剩余时长")]
-    public TMP_Text gameTimerText;
+    [Header("玩家当前总得分文本")]
+    public TMP_Text finalScoreText;
 
     [Header("本局游戏剩余时长时间条")]
     public Image gameTimerFillment;
 
-    public void SetScoreText(int score)
+    [Header("本局游戏S评级所需分数文本")]
+    public TMP_Text S_levelText;
+
+    [Header("评级进度")]
+    public Image scoreLevelImage;
+
+    public void SetSLevelStandard(int S_LevelScore) 
     {
-        scoreText.text = score.ToString();
+        S_levelText.text = S_LevelScore.ToString();
     }
 
-    public void GetTimeText(int remainTime)
+    public void SetFinalScoreText(int finalScore)
     {
-        gameTimerText.text = remainTime.ToString();
+        finalScoreText.text = finalScore.ToString();
     }
 
-    public void SetFillImage(float gameTimer, float gameDuration)
+    public void SetScoreLevelProgress(float value) 
     {
-        gameTimerFillment.fillAmount = gameTimer / gameDuration;
+      scoreLevelImage.fillAmount= value;
+    }
+
+    public void SetMusicProgressFillImage(float gameTimer, float musicDuration)
+    {
+        gameTimerFillment.fillAmount = gameTimer / musicDuration;
+
     }
 }

@@ -9,13 +9,13 @@ public class PitchTest : MonoBehaviour
     private void Start()
     {
         GamepadShakeManager.Instance.IMInit();
-        StartCoroutine(StartComboMusic());
+        //StartCoroutine(StartComboMusic());
     }
 
     IEnumerator StartComboMusic() 
     {
       yield return new WaitForSeconds(0.3f);
-        MusicManager.Instance.PlayBKMusic("Bob");
+        //MusicManager.Instance.PlayBKMusic("Bob");
     }
 
     private void Update()
@@ -36,7 +36,8 @@ public class PitchTest : MonoBehaviour
     public void DingDong()
     {
         cPitch += 0.1f;
-        MusicManager.Instance.PlaySound("do", cPitch);
+        //MusicManager.Instance.PlaySound("remove", cPitch);
+        MusicManager.Instance.PlaySound("remove");
     }
 
 }

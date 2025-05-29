@@ -15,8 +15,17 @@ EditorBuildSettings:
     path: Assets/Scenes/FinalScenes/LevelSelectScene.unity
     guid: d4a570f49f37a054ca755415157ff770
   - enabled: 1
-    path: Assets/Scenes/FinalScenes/GameLevelScene.unity
-    guid: f8a9e0051798a144aac17670025f83b2
+    path: Assets/Scenes/FinalScenes/GameLevelScene01.unity
+    guid: 3d219c6d56682f84386a52483e3f70be
+  - enabled: 1
+    path: Assets/Scenes/FinalScenes/GameLevelScene02.unity
+    guid: defa4a588187cf2428413e8e2a9d250d
+  - enabled: 1
+    path: Assets/Scenes/FinalScenes/GameLevelScene03.unity
+    guid: 4eb78aedfa8144746a9275357323a4ae
+  - enabled: 1
+    path: Assets/Scenes/FinalScenes/GameLevelScene04.unity
+    guid: da5931f1a02758f4db365fe22f43db5b
   - enabled: 1
     path: Assets/Scenes/FinalScenes/EndScene.unity
     guid: 7491415e36f66c246b9b1da61c09b406

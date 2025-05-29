@@ -1,10 +1,7 @@
-using Mono.Cecil.Cil;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
 using System.Linq;
-using Unity.VisualScripting;
+using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
 
 public class GameCol : MonoBehaviour
@@ -27,7 +24,13 @@ public class GameCol : MonoBehaviour
     [ContextMenu("为本列创建若干Walkable槽")]
     void CreatWalkableCol()
     {
-        Vector3 firstSlotPos = firstSlot.position;
+        Vector3 firstSlotPos;
+
+        if (firstSlot != null)
+            firstSlotPos = firstSlot.position;
+        else
+            firstSlotPos = transform.position;
+
         for (int i = 0; i < createSlotNum; i++)
         {
             //纵向排列，相邻槽间隔距离为2
@@ -40,7 +43,14 @@ public class GameCol : MonoBehaviour
     [ContextMenu("为本列创建若干Obstacle槽")]
     void CreateObstacleCol()
     {
-        Vector3 firstSlotPos = firstSlot.position;
+        Vector3 firstSlotPos;
+
+        if (firstSlot != null)
+            firstSlotPos = firstSlot.position;
+        else
+            firstSlotPos = transform.position;
+
+
         for (int i = 0; i < createSlotNum; i++)
         {
             //纵向排列，相邻槽间隔距离为2
@@ -89,33 +99,56 @@ public class GameCol : MonoBehaviour
 
     SubCol currentSubCol;
     int subColNum;
-
     GameRow row;
-
     List<SubCol> subCols = new List<SubCol>();
+
+    public int currentSpecialIndex = 0;
+    public List<SubcolCustomSpecialSquare> specialSquaresSetting = new List<SubcolCustomSpecialSquare>();
 
     /// <summary>
     /// 通知子列充满自身
     /// </summary>
-    public void CallSubColsFirstFull(List<ColorSquareSO> soList) 
+    public void CallSubColsFirstFull(List<ColorSquareSO> soList)
     {
-        var soLists = GetSubSOList(soList);
-        for (int i= subCols.Count-1; i >=0; i--)
+        var colorSoLists = GetSubColorSOList(soList);
+        var specialTypeLists = GetSubColSpecialSOList(specialSquaresSetting);
+        Debug.Log(transform.GetSiblingIndex() + "有"+ specialTypeLists[0].Count);
+
+        for (int i = subCols.Count - 1; i >= 0; i--)
         {
-            StartCoroutine(subCols[i].SpawneFirstColSquares(soLists[i]));
+            StartCoroutine(subCols[i].SpawneFirstColSquares(colorSoLists[i], specialTypeLists[i]));
         }
     }
+
+    List<SubcolCustomSpecialSquare>[] GetSubColSpecialSOList(List<SubcolCustomSpecialSquare> specialSoList) 
+    {
+        // 创建子列表的数组
+        List<SubcolCustomSpecialSquare>[] soLists = new List<SubcolCustomSpecialSquare>[subColNum];
+        for (int i = 0; i < subColNum; i++)
+        {
+            soLists[i] = new List<SubcolCustomSpecialSquare>();
+        }
+
+        for (int i = specialSoList.Count-1; i >=0 ; --i)
+        {
+            int subCol = specialSoList[i].subColIndex-1;
+            soLists[subCol].Add(specialSoList[i]);
+        }
+
+        return soLists;
+    }
+
 
     int offset;
     //根据关卡槽来拆分soList
 
     bool newSub;
-    List<ColorSquareSO>[] GetSubSOList(List<ColorSquareSO> soList) 
+    List<ColorSquareSO>[] GetSubColorSOList(List<ColorSquareSO> soList)
     {
         // 创建子列表的数组
         List<ColorSquareSO>[] soLists = new List<ColorSquareSO>[subColNum];
         offset = 0;
-
+        
 
         for (int i = 0; i < subColNum; i++)
         {
@@ -124,12 +157,19 @@ public class GameCol : MonoBehaviour
             //Debug.Log(transform.GetSiblingIndex() + "列 " + i + " 偏移: " + offset);
             // 遍历 mapSlots 并为每个子列表添加 walkableSlot 类型的元素
 
-            for (int j = offset; j <= mapSlots.Count; j++) 
+
+            // 确保我们跳过所有不合法的槽，直到遇到合法的槽
+            while (offset < mapSlots.Count && mapSlots[offset].type != E_SlotType.walkableSlot)
+            {
+                offset++;
+            }
+
+
+            for (int j = offset; j <= mapSlots.Count; j++)
             {
                 if (offset == mapSlots.Count)
                 {
                     soLists[i] = subSoList;
-
                     break;
                 }
 
@@ -145,12 +185,12 @@ public class GameCol : MonoBehaviour
                     break;
                 }
             }
-          
-            // 确保我们跳过所有不合法的槽，直到遇到合法的槽
-            while (offset < mapSlots.Count && mapSlots[offset].type != E_SlotType.walkableSlot)
-            {
-                offset++;
-            }
+
+            //// 确保我们跳过所有不合法的槽，直到遇到合法的槽
+            //while (offset < mapSlots.Count && mapSlots[offset].type != E_SlotType.walkableSlot)
+            //{
+            //    offset++;
+            //}
         }
         return soLists;
 
@@ -175,14 +215,14 @@ public class GameCol : MonoBehaviour
         CreatAllSubCols();
         //为关卡槽设置寻路序列
 
-        for (int i = mapSlots.Count-1; i >=0; --i)
+        for (int i = mapSlots.Count - 1; i >= 0; --i)
         {
             mapSlots[i].GetPathFindIndex(new Vector2Int(transform.GetSiblingIndex(), i));
         }
 
-        row=GetComponent<GameRow>();
-        
-        for (int i = 0;i < allSlots.Count; i++) 
+        row = GetComponent<GameRow>();
+
+        for (int i = 0; i < allSlots.Count; i++)
         {
             allSlots[i].mapIndex = i;
         }
@@ -260,14 +300,18 @@ public class GameCol : MonoBehaviour
             //检测到障碍槽，
             else if (allSlots[i].type == E_SlotType.obstacleSlot)
             {
+                if (currentSubCol == null)
+                    continue;
+
+
                 if (col)
                 {
-                    col=false;
+                    col = false;
                     //当前子列读取完毕，执行初始化操作
                     currentSubCol.Init(gravityDir, looseSpeed);
                 }
                 //判断是否是玩家出生列
-                if (playerBornData.SubColIndex == subColNum)
+                if (playerBornData.IsPlayerBornColumn && playerBornData.SubColIndex == subColNum)
                     currentSubCol.IsPlayerCol(playerBornData.BornIndex);
                 //说明一个子列读取完毕,接着结束或进行下一子类
                 continue;
@@ -275,7 +319,7 @@ public class GameCol : MonoBehaviour
             //正常的槽
             else
             {
-                if (playerBornData.SubColIndex == subColNum)
+                if (playerBornData.IsPlayerBornColumn && playerBornData.SubColIndex == subColNum)
                     currentSubCol.IsPlayerCol(playerBornData.BornIndex);
                 //说明一个子列读取完毕,接着结束或进行下一子类
                 //continue;
@@ -294,7 +338,7 @@ public class GameCol : MonoBehaviour
     /// <param name="index"></param>
     public void UpdateColumnSquares(Square square, int index)
     {
-       
+
     }
 }
 
@@ -309,3 +353,18 @@ public class PlayerBornData
     public int BornIndex;
 }
 
+[Serializable]
+public class SubcolCustomSpecialSquare
+{
+    [Header("子列序数[至小为1]")]
+    public int subColIndex;
+
+    [Header("方块序数")]
+    public int index;
+
+    [Header("特殊方块类型")]
+    public E_SpecialSquareType specialType;
+
+    [Header("任务触发方块批次")]
+    public int taskTriggerIndex;
+}

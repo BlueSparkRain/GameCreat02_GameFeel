@@ -16,10 +16,14 @@ public class DialogueDataSequenceSO : ScriptableObject
     public E_DisplayType displayType;
     [Header("打字机渐显效果")]
     public bool needTypeWithFade=true;
+    [Header("打字机缩放效果")]
+    public bool needTypeWithScale=true;
     [Header("当前话语序号")]
     public int currentIndex;
     [Header("淡入时间")]
     public float fadeDuration;
+    [Header("缩放时间")]
+    public float scaleDuration;
     [Header("事件线")]
     public List<DialogueEvent> eventList = new List<DialogueEvent>();
     [Header("对话线")]

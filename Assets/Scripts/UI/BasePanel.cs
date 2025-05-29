@@ -1,5 +1,4 @@
 using System.Collections;
-using UnityEditor.Build.Content;
 using UnityEngine;
 [RequireComponent(typeof(CanvasGroup))]
 public abstract class BasePanel : MonoBehaviour
@@ -13,7 +12,7 @@ public abstract class BasePanel : MonoBehaviour
     [Header("暂停时间")]
     public bool NeedPausePanel;
 
-    public AnimationCurve AnimCurve=AnimationCurve.EaseInOut(0,0,1,1);
+    public AnimationCurve AnimCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
 
     protected UIManager uiManager;
     protected UITween uiTweener;
@@ -49,20 +48,20 @@ public abstract class BasePanel : MonoBehaviour
         if (uiManager == null)
         {
             uiManager = UIManager.Instance;
-            gameInputModeManager=GameInputModeManager.Instance;
-            uiTweener=UITween.Instance;
-            gameProfileSaveManager=GameProfileSaveManager.Instance;
+            gameInputModeManager = GameInputModeManager.Instance;
+            uiTweener = UITween.Instance;
+            gameProfileSaveManager = GameProfileSaveManager.Instance;
         }
 
         //手柄模式下,分配默认按钮
-        if (GameInputModeManager.Instance.inputType == E_Input.手柄) 
+        if (GameInputModeManager.Instance.inputType == E_Input.手柄)
         {
-             
+
         }
 
         if (FirstSelectButton)
         {
-           PlayerInputManager.Instance.SetCurrentSelectGameObj(FirstSelectButton);
+            PlayerInputManager.Instance.SetCurrentSelectGameObj(FirstSelectButton);
         }
     }
 

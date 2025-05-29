@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 /// <summary>
@@ -5,57 +6,58 @@ using UnityEngine;
 /// </summary>
 public class GameLevelCheckManager :MonoSingleton<GameLevelCheckManager>
 {
-    public float baseScoreMulti=0.3f;
-    public float hitScoreMulti=0.7f;
+    //[Header("最终得分")]
+    public int currentFinalScore;
 
-    [Header("基础消除得分")]
-    public int currentBaseRemoveScore=>scoreController.PlayerCurrentScore;
-    
-    [Header("卡拍操作得分")]
-    public int currentHitScore;
+    public int currentLevelIndex;
 
-    [Header("最终得分")]
-    public float finalScore;
-    
-    ScoreController scoreController;
+    E_LevelLevel  currentLevelLevel;
 
-    /// <summary>
-    /// ScoreController是每关定制的
-    /// </summary>
-    public void GetCurrentScoreControl()
+    public void SetCurrentLevel(int index) 
     {
-        scoreController = FindAnyObjectByType<ScoreController>();
+        currentLevelIndex = index;
     }
 
-    private void OnEnable()
+    public void EndLevel(int currentFinalScore) 
     {
-        EventCenter.Instance.AddEventListener<int>(E_EventType.E_GetHitScore,UpdateHitScore);
+        this.currentFinalScore = currentFinalScore;
+        UIManager.Instance.ShowPanel<GameOverPanel>(panel=>panel.GetPlayerData(currentLevelLevel, currentFinalScore));
+        GetLevelSave(currentLevelIndex);
     }
 
-    private void OnDisable()
+    public void  CalculateLevel(int finalScore,int S_levelScore) 
     {
-        EventCenter.Instance.RemoveEventListener<int>(E_EventType.E_GetHitScore,UpdateHitScore);
+       if(finalScore >= S_levelScore) 
+       {
+            currentLevelLevel = E_LevelLevel.S;
+            //Debug.Log("达到S评级");
+       }
+       else if (finalScore >= S_levelScore / 2) 
+        {
+            currentLevelLevel = E_LevelLevel.A;
+            EventCenter.Instance.EventTrigger(E_EventType.E_GetALevel);
+            //Debug.Log("达到A评级");
+
+        } 
+        else if (finalScore >= S_levelScore / 4 *3) 
+        {
+            currentLevelLevel = E_LevelLevel.B;
+            //Debug.Log("达到B评级");
+        }
+        else 
+        {
+            currentLevelLevel = E_LevelLevel.C;
+            //Debug.Log("达到C评级");
+        }
     }
 
-    void UpdateHitScore(int hitScore) 
+    void GetLevelSave(int levelIndex) 
     {
-        currentHitScore += hitScore;
+        Debug.Log("评级"+ currentLevelLevel);
+        //结算关卡
+        GameProfileSaveManager.Instance.SetProfileLevelData(currentLevelIndex,currentLevelLevel,currentFinalScore);
+        //解锁新的关卡
+        GameProfileSaveManager.Instance.UnLockNewLevel(currentLevelIndex+1);
     }
-
-    /// <summary>
-    /// 最终得分=0.3*基础消除得分+0.7*卡拍得分
-    /// </summary>
-    /// <param name="baseRemoveScore">基础消除得分</param>
-    /// <param name="hitScore">卡拍得分</param>
-    void GetFinalScore(int baseRemoveScore,int hitScore) 
-    {
-        finalScore = baseRemoveScore* baseScoreMulti + 
-                     hitScore*hitScoreMulti ;
-    }
-
-    void GetFinalScaore() 
-    {
-    
-    
-    }
+   
 }

@@ -1,4 +1,5 @@
 using System;
+using Unity.VisualScripting.Dependencies.NCalc;
 using UnityEngine;
 
 public class GameProfileSaveManager : MonoSingleton<GameProfileSaveManager>
@@ -6,23 +7,59 @@ public class GameProfileSaveManager : MonoSingleton<GameProfileSaveManager>
     EventCenter eventCenter;
 
     [Header("存储数据")]
-    [SerializeField]private ProfileSaveData currentProfile;
+    [SerializeField]private ProfileSaveData currentProfileData;
 
-    public ProfileSaveData ProfileSaveData => currentProfile;
+    public ProfileSaveData ProfileSaveData => currentProfileData;
 
     public  BasePanel currentPanel;
+
+    private void OnEnable()
+    {
+
+        EventCenter.Instance.AddEventListener(E_EventType.E_CurrentLevelOver, StopCoroutines);
+    }
+
+    private void OnDisable()
+    {
+        EventCenter.Instance.RemoveEventListener(E_EventType.E_CurrentLevelOver, StopCoroutines);
+    }
+
+    void StopCoroutines()
+    {
+        StopAllCoroutines();
+    }
 
     /// <summary>
     /// 当前存档不再是新存档
     /// </summary>
     public void SetOldProfileData()
     {
-        currentProfile.isNewProfile = false;
+        currentProfileData.isNewProfile = false;
     }
 
     private void Update()
     {
+        //测试代码
         currentPanel=UIManager.Instance.currentPanel;
+    }
+
+    /// <summary>
+    /// 选择一个存档或替换新存档
+    /// </summary>
+    public void SelectNewProfile(ProfileSaveData data)
+    {
+        currentProfileData = data;
+        Debug.Log("当前选中存档！！" + data.ProfileID);
+    }
+
+    public void UnLockNewLevel(int lastestLevelIndex) 
+    {
+        if (lastestLevelIndex <= currentProfileData.levelDatas.Count)
+        {
+            currentProfileData.lastestLevel = lastestLevelIndex;
+            currentProfileData.levelDatas[lastestLevelIndex - 1].isUnLock = true;
+            DataSaver.SaveByJson(currentProfileData.ProfileID, currentProfileData);
+        }
     }
 
     /// <summary>
@@ -31,7 +68,8 @@ public class GameProfileSaveManager : MonoSingleton<GameProfileSaveManager>
     /// <param name="profileName"></param>
     public void SetProfileNameData(string profileName)
     {
-        currentProfile.GetProfileName(profileName);
+        currentProfileData.GetProfileName(profileName);
+        DataSaver.SaveByJson(currentProfileData.ProfileID, currentProfileData);
         Debug.Log("存档名称设置成功：" + profileName);
     }
 
@@ -43,7 +81,11 @@ public class GameProfileSaveManager : MonoSingleton<GameProfileSaveManager>
     /// <param name="hightScore"></param>
     public void SetProfileLevelData(int levelindex,E_LevelLevel level,int hightScore) 
     {
-        currentProfile.GetLeveLComplete(levelindex,level,hightScore);
+        Debug.Log("过关"+levelindex+"-"+ level);
+        Debug.Log(currentProfileData);
+        currentProfileData.GetLeveLComplete(levelindex,level,hightScore);
+
+        DataSaver.SaveByJson(currentProfileData.ProfileID, currentProfileData);
     }
 
     /// <summary>
@@ -51,7 +93,7 @@ public class GameProfileSaveManager : MonoSingleton<GameProfileSaveManager>
     /// </summary>
     public void SetAchievementsData(int achievementID)
     {
-        currentProfile.GetNewAchievement(achievementID);
+        currentProfileData.GetNewAchievement(achievementID);
     }
 
   
@@ -65,32 +107,11 @@ public class GameProfileSaveManager : MonoSingleton<GameProfileSaveManager>
 
 
     /// <summary>
-    /// 替换新存档
-    /// </summary>
-    public void SelectNewProfile(ProfileSaveData data) 
-    {
-        currentProfile = data;
-        Debug.Log( "当前选中存档！！"+data.ProfileID);
-    }
-
-
-    /// <summary>
     /// 发出通知，所有对象发送数据
     /// </summary>
     public void SaveData() 
     {
         eventCenter.EventTrigger(E_EventType.E_DataSave);
     }
-  
-    ///// <summary>
-    ///// 程序关闭，自动写入存档文件
-    ///// </summary>
-    //private void OnApplicationQuit()
-    //{
-    //    if (currentProfile != null)
-    //    {
-    //        currentProfile.GetTime();
-    //        DataSaver.SaveByJson(currentProfile.ProfileID, currentProfile);
-    //    }
-    //}
+ 
 }

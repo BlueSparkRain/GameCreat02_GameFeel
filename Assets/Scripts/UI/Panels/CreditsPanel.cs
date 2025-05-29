@@ -1,8 +1,15 @@
 using System.Collections;
+using UnityEngine.UI;
 
 public class CreditsPanel : BasePanel
 {
+    public Button returnButton;
 
+    public void OnClickReturnButton() 
+    {
+        uiManager.HidePanel<CreditsPanel>();
+    
+    }
     public override void HidePanel()
     {
         base.HidePanel();

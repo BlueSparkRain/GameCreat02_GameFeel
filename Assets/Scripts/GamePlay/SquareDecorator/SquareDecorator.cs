@@ -1,10 +1,10 @@
 using System.Diagnostics;
 using UnityEditor;
 
-public class SquareDecorator : IHaveSpecialPower
+public abstract class SquareDecorator : ISpecialPower
 {
-    public IHaveSpecialPower iAmSpecial;
-    public SquareDecorator(IHaveSpecialPower power) 
+    public ISpecialPower iAmSpecial;
+    public SquareDecorator(ISpecialPower power) 
     {
        iAmSpecial = power;
     }

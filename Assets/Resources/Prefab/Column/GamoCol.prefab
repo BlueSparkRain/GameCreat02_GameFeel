@@ -49,13 +49,16 @@ MonoBehaviour:
   WalkableSlotPrefab: {fileID: 4779412920413682090, guid: f2879b4ac60c6a34f95d9ceb859bfda6, type: 3}
   SpawnerSlotPrefab: {fileID: 3168294511489860188, guid: 2e7da6aac672dba499c17f094a7c7a43, type: 3}
   ObstacleSlotPrefab: {fileID: 3305736041738501873, guid: ef85a5376e9963b409536003481823c4, type: 3}
+  slotLineWidth: 0.57
   playerBornData:
     IsPlayerBornColumn: 0
     SubColIndex: 0
     BornIndex: 0
-  MoveDir: 0
+  MoveDir: 1
   squareLooseSpeed: 10
   mapSlots: []
+  currentSpecialIndex: 0
+  specialSquaresSetting: []
 --- !u!114 &6830773818141044163
 MonoBehaviour:
   m_ObjectHideFlags: 0

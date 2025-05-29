@@ -206,12 +206,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c6d1555785f80214f844b76dd4eb2a86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prepareTime: 0.8
-  sampleTime: 0.6
-  setUpSampleTime: 0.5
-  goodDuration: 0.15
-  niceDuration: 0.09
-  perfactDuration: 0.06
+  prepareTime: 1
+  sampleTime: 0.5
+  setUpSampleTime: 0.75
+  goodDuration: 0.1
+  niceDuration: 0.1
+  perfactDuration: 0.05
 --- !u!1 &4906314351152292410
 GameObject:
   m_ObjectHideFlags: 0
@@ -229,7 +229,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6112432354253891566
 Transform:
   m_ObjectHideFlags: 0

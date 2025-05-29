@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 public class WholeObjPoolManager :MonoSingleton<WholeObjPoolManager>
 {
@@ -35,92 +36,133 @@ public class WholeObjPoolManager :MonoSingleton<WholeObjPoolManager>
     public List<GameObject> colorSquarePool = new List<GameObject>();
     [Header("收集块池")]
     public List<GameObject> collectableSquarePool = new List<GameObject>();
+    [Header("任务消除块池")]
+    public List<GameObject> triggerRemoveSquarePool = new List<GameObject>();
+
 
     [Header("色块预制件")]
     private GameObject  colorSquarePrefab;
     [Header("收集块预制件")]
     private GameObject collectableSquarePrefab;
+    [Header("任务消除块预制件")]
+    private GameObject triggerRemoveSquarePrefab;
     #endregion
 
-    Transform PerfactPool;
-    Transform NicePool;
-    Transform GoodPool;
-    Transform SquareExplodePool;
-    Transform ChartPool;
-    Transform ColorSquarePool;
-    Transform CollectableSquarePool;
+    public Transform PerfactPool;
+    public Transform NicePool;
+    public Transform GoodPool;
 
-    //static private WholeObjPoolManager instance;
-    //static public WholeObjPoolManager Instance
-    //{
-    //    get
-    //    {
-    //        if (instance == null)
-    //        {
-    //            instance = FindAnyObjectByType<WholeObjPoolManager>();
-    //            if (instance == null)
-    //            {
-    //                instance = new GameObject(typeof(WholeObjPoolManager) + "SingletonManager").AddComponent<WholeObjPoolManager>();
-    //                instance.InitSelf();
-    //            }
-    //            DontDestroyOnLoad(instance.gameObject);
-    //        }
-    //        return instance;
-    //    }
-    //}
-    //protected virtual void Awake()
-    //{
-    //    if (instance != null)
-    //    {
-    //        Destroy(this);
-    //        return;
-    //    }
-    //    instance = this;
-    //    DontDestroyOnLoad(instance.gameObject);
-    //}
-
-    protected override void InitSelf()
-    {
-       PerfactPool       = Instantiate(new GameObject("perfactPool"),transform).transform;
-       NicePool          = Instantiate(new GameObject("nicePool"), transform).transform;
-       GoodPool          = Instantiate(new GameObject("goodPool"), transform).transform;
-       SquareExplodePool = Instantiate(new GameObject("squareExplodePool"), transform).transform;
-      
-       perfactPrefab = Resources.Load<GameObject>("Prefab/Partical/Player_Hit_Perfact");
-       nicePrefab = Resources.Load<GameObject>("Prefab/Partical/Player_Hit_Nice");
-       goodPrefab = Resources.Load<GameObject>("Prefab/Partical/Player_Hit_Good");
-       squareExplodetPrefab = Resources.Load<GameObject>("Prefab/Partical/Square_ExplodeEffect");
+    public Transform SquareExplodePool;
     
-        FullWholePool(perfactPrefab,5,perfactPool, PerfactPool);
-        FullWholePool(nicePrefab,5,nicePool, NicePool);
-        FullWholePool(goodPrefab, 5,goodPool,GoodPool);
+    public Transform ChartPool;
+
+    public Transform ColorSquarePool;
+    public Transform CollectableSquarePool;
+    public Transform TriggerRemoveSquarePool;
+
+    public void LoadNewPool() 
+    {
+        Debug.Log("加载新的池子");
+
+        perfactPool = new List<GameObject>();
+
+        nicePool = new List<GameObject>();
+
+        goodPool = new List<GameObject>();
+
+        squareExplodePool = new List<GameObject>();
+
+
+        chartPool = new List<GameObject>();
+
+        colorSquarePool = new List<GameObject>();
+
+        collectableSquarePool = new List<GameObject>();
+
+        triggerRemoveSquarePool = new List<GameObject>();
+
+        //找到场景中的GameMap,产生所有需要的池
+        FullWholePool(perfactPrefab, 5, perfactPool, PerfactPool);
+        FullWholePool(nicePrefab, 5, nicePool, NicePool);
+        FullWholePool(goodPrefab, 5, goodPool, GoodPool);
         FullWholePool(squareExplodetPrefab, 15, squareExplodePool, SquareExplodePool);
 
 
-        ColorSquarePool = Instantiate(new GameObject("colorSquarePool"), transform).transform;
-        CollectableSquarePool = Instantiate(new GameObject("collectableSquarePool"), transform).transform;
-       
-        colorSquarePrefab = Resources.Load<GameObject>("Prefab/Square/ColorSquare");
-        collectableSquarePrefab = Resources.Load<GameObject>("Prefab/Square/CollectableSquare");
-
         FullWholePool(colorSquarePrefab, 90, colorSquarePool, ColorSquarePool);
-        FullWholePool(collectableSquarePrefab, 10 , collectableSquarePool, CollectableSquarePool);
+        FullWholePool(collectableSquarePrefab, 10, collectableSquarePool, CollectableSquarePool);
+        FullWholePool(triggerRemoveSquarePrefab, 20, triggerRemoveSquarePool, TriggerRemoveSquarePool);
 
-
-        ChartPool         = Instantiate(new GameObject("chartPool"), transform).transform;
-        chartPrefab = Resources.Load<GameObject>("Prefab/Chart/Chart");
         FullWholePool(chartPrefab, chartPoolCapcity, chartPool, ChartPool);
+    }
 
+    private void OnEnable()
+    {
+        EventCenter.Instance.AddEventListener(E_EventType.E_CurrentLevelOver,ClearAllPool);
+    }
+
+    private void OnDisable()
+    {
+        EventCenter.Instance.RemoveEventListener(E_EventType.E_CurrentLevelOver,ClearAllPool);
+    }
+
+    void ClearAllPool() 
+    {
+        ClearTargetPool(PerfactPool,perfactPool);
+        ClearTargetPool(NicePool, nicePool);
+        ClearTargetPool(GoodPool, goodPool);
+        ClearTargetPool(SquareExplodePool, squareExplodePool);
+        ClearTargetPool(ColorSquarePool, colorSquarePool);
+        ClearTargetPool(ChartPool, chartPool);
+        ClearTargetPool(CollectableSquarePool, collectableSquarePool);
+        ClearTargetPool(TriggerRemoveSquarePool, triggerRemoveSquarePool);
+    }
+
+    void ClearTargetPool(Transform poolFather,List<GameObject> pool) 
+    {
+        pool.Clear();
+        for (int i = 0; i < poolFather.childCount; i++)
+        {
+            Destroy(poolFather.GetChild(i).gameObject);
+        }
+    }
+
+
+    protected override void InitSelf()
+    {
+        if (!hasInit)
+        {
+            hasInit =true;
+
+            perfactPrefab = Resources.Load<GameObject>("Prefab/Partical/Player_Hit_Perfact");
+            nicePrefab = Resources.Load<GameObject>("Prefab/Partical/Player_Hit_Nice");
+            goodPrefab = Resources.Load<GameObject>("Prefab/Partical/Player_Hit_Good");
+            squareExplodetPrefab = Resources.Load<GameObject>("Prefab/Partical/Square_ExplodeEffect");
+
+            colorSquarePrefab = Resources.Load<GameObject>("Prefab/Square/ColorSquare");
+            collectableSquarePrefab = Resources.Load<GameObject>("Prefab/Square/CollectableSquare");
+            triggerRemoveSquarePrefab = Resources.Load<GameObject>("Prefab/Square/TriggerRemovableSquare");
+            
+            chartPrefab = Resources.Load<GameObject>("Prefab/Chart/Chart");
+        }
     }
     
+    /// <summary>
+    /// 返回色块或特殊快
+    /// </summary>
+    /// <param name="squareType"></param>
+    /// <returns></returns>
     public GameObject GetTargetSquareObj(E_SquareType squareType) 
     {
         switch (squareType)
         {
             case E_SquareType.色块:
+
                 return GetInstnceFromPool(colorSquarePrefab, colorSquarePool, ColorSquarePool); 
-            case E_SquareType.特殊块:
-                return GetInstnceFromPool(collectableSquarePrefab, collectableSquarePool, CollectableSquarePool); 
+            case E_SquareType.收集块:
+                return GetInstnceFromPool(collectableSquarePrefab, collectableSquarePool, CollectableSquarePool);
+            case E_SquareType.任务消除块:
+                return GetInstnceFromPool(triggerRemoveSquarePrefab, triggerRemoveSquarePool, TriggerRemoveSquarePool); 
+
             default:
                 return GetInstnceFromPool(colorSquarePrefab, colorSquarePool, ColorSquarePool); 
                
@@ -172,11 +214,14 @@ public class WholeObjPoolManager :MonoSingleton<WholeObjPoolManager>
             case E_ObjectPoolType.音符池:
                 instance.transform.SetParent(ChartPool);
                 break;  
-            case E_ObjectPoolType.色块池:
+            case E_ObjectPoolType.颜色块池:
                 SquarePoolManager.Instance.ReturnSquarePool(E_SquareType.色块,instance, ColorSquarePool);
                 break; 
-            case E_ObjectPoolType.道具收集块池:
-                SquarePoolManager.Instance.ReturnSquarePool(E_SquareType.特殊块,instance, CollectableSquarePool);
+            case E_ObjectPoolType.收集块池:
+                SquarePoolManager.Instance.ReturnSquarePool(E_SquareType.收集块,instance, CollectableSquarePool);
+                break;
+            case E_ObjectPoolType.任务消除块池:
+                SquarePoolManager.Instance.ReturnSquarePool(E_SquareType.任务消除块,instance, TriggerRemoveSquarePool);
                 break;
 
         }
@@ -184,16 +229,20 @@ public class WholeObjPoolManager :MonoSingleton<WholeObjPoolManager>
         instance.SetActive(false);
     }
 
-
-
-
-
     /// <summary>
     /// 充满池
     /// </summary>
     public void FullWholePool(GameObject prefab, int poolCapcity, List<GameObject> pool, Transform poolFather)
     {
-        for (int i = 0; i < poolCapcity; i++)
+        //if (poolFather.childCount > 0)
+        //{
+        //    for (int i = 0; i < poolFather.childCount; ++i)
+        //    {
+        //        pool.Add(poolFather.GetChild(i).gameObject);
+        //    }
+        //}
+        //Debug.Log(poolFather.name+ "池中有"+pool.Count+"还需"+poolCapcity);
+        for (int i = pool.Count; i < poolCapcity; i++)
             CreatNewInstance(prefab, pool, poolFather);
     }
 
@@ -244,15 +293,21 @@ public enum E_ObjectPoolType
     
     音符池,
 
-    色块池,
-    道具收集块池
+    颜色块池,
+    收集块池,
+    任务消除块池,
+    传送块,
+
 }
 
 
 public enum E_SquareType
 {
     色块,
-    特殊块
+    收集块,
+    任务消除块,
+    传送块,
+
 }
 
 public enum E_ParticalType

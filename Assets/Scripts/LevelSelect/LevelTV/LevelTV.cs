@@ -42,5 +42,5 @@ public class LevelTV : MonoBehaviour
 
 public enum E_LevelLevel
 {
-  None,B, A, S
+  None,C ,B, A, S
 }

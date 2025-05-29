@@ -25,19 +25,6 @@ public class ComboController : MonoBehaviour
     public float disturbCheckDuration = 0.3f;
 
 
-    //[Header("音符连击")]
-    //public Transform ComboUIFather;
-
-    //[Header("大音符")]
-    //public GameObject BigPrefab;
-    //[Header("小音符")]
-    //public GameObject LittlePrefab;
-
-    //[Header("小音符左起始点")]
-    //public Transform LeftBorn;
-    //[Header("小音符右起始点")]
-    //public Transform RightBorn;
-
     [Header("倍率物体X")]
     public Transform MultiText;
 
@@ -81,7 +68,8 @@ public class ComboController : MonoBehaviour
         else
         {
             canReadNextCombo = true;
-            StartCoroutine(LittleRythmAnim());
+            StartCoroutine(ComboSetUp());
+            //StartCoroutine(LittleRythmAnim());
         }
 
         if (canReadNextCombo)
@@ -90,34 +78,34 @@ public class ComboController : MonoBehaviour
             comboIntervalTimer = comboInterval;
         }
 
-        if (!canReadNextCombo && PlayerInputManager.Instance.AnyAct)
+        if (!canReadNextCombo && PlayerInputManager.Instance.PlayerAnyAct)
         {
             addCombo = true;
         }
     }
 
-    IEnumerator LittleRythmAnim()
-    {
-        yield return null;
-        //GameObject leftRythm = Instantiate(LittlePrefab, LeftBorn.position, Quaternion.identity, LeftBorn);
-        //GameObject rightRythm = Instantiate(LittlePrefab, RightBorn.position, Quaternion.identity, RightBorn);
-        //StartCoroutine(UITween.Instance.UIDoMove(leftRythm.transform, Vector2.zero, new Vector2(342, 0), comboInterval));
-        //StartCoroutine(UITween.Instance.UIDoMove(rightRythm.transform, Vector2.zero, new Vector2(-342, 0), comboInterval));
-        //StartCoroutine(BigRythmAnim());
-        //yield return new WaitForSeconds(comboInterval);
-        //Destroy(leftRythm);
-        //Destroy(rightRythm);
-    }
-    IEnumerator BigRythmAnim()
-    {
-        yield return null;
-        //GameObject bigRythm = Instantiate(BigPrefab, ComboUIFather);
-        //yield return TweenHelper.MakeLerp(Vector3.one, new Vector3(1.2f, 0.8f, 1), 0.05f, val => bigRythm.transform.localScale = val);
-        //comboDurationTimer = comboDuration;
-        //StartCoroutine(ComboSetUp());
-        //yield return new WaitForSeconds(comboDuration);
-        //Destroy(bigRythm);
-    }
+    //IEnumerator LittleRythmAnim()
+    //{
+    //    yield return null;
+    //    //GameObject leftRythm = Instantiate(LittlePrefab, LeftBorn.position, Quaternion.identity, LeftBorn);
+    //    //GameObject rightRythm = Instantiate(LittlePrefab, RightBorn.position, Quaternion.identity, RightBorn);
+    //    //StartCoroutine(UITween.Instance.UIDoMove(leftRythm.transform, Vector2.zero, new Vector2(342, 0), comboInterval));
+    //    //StartCoroutine(UITween.Instance.UIDoMove(rightRythm.transform, Vector2.zero, new Vector2(-342, 0), comboInterval));
+    //    //StartCoroutine(BigRythmAnim());
+    //    //yield return new WaitForSeconds(comboInterval);
+    //    //Destroy(leftRythm);
+    //    //Destroy(rightRythm);
+    //}
+    //IEnumerator BigRythmAnim()
+    //{
+    //    yield return null;
+    //    //GameObject bigRythm = Instantiate(BigPrefab, ComboUIFather);
+    //    //yield return TweenHelper.MakeLerp(Vector3.one, new Vector3(1.2f, 0.8f, 1), 0.05f, val => bigRythm.transform.localScale = val);
+    //    //comboDurationTimer = comboDuration;
+    //    //StartCoroutine(ComboSetUp());
+    //    //yield return new WaitForSeconds(comboDuration);
+    //    //Destroy(bigRythm);
+    //}
 
     IEnumerator ComboSetUp()
     {
@@ -166,7 +154,7 @@ public class ComboController : MonoBehaviour
         {
             disturbTimer -= Time.deltaTime;
 
-            if (canDistrub && PlayerInputManager.Instance.AnyAct)
+            if (canDistrub && PlayerInputManager.Instance.PlayerAnyAct)
             {
                 ResetCombo();
             

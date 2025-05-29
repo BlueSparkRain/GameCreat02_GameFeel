@@ -117,7 +117,7 @@ public class GamepadShakeManager : MonoSingleton<GamepadShakeManager>
     bool sleep = true;
     private void Update()
     {
-        if (sleep && PlayerInputManager.Instance.AnyAct)
+        if (sleep && PlayerInputManager.Instance.PlayerAnyAct)
         {
             Debug.Log("Æô¶¯");
             sleep = false;

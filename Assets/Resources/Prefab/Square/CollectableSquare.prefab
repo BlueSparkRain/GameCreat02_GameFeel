@@ -181,12 +181,14 @@ MonoBehaviour:
   HasFather: 0
   BaseScore: 50
   canMove: 1
+  canRemoved: 1
   controller: {fileID: 0}
   slot: {fileID: 0}
   isRemoving: 0
-  SpecicalSprite: {fileID: 0}
+  specialData: {fileID: 0}
   type: 0
   moveTime: 1
+  checkRemoveDistance: 1
 --- !u!1 &7808399190054876206
 GameObject:
   m_ObjectHideFlags: 0

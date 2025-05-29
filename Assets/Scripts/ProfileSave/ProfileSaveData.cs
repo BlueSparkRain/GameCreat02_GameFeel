@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq.Expressions;
+using UnityEngine;
 
+[Serializable]
 public class ProfileSaveData
 {
     /// <summary>
@@ -21,6 +24,7 @@ public class ProfileSaveData
     public ProfileSaveData(string ProfileID)
     {
         this.ProfileID = ProfileID;
+        
         //SaveTime=DateTime.Now;
     }
 
@@ -37,12 +41,26 @@ public class ProfileSaveData
     /// <summary>
     ///当前关卡数
     /// </summary>
-    public int currentLevel;
+    public int lastestLevel=1;
+
+
 
     /// <summary>
     /// 关卡进度
     /// </summary>
-    public List<LevelSaveData> levelDatas=new List<LevelSaveData>(6);
+    public List<LevelSaveData> levelDatas=new List<LevelSaveData>();
+
+    /// <summary>
+    /// 更新关卡数据
+    /// </summary>
+    /// <param name="levelIndex"></param>
+    /// <param name="level"></param>
+    /// <param name="levelHighestScore"></param>
+    public void UpdateLevelData(int levelIndex,E_LevelLevel level, int levelHighestScore) 
+    {
+        levelDatas[levelIndex].GetLevel(level);
+        levelDatas[levelIndex].GetHightScore(levelHighestScore);
+    }
 
     /// <summary>
     /// 成就序号列表
@@ -54,11 +72,24 @@ public class ProfileSaveData
     /// </summary>
     public List<bool> achievementsStateList = new List<bool>(50) { false };
 
+    /// <summary>
+    /// 修改存档名称
+    /// </summary>
+    /// <param name="name"></param>
     public void GetProfileName(string name)
     {
         profileName = name;
     }
 
+    public void Init() 
+    {
+        UnityEngine.Debug.Log("毋庸置疑");
+        for (int i = 1; i < 5; i++)
+        {
+            levelDatas.Add(new LevelSaveData(i));
+        }
+        UnityEngine.Debug.Log(levelDatas.Count);
+    }
     public void GetTime() 
     {
 
@@ -79,23 +110,29 @@ public class ProfileSaveData
 
 
     /// <summary>
-    /// 完成关卡，不保存过关数据
+    /// 完成关卡，保存过关数据
     /// </summary>
     /// <param name="index"></param>
     /// <param name="level"></param>
     /// <param name="highestScore"></param>
     public void GetLeveLComplete(int index,E_LevelLevel level,int highestScore) 
     {
+        int trueIndex = index - 1;
+        UnityEngine.Debug.Log(trueIndex);
+        UnityEngine.Debug.Log(level+"-" + levelDatas[trueIndex].levelLevel);
+        UnityEngine.Debug.Log(highestScore + "-" + levelDatas[trueIndex].levelHighestScore);
+        
         //评级更高才覆盖
-        if(level> levelDatas[index].levelLevel) 
+        if(level> levelDatas[trueIndex].levelLevel) 
         {
-            levelDatas[index].levelLevel = level;
+            levelDatas[trueIndex].levelLevel = level;
         }
         //分数更高才覆盖
-        if(highestScore> levelDatas[index].levelHighestScore) 
+        if(highestScore> levelDatas[trueIndex].levelHighestScore) 
         {
-            levelDatas[index].levelHighestScore = highestScore;
+            levelDatas[trueIndex].levelHighestScore = highestScore;
         }
+
     }
 
     /// <summary>
@@ -108,6 +145,7 @@ public class ProfileSaveData
     }
 }
 
+[Serializable]
 /// <summary>
 /// 保存数据-关卡数据
 /// </summary>

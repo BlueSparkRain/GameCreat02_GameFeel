@@ -43,7 +43,7 @@ public class DialoguePanel : BasePanel
     /// <param name="canQickShow">快速显示</param>
     /// <param name="canAutonNext">自动下一句</param>
 
-    public void ShowInteractableDialogue(string speaker, string content, E_DisplayType displayType=E_DisplayType.Typing, bool needTypeWithFade=true,float fadeDuration = 0.2f, bool canQickShow = true, bool canAutonNext = false)
+    public void ShowInteractableDialogue(string speaker, string content, E_DisplayType displayType=E_DisplayType.Typing, bool needTypeWithFade=true, bool needTypeWithScale = true, float fadeDuration = 0.2f, float scaleDuration = 0.1f, bool canQickShow = true, bool canAutonNext = false)
     {
         speakerNameText.text = speaker;
         speakerNameText.GetComponent<Animator>().SetTrigger("Show");
@@ -54,7 +54,7 @@ public class DialoguePanel : BasePanel
         _canQuickShow = canQickShow;
         _canAutonNext = canAutonNext;
 
-        StartCoroutine(displayText.ShowText(content, displayType, needTypeWithFade,fadeDuration));
+        StartCoroutine(displayText.ShowText(content, displayType, needTypeWithFade,needTypeWithScale,fadeDuration,scaleDuration));
     }
 
     void OnClickNextButton()

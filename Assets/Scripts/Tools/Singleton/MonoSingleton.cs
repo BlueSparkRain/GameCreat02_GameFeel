@@ -14,7 +14,7 @@ public class MonoSingleton<T> : MonoBehaviour where T : MonoSingleton<T>
                 instance = FindAnyObjectByType<T>();
                 if (instance == null)
                 {
-                    instance = new GameObject(typeof(T) + "SingletonManager").AddComponent<T>();
+                    instance = new GameObject(typeof(T) + "Manager").AddComponent<T>();
                     instance.InitSelf();
                 }
                 DontDestroyOnLoad(instance.gameObject);
@@ -27,6 +27,7 @@ public class MonoSingleton<T> : MonoBehaviour where T : MonoSingleton<T>
         if (instance != null)
         {
             Destroy(this.gameObject);
+            //场景内发现重复。删除自身
             return;
         }
         instance = this as T;
@@ -37,4 +38,6 @@ public class MonoSingleton<T> : MonoBehaviour where T : MonoSingleton<T>
     {
         //自动创建单例类的初始化方法
     }
+
+    protected bool hasInit;
 }

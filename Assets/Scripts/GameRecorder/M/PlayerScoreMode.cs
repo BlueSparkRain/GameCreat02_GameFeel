@@ -1,15 +1,24 @@
 using System;
+using UnityEngine;
 
 [Serializable]
 public class PlayerScoreMode
 {
     /// <summary>
-    /// 玩家当前得分
+    /// 消除得分
     /// </summary>
-    public int playerCurrentScore;
+    public int currentRemoveScore;
 
-    public void GetScore(float multi, int score)
+    /// <summary>
+    /// 卡拍得分
+    /// </summary>
+    public int currentChartHitScore;
+    public void GetRemoveScore(float multi, int score)
     {
-        playerCurrentScore += (int)(multi * score);
+        currentRemoveScore += (int)(multi * score);
+    } 
+    public void GetChartScore(int score)
+    {
+        currentRemoveScore += score;
     }
 }

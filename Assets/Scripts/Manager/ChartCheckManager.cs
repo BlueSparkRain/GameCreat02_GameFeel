@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 /// <summary>
 /// 接收节拍结果并通知局内UI更新
@@ -46,11 +47,14 @@ public class ChartCheckManager : MonoSingleton<ChartCheckManager>
     private void OnEnable()
     {
         EventCenter.Instance.AddEventListener<E_ChartHitState>(E_EventType.E_PlayerHit, GetPlayerHit);
+        EventCenter.Instance.AddEventListener(E_EventType.E_CurrentLevelOver, LevelEnd);
     }
 
     private void OnDisable()
     {
         EventCenter.Instance.RemoveEventListener<E_ChartHitState>(E_EventType.E_PlayerHit, GetPlayerHit);
+        EventCenter.Instance.RemoveEventListener(E_EventType.E_CurrentLevelOver, LevelEnd);
+
     }
 
     GameObject partical;
@@ -63,7 +67,7 @@ public class ChartCheckManager : MonoSingleton<ChartCheckManager>
         {
             case E_ChartHitState.Perfact:
                 //播放完美效果
-                eventCenter.EventTrigger(E_EventType.E_GetHitScore, PerfactScore);
+                eventCenter.EventTrigger(E_EventType.E_GetHitChartScore, PerfactScore);
 
                 player.GetComponent<Player>().P.Play();
                 //partical=objPoolManager.GetTargetPartical(E_ParticalType.玩家卡点完美);
@@ -71,14 +75,14 @@ public class ChartCheckManager : MonoSingleton<ChartCheckManager>
                 break;
             case E_ChartHitState.Nice:
                 //播放Nice效果
-                eventCenter.EventTrigger(E_EventType.E_GetHitScore, NiceScore);
+                eventCenter.EventTrigger(E_EventType.E_GetHitChartScore, NiceScore);
                 
                 player.GetComponent<Player>().N.Play();
                 //partical=objPoolManager.GetTargetPartical(E_ParticalType.玩家卡点完美);
                 break;
             case E_ChartHitState.Good:
                 //播放Good效果
-                eventCenter.EventTrigger(E_EventType.E_GetHitScore, GoodScore);
+                eventCenter.EventTrigger(E_EventType.E_GetHitChartScore, GoodScore);
                 
                 player.GetComponent<Player>().G.Play();
                 //partical=objPoolManager.GetTargetPartical(E_ParticalType.玩家卡点完美);
@@ -109,20 +113,25 @@ public class ChartCheckManager : MonoSingleton<ChartCheckManager>
     /// </summary>
     Chart newChart;
 
+   
+    void LevelEnd() 
+    {
+        newMusic = false;
+    }
+
     /// <summary>
-    /// 进行一段新的乐曲
+    /// 根据采样谱面进行一段采样
     /// </summary>
     /// <param name="triggerChartTimeList">采样点时刻列表</param>
     /// <returns></returns>
-    public IEnumerator SetUpNewMusic(List<float> triggerChartTimeList)
+    public IEnumerator SetUpChartsSample(List<float> triggerChartTimeList)
     {
         currentChartIndex = 0;
         chartTimer = 0;
         newMusic = true;
 
-        player ??=FindAnyObjectByType<Player>().transform;
+        player =FindAnyObjectByType<Player>().transform;
 
-        //while (chartTimer < triggerChartTimeList[triggerChartTimeList.Count-1]) 
         while (newMusic) 
         {
             chartTimer += Time.deltaTime;
@@ -131,7 +140,12 @@ public class ChartCheckManager : MonoSingleton<ChartCheckManager>
                 chartTimer > triggerChartTimeList[currentChartIndex]-prepareTime)
             {
                 currentChartIndex++;
+
+                //在灰屏下无法出现判定
+                if(!PostProcessManager.Instance.isGrayWorld)
                 SetUpNewChart();
+                
+                yield return null;
             }
 
             if(currentChartIndex >= triggerChartTimeList.Count)
@@ -142,7 +156,6 @@ public class ChartCheckManager : MonoSingleton<ChartCheckManager>
             yield return null;
         }
     }
-
     /// <summary>
     /// 设置新的节奏圈
     /// </summary>
@@ -157,6 +170,8 @@ public class ChartCheckManager : MonoSingleton<ChartCheckManager>
         newChart = newChartObj.GetComponent<Chart>();
         //启动音符
         StartCoroutine(newChart.MoveToCenter());
+        //StartCoroutine(newChart.MoveToCenter());
+
     }
 }
 

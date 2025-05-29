@@ -224,20 +224,33 @@ public interface IEventInfo { }
 
 public enum E_EventType
 {
+    E_BossHit,
     /// <summary>
     /// 方块消除
     /// </summary>
     E_ColorSquareRemove,
 
+    E_StoryOver,
+
+    /// <summary>
+    /// 进入新的一关
+    /// </summary>
+    E_NewLevel,
+
+    /// <summary>
+    ///关卡结束
+    /// </summary>
+    E_CurrentLevelOver,
+
     /// <summary>
     /// 卡拍得分
     /// </summary>
-    E_GetHitScore,
+    E_GetHitChartScore,
 
     /// <summary>
     /// 方块得分
     /// </summary>
-    E_GetSquareScore,
+    E_GetSquareRemoveScore,
 
     /// <summary>
     /// 保存游戏数据
@@ -249,7 +262,16 @@ public enum E_EventType
     /// </summary>
     E_PlayerHit,
 
-    E_LensDistortionFlash
+    E_LensDistortionFlash,
+
+    E_GetALevel,
+
+    /// <summary>
+    /// 任务触发
+    /// </summary>
+    E_TaskTrigger,
+
+    E_KillABoss,
 }
 
 

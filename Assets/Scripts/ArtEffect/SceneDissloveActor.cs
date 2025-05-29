@@ -11,7 +11,6 @@ public class SceneDissloveActor : MonoBehaviour
 
     public List<Material> dissloveMats;
 
-    // Update is called once per frame
     void Update()
     {
         if(center!=null && dissloveMats.Count > 0) 

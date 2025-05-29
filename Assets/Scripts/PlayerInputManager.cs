@@ -5,6 +5,8 @@ using UnityEngine.UI;
 public class PlayerInputManager : MonoSingleton<PlayerInputManager>
 {
     public PlayerInput playerInput;
+
+    public bool PlayerAnyAct { get; private set; }
     public bool MoveUp { get; private set; }
     public bool MoveDown { get; private set; }
     public bool MoveLeft { get; private set; }
@@ -14,7 +16,9 @@ public class PlayerInputManager : MonoSingleton<PlayerInputManager>
     public bool ColorationLeft { get; private set; }
     public bool ColorationRight { get; private set; }
 
-    public bool SettingPause { get; private set; }
+    //public bool SettingPause { get; private set; }
+
+    //public bool playerAct {  get; private set; }
 
     public bool MouseClick { get; private set; }
 
@@ -70,8 +74,6 @@ public class PlayerInputManager : MonoSingleton<PlayerInputManager>
 
     public Vector2 SliderValue;
 
-
-    public bool AnyAct;
     public void GamepadUI(GameObject firstButton)
     {
         EventSystem.current.SetSelectedGameObject(firstButton);
@@ -91,59 +93,59 @@ public class PlayerInputManager : MonoSingleton<PlayerInputManager>
     void Update()
     {
         //待优化/////////////////////////////////////
-        if (EventSystem.current.currentSelectedGameObject != currentUISelectGameObj)
-        {
+        //if (EventSystem.current.currentSelectedGameObject != currentUISelectGameObj)
+        //{
 
-            if (currentUISelectGameObj && currentUISelectGameObj?.GetComponentInChildren<LevelSelectScreen>())
-            {
-                currentUISelectGameObj.transform.parent.GetComponent<Image>().enabled = false;
-            }
+        //    if (currentUISelectGameObj && currentUISelectGameObj?.GetComponentInChildren<LevelSelectScreen>())
+        //    {
+        //        currentUISelectGameObj.transform.parent.GetComponent<Image>().enabled = false;
+        //    }
 
-            currentUISelectGameObj = EventSystem.current.currentSelectedGameObject;
-
-
-            if (selectUIObjs.Count > 0)
-            {
-                selectUIObjs.Pop();
-                selectUIObjs.Push(currentUISelectGameObj);
-            }
-            if (currentUISelectGameObj)
-            {
-                if (currentPanel != null)
-                    currentPanel.GetComponent<CanvasGroup>().interactable = false;
-
-                currentPanel = currentUISelectGameObj.transform.GetComponentInParent<BasePanel>();
-            }
-        }
-
-        if (currentPanel != null)
-            currentPanel.GetComponent<CanvasGroup>().interactable = true;
+        //    currentUISelectGameObj = EventSystem.current.currentSelectedGameObject;
 
 
-        if (currentUISelectGameObj != null)
-        {
-            if (currentUISelectGameObj?.GetComponentInChildren<LevelSelectScreen>())
-            {
-                currentUISelectGameObj.transform.parent.GetComponent<Image>().enabled = true;
-            }
+        //    if (selectUIObjs.Count > 0)
+        //    {
+        //        selectUIObjs.Pop();
+        //        selectUIObjs.Push(currentUISelectGameObj);
+        //    }
+        //    if (currentUISelectGameObj)
+        //    {
+        //        if (currentPanel != null)
+        //            currentPanel.GetComponent<CanvasGroup>().interactable = false;
 
-            UISelect = playerInput.UI.UISelect.WasPressedThisFrame();
-            UIClose = playerInput.UI.UIClose.WasPressedThisFrame();
-            SliderValue = playerInput.UI.SliderAction.ReadValue<Vector2>();
-        }
-        else
-        {
-            currentPanel = null;
-        }
+        //        currentPanel = currentUISelectGameObj.transform.GetComponentInParent<BasePanel>();
+        //    }
+        //}
 
-        if (currentPanel != null && UIClose)
-        {
-            //currentPanel.GamePadClose();
-        }
+        //if (currentPanel != null)
+        //    currentPanel.GetComponent<CanvasGroup>().interactable = true;
+
+
+        //if (currentUISelectGameObj != null)
+        //{
+        //    if (currentUISelectGameObj?.GetComponentInChildren<LevelSelectScreen>())
+        //    {
+        //        currentUISelectGameObj.transform.parent.GetComponent<Image>().enabled = true;
+        //    }
+
+        //    UISelect = playerInput.UI.UISelect.WasPressedThisFrame();
+        //    UIClose = playerInput.UI.UIClose.WasPressedThisFrame();
+        //    SliderValue = playerInput.UI.SliderAction.ReadValue<Vector2>();
+        //}
+        //else
+        //{
+        //    currentPanel = null;
+        //}
+
+        //if (currentPanel != null && UIClose)
+        //{
+        //    //currentPanel.GamePadClose();
+        //}
         ///////////////////////////////////
 
 
-        SettingPause = playerInput.GamePlay.SettingPause.WasPressedThisFrame();
+        //SettingPause = playerInput.GamePlay.SettingPause.WasPressedThisFrame();
 
         //移动操作输入检测
         MoveUp = playerInput.GamePlay.UpMove.WasPressedThisFrame();
@@ -160,30 +162,32 @@ public class PlayerInputManager : MonoSingleton<PlayerInputManager>
         //玩家输入检测
         MouseClick = playerInput.GamePlay.MouseClick.WasPressedThisFrame();
 
-        if (MoveUp || MoveDown || MoveLeft || MoveRight || ColorationUp || ColorationDown || ColorationLeft || ColorationRight)
-            AnyAct = true;
-        else
-            AnyAct = false;
+        //玩家输入检测
+        PlayerAnyAct = playerInput.GamePlay.PlayerAnyAct.WasPressedThisFrame();
 
 
         SettingPanelOpenCheck();
 
     }
 
+    bool isSettingOpen=false;
     /// <summary>
     /// 检测设置面板的开闭
     /// </summary>
     void SettingPanelOpenCheck()
     {
-        if (SettingPause)
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
-            if (FindAnyObjectByType<SettingPanel>() && !FindAnyObjectByType<SettingPanel>().GetComponent<CanvasGroup>().interactable)
-                return;
-            settingUIPanelIsOpen = !settingUIPanelIsOpen;
-            if (settingUIPanelIsOpen)
-                UIManager.Instance.ShowPanel<SettingPanel>(null);
-            else
-                UIManager.Instance.HidePanel<SettingPanel>();
+            //if (!isSettingOpen)
+            //{
+            //    if (FindAnyObjectByType<SettingPanel>() && !FindAnyObjectByType<SettingPanel>().GetComponent<CanvasGroup>().interactable)
+            //        return;
+            //    settingUIPanelIsOpen = !settingUIPanelIsOpen;
+            //    if (settingUIPanelIsOpen)
+                    UIManager.Instance.ShowPanel<SettingPanel>(null);
+                //else
+                //    UIManager.Instance.HidePanel<SettingPanel>();
+            
         }
     }
 

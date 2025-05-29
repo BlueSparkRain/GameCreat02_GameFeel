@@ -125,6 +125,15 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""PlayerAnyAct"",
+                    ""type"": ""Button"",
+                    ""id"": ""b9f04267-8b46-472b-a870-3232cfb95338"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -534,6 +543,94 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""action"": ""MouseClick"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""34080754-5fac-4031-bf2f-b71633d51801"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""PlayerAnyAct"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d9253b1b-8ed2-4d24-ac85-a452cb8cd688"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""PlayerAnyAct"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7fef26c5-733a-4f3e-8d10-3b36c9939a80"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""PlayerAnyAct"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0bae11cd-7d31-4a97-a576-7356f4629510"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""PlayerAnyAct"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""207aee7a-1cbd-47eb-9d87-c93e8997901c"",
+                    ""path"": ""<Keyboard>/j"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""PlayerAnyAct"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""8b66a3eb-72af-44e6-baba-4087d4baaec0"",
+                    ""path"": ""<Keyboard>/k"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""PlayerAnyAct"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""8dfdd7df-f1a4-4482-b38a-a185c48b4b5e"",
+                    ""path"": ""<Keyboard>/l"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""PlayerAnyAct"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""75ea8f24-72c1-4770-9f14-a1fa886b804f"",
+                    ""path"": ""<Keyboard>/i"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""PlayerAnyAct"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -773,6 +870,7 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         m_GamePlay_SliderAction = m_GamePlay.FindAction("SliderAction", throwIfNotFound: true);
         m_GamePlay_SettingPause = m_GamePlay.FindAction("SettingPause", throwIfNotFound: true);
         m_GamePlay_MouseClick = m_GamePlay.FindAction("MouseClick", throwIfNotFound: true);
+        m_GamePlay_PlayerAnyAct = m_GamePlay.FindAction("PlayerAnyAct", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_UISelect = m_UI.FindAction("UISelect", throwIfNotFound: true);
@@ -851,6 +949,7 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
     private readonly InputAction m_GamePlay_SliderAction;
     private readonly InputAction m_GamePlay_SettingPause;
     private readonly InputAction m_GamePlay_MouseClick;
+    private readonly InputAction m_GamePlay_PlayerAnyAct;
     public struct GamePlayActions
     {
         private @PlayerInput m_Wrapper;
@@ -866,6 +965,7 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         public InputAction @SliderAction => m_Wrapper.m_GamePlay_SliderAction;
         public InputAction @SettingPause => m_Wrapper.m_GamePlay_SettingPause;
         public InputAction @MouseClick => m_Wrapper.m_GamePlay_MouseClick;
+        public InputAction @PlayerAnyAct => m_Wrapper.m_GamePlay_PlayerAnyAct;
         public InputActionMap Get() { return m_Wrapper.m_GamePlay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -908,6 +1008,9 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
             @MouseClick.started += instance.OnMouseClick;
             @MouseClick.performed += instance.OnMouseClick;
             @MouseClick.canceled += instance.OnMouseClick;
+            @PlayerAnyAct.started += instance.OnPlayerAnyAct;
+            @PlayerAnyAct.performed += instance.OnPlayerAnyAct;
+            @PlayerAnyAct.canceled += instance.OnPlayerAnyAct;
         }
 
         private void UnregisterCallbacks(IGamePlayActions instance)
@@ -945,6 +1048,9 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
             @MouseClick.started -= instance.OnMouseClick;
             @MouseClick.performed -= instance.OnMouseClick;
             @MouseClick.canceled -= instance.OnMouseClick;
+            @PlayerAnyAct.started -= instance.OnPlayerAnyAct;
+            @PlayerAnyAct.performed -= instance.OnPlayerAnyAct;
+            @PlayerAnyAct.canceled -= instance.OnPlayerAnyAct;
         }
 
         public void RemoveCallbacks(IGamePlayActions instance)
@@ -1045,6 +1151,7 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         void OnSliderAction(InputAction.CallbackContext context);
         void OnSettingPause(InputAction.CallbackContext context);
         void OnMouseClick(InputAction.CallbackContext context);
+        void OnPlayerAnyAct(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

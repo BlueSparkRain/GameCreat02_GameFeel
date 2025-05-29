@@ -31,6 +31,7 @@ public class SubCol : MonoBehaviour
     WalkableSlot newUsableSlot;
     WalkableSlot upSlot;
     WalkableSlot downSlot;
+    GameCol selfCol;
 
     public void RemoveWholeSubCol() 
     {
@@ -52,10 +53,11 @@ public class SubCol : MonoBehaviour
         SuperSquare.controller.GetSuperMarkPower(superType,true,false);
    }
 
-
     public void Init(Vector3 gravityDir, Vector3 looseSpeed)
     {
         spawner = subSlots[0].GetComponent<SpawnerSlot>();
+        selfCol=GetComponentInParent<GameCol>();
+
         spawner.Init(gravityDir, looseSpeed);
         maxSquareNum = subSlots.Count - 1;
 
@@ -90,7 +92,6 @@ public class SubCol : MonoBehaviour
         }
         //将子列最下方的槽设置为底
         subSlots[maxSpawnSquareNum].GetComponent<WalkableSlot>().isDownEmpty=false;
-
     }
 
     int currentSquareNum;
@@ -151,8 +152,6 @@ public class SubCol : MonoBehaviour
     float checkRemoveInterval = 0.25f;
     bool canCheckRemove;
 
-
-
     float removingTimer;
     float removingInterval = 0.25f;
 
@@ -166,14 +165,12 @@ public class SubCol : MonoBehaviour
         else
             canCheckRemove = true;
 
-
         if (isRemoving && removingTimer >= 0)
         {
             removingTimer -= Time.deltaTime;
         }
         else
             isRemoving = false;
-
 
         if (subColFull)
         {
@@ -198,7 +195,6 @@ public class SubCol : MonoBehaviour
                 if (!newRemoveBegin && canAddNeedSquare)
                 {
                     canAddNeedSquare = false;
-
                     ColAddNeededSquare();
                     //列生成只触发一次，等待下次消除
                 }
@@ -227,7 +223,13 @@ public class SubCol : MonoBehaviour
 
             needAddNum--;
 
+            //在第三关，会掉落音符块干扰
+
+            if (GameLevelCheckManager.Instance.currentLevelIndex == 3)
+                spawner.SubColAddSpecialSquare(E_SpecialSquareType.消融收集);
+            else
             spawner.SubColAddOneRandomSquare();
+
             yield return bornDelay;
         }
         canAddNeedSquare = true;
@@ -236,16 +238,21 @@ public class SubCol : MonoBehaviour
     bool playerBorn;
     int playerBornIndex;
 
+
+    int currentSpecialIndex;
     /// <summary>
     /// 随机（删组合）充满本子列
     /// </summary>
-    /// <param name="soList">子列颜色信息</param>
+    /// <param name="colorSOList">子列颜色信息</param>
     /// <param name="bornPlayer">是否玩家出生列</param>
     /// <param name="playerIndex">出生位数</param>
     /// <returns></returns>
-    public IEnumerator SpawneFirstColSquares(List<ColorSquareSO> soList)
+    public IEnumerator SpawneFirstColSquares(List<ColorSquareSO> colorSOList, List<SubcolCustomSpecialSquare> specialTypesList)
     {
-        WaitForSeconds delay = new WaitForSeconds(0.35f);
+        //currentSpecialIndex = specialTypesList.Count-1;
+        currentSpecialIndex = 0;
+        //WaitForSeconds delay = new WaitForSeconds(0.35f);
+        WaitForSeconds delay = new WaitForSeconds(0.2f);
         for (int i = maxSpawnSquareNum-1; i >=0; i--)
         {
             //玩家产生
@@ -253,35 +260,45 @@ public class SubCol : MonoBehaviour
             {
                 GameObject player = Instantiate(Resources.Load<GameObject>("Prefab/PlayerSquare"), spawner.transform.position, Quaternion.identity, null);
                 spawner.ColFallOneSquare(player);
-                //StartCoroutine(spawner.ColFallOneSquare(player));
                 yield return delay;
                 continue;
+            }       
+            if (currentSpecialIndex < specialTypesList.Count)
+            {
+                if (specialTypesList.Count > 0 && i == specialTypesList[currentSpecialIndex].index)
+                {
+                    //Debug.Log("列：" + transform.parent.GetSiblingIndex() + "-我有" + specialTypesList.Count + "个特殊快");
+                    //Debug.Log("替换为特殊块-位数：" + i + "类型：" + specialTypesList[currentSpecialIndex].specialType);
+                    NewSpecialSquare(specialTypesList[currentSpecialIndex].specialType, specialTypesList[currentSpecialIndex].taskTriggerIndex);
+                    yield return delay;
+                    continue;
+                }
             }
-            //自定义地图块
-
-
-            spawner.SubColAddTargetColorSquare(soList[i]);
+            spawner.SubColAddTargetColorSquare(colorSOList[i]);
             yield return delay;
         }
     }
 
+    void NewSpecialSquare(E_SpecialSquareType specialType,int taskIndex)
+    { 
+        spawner.SubColAddSpecialSquare(specialType,taskIndex);
+        currentSpecialIndex++;
+    }
 
     public void GetTargetSlotNewSquare(WalkableSlot slot) 
     {
-        spawner.BornSquareToTargetSlot(slot);
+       StartCoroutine(spawner.BornSquareToTargetSlot(slot));
     }
 
-     void CheckToRemoveSquares()
+    void CheckToRemoveSquares()
     {
-        //if (CheckRemoveList() != null && canRemoveLine)
         if (CheckRemoveList() != null)
         {
-            //canRemoveLine = false;
             StartCoroutine(RemoveSquares(CheckRemoveList()));
         }
     }
 
-    public void NewRemove()
+    public void NewColRemove()
     {
         isRemoving = true;
         removingTimer = removingInterval;
@@ -291,7 +308,7 @@ public class SubCol : MonoBehaviour
     {
         if (!isRemoving)
         {
-            NewRemove();
+            NewColRemove();
             if (isSuperPower) 
             {
                 yield return RemoveLine(removeLists, isSuperPower, RemoveColLine5);
@@ -415,7 +432,7 @@ public class SubCol : MonoBehaviour
             if (toRemoveSquares[i] != SuperSquare)
             {
                 StartCoroutine(toRemoveSquares[i].BeRemoved());
-                NewRemove();
+                NewColRemove();
 
                 ColAddPrepareNeededSquare();
                 yield return removeDelay;
@@ -479,7 +496,7 @@ public class SubCol : MonoBehaviour
     public List<Square> toRemoveSquares = new List<Square>();
 
     int firstIndex;
-    E_Color firstCor;
+    E_ColorSquareType firstCor;
 
         int num = 1;
     public List<Square> CheckRemoveList()
@@ -551,19 +568,6 @@ public class SubCol : MonoBehaviour
         else
             return null;
     }
-}
-
-public class SubColCustomSquare 
-{
-    [Header("特殊方块类型")]
-    public E_SpecialSquareType specialType;
-
-    [Header("特殊方块精灵")]
-    public Sprite squareSprite;
-    [TextArea]
-    [Header("特殊方块描述")]
-    public string description;
-
 }
 
 

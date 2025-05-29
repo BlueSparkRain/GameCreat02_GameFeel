@@ -46,6 +46,7 @@ public class Keyboard_Mouse_ModeManager : MonoSingleton<Keyboard_Mouse_ModeManag
         // 锁定鼠标到屏幕中心并隐藏鼠标指针
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
+        //Input.GetKeyDown(KeyCode.Escape);
     }
 
     /// <summary>

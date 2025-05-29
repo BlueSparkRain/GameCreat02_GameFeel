@@ -5,19 +5,19 @@ using UnityEngine;
 public class ColorSquare : Square
 {
     public ColorSquareSO myData;
-    SquarePoolManager pool;
+
     SpriteRenderer spriteRenderer;
 
     protected override void Awake()
     {
         base.Awake();
-        pool=FindAnyObjectByType<SquarePoolManager>();
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
-    public void SetColorData(ColorSquareSO so) 
+    public void InitColorData(ColorSquareSO so) 
     {
       myData= so;
+      
       ColorSelf();
     }
 
@@ -37,8 +37,6 @@ public class ColorSquare : Square
         {
             yield break;
         }
-        //DoSelfEffect();
-
         if (transform.parent != null && slot)
         {
             yield return SquareRemoveAnim();
@@ -49,8 +47,7 @@ public class ColorSquare : Square
         if (transform.GetComponent<PlayerController>())
             yield break;
 
-        WholeObjPoolManager.Instance.ObjReturnPool(E_ObjectPoolType.É«¿é³Ø,this.gameObject);
-        //pool.ReturnPool(gameObject,);
+        poolManager.ObjReturnPool(E_ObjectPoolType.ÑÕÉ«¿é³Ø,gameObject);
     }  
 }
 

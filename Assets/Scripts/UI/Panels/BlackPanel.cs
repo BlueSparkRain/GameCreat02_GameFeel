@@ -21,6 +21,7 @@ public class BlackPanel : BasePanel
 
     public override IEnumerator ShowPanelTweenEffect()
     {
+        yield return new WaitForSeconds(1);
         yield return uiTweener.UIDoFade(transform,0,1,transTime);
 
     }

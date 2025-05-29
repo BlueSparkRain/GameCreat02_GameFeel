@@ -20,7 +20,7 @@ public class SquareKiller : MonoBehaviour
             }
 
         
-            pool.ObjReturnPool(E_ObjectPoolType.É«¿é³Ø, other.gameObject);
+            pool.ObjReturnPool(E_ObjectPoolType.ÑÕÉ«¿é³Ø, other.gameObject);
         }
     }
 }

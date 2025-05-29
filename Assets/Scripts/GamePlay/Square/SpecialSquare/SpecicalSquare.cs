@@ -6,11 +6,10 @@ using UnityEngine;
 /// </summary>
 public class SpecicalSquare : Square
 {
-    [Header("特殊地块精灵")]
-    public Sprite SpecicalSprite;
+    public SpecialSquareSO   specialData;
 
-    [Header("本地块可摧毁")]
-    bool canRemoved;
+    //[Header("本地块可摧毁")]
+    //bool canPlayerRemoved;
 
     protected SubCol selfCol;
     protected GameRow selfRow;
@@ -18,24 +17,27 @@ public class SpecicalSquare : Square
     protected override void Awake()
     {
         base.Awake();
-        MyAppear();
-    }
-
-    protected virtual void RemainSelfEffect() 
-    {
-
     }
 
     /// <summary>
     /// 自身特殊形象整顿
     /// </summary>
-    void MyAppear()
+    public virtual void InitSpecialSquare(SpecialSquareSO _specialData)
     {
-        transform.GetComponent<SpriteRenderer>().sprite = SpecicalSprite;
+        specialData = _specialData;
+        transform.GetComponent<SpriteRenderer>().sprite = specialData.specialSprite;
     }
 
     /// <summary>
-    /// 
+    /// 与消除无关的逻辑
+    /// </summary>
+    protected virtual void RemainSelfEffect()
+    {
+
+    }
+
+    /// <summary>
+    /// 与消除有关的逻辑
     /// </summary>
     public override void RemoveSelfEffect()
     {
@@ -58,9 +60,10 @@ public class SpecicalSquare : Square
    
 }
 
+
 public enum E_SpecialSquareType 
 {   
-    消融方块,
-    传送门方块,
-
+    消融收集,
+    触发消除,
+    传送,
 }

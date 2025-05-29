@@ -8,17 +8,27 @@ public class PostProcessManager : MonoSingleton<PostProcessManager>
     [Header("References")]
     [SerializeField] private Volume urpVolume;
 
-    //[Header("Bloom Control")]
-    //[Range(0, 5)] public float bloomIntensity = 1f;
-    //[Header("Vignette Control")]
-    //[Range(0, 1)] public float vignetteIntensity;
-
     private Bloom _bloom;
     private Vignette _vignette;
     private LensDistortion _lensDistortion;
+
+    private FilmGrain _filmGrain;
+    private ColorAdjustments _colorAdjustments;
+
+    private void OnEnable()
+    {
+        EventCenter.Instance.AddEventListener(E_EventType.E_NewLevel,InitSelf);  
+    }
+
+    private void OnDisable()
+    {
+        EventCenter.Instance.RemoveEventListener(E_EventType.E_NewLevel,InitSelf);  
+    }
+
     protected override void InitSelf()
     {
         base.InitSelf();
+        Debug.Log("6667777777");
         GetCurrentVolume(FindAnyObjectByType<Volume>());
     }
 
@@ -28,6 +38,26 @@ public class PostProcessManager : MonoSingleton<PostProcessManager>
       urpVolume.profile.TryGet(out _bloom);
       urpVolume.profile.TryGet(out _vignette);
       urpVolume.profile.TryGet(out _lensDistortion);
+      urpVolume.profile.TryGet(out _filmGrain);
+      urpVolume.profile.TryGet(out _colorAdjustments);
+    }
+
+    public  bool isGrayWorld;
+    public void GrayWorldFlash(float startPoint = 0, float endPoint = -100f, float transTime = 0.2f, float pingpongDelayTime = 4) 
+    {
+        if (!isGrayWorld)
+        {
+            isGrayWorld = true;
+            StartCoroutine(FilmGrainFlash(startPoint, 1, transTime, pingpongDelayTime));
+            StartCoroutine(GrayFlash(startPoint, endPoint, transTime, pingpongDelayTime));
+        }
+        else 
+        {
+            float _startPoint= _colorAdjustments.saturation.value;
+            //StopAllCoroutines();
+            StartCoroutine(FilmGrainFlash(_startPoint, 1, transTime, pingpongDelayTime));
+            StartCoroutine(FilmGrainFlash(_startPoint, endPoint, transTime, pingpongDelayTime));
+        }
     }
 
     public void LenDistortionFlash(float startPoint=0, float endPoint=0.4f, float transTime=0.1f, float pingpongDelayTime = 0) 
@@ -39,10 +69,23 @@ public class PostProcessManager : MonoSingleton<PostProcessManager>
             StartCoroutine(LensDistortionFlash(startPoint,  endPoint, transTime, pingpongDelayTime));
         }
     }
-    IEnumerator LensDistortionFlash(float startPoint, float endPoint, float transTime, float pingpongDelayTime) 
+
+    IEnumerator LensDistortionFlash(float startPoint, float endPoint, float transTime, float pingpongDelayTime)
     {
-      yield return FadeInAndOut(_lensDistortion.intensity, startPoint, endPoint,transTime,pingpongDelayTime);
-      nextLenDistortion = true;
+        yield return FadeInAndOut(_lensDistortion.intensity, startPoint, endPoint, transTime, pingpongDelayTime);
+        nextLenDistortion = true;
+    }
+
+    IEnumerator FilmGrainFlash(float startPoint, float endPoint, float transTime, float pingpongDelayTime)
+    {
+        yield return FadeInAndOut(_filmGrain.intensity, startPoint, endPoint, transTime, pingpongDelayTime);
+
+    }
+
+    IEnumerator GrayFlash(float startPoint, float endPoint, float transTime, float pingpongDelayTime) 
+    {
+      yield return FadeInAndOut(_colorAdjustments.saturation, startPoint, endPoint,transTime,pingpongDelayTime);
+        isGrayWorld = false;
     }
 
     IEnumerator VignetteFadeInOut(float startPoint, float endPoint, float transTime, float pingpongDelayTime) 
@@ -79,7 +122,7 @@ public class PostProcessManager : MonoSingleton<PostProcessManager>
         {
             nextVignetteIdleEffect = false;
             if(_vignette!=null)
-            StartCoroutine( VignetteFadeInOut(0.7f, 0.3f, 2, 1));
+            StartCoroutine( VignetteFadeInOut(0.6f, 0.3f, 2, 1));
         }
 
 

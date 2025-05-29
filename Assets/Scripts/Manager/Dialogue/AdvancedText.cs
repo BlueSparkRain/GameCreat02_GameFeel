@@ -64,14 +64,14 @@ public class AdvancedText : TextMeshProUGUI
                 SetAllRubyTexts();
                 break;
             case E_DisplayType.Typing:
-                typingCor = StartCoroutine(TypingDisplay(sequence.needTypeWithFade, sequence.fadeDuration));
+                typingCor = StartCoroutine(TypingDisplay(sequence.needTypeWithFade, sequence.needTypeWithScale, sequence.fadeDuration));
                 break;
             default:
                 break;
         }
     }
 
-    public IEnumerator ShowText(string content, E_DisplayType displayType, bool needTypeWithFade ,float fadeDuration)
+    public IEnumerator ShowText(string content, E_DisplayType displayType, bool needTypeWithFade ,bool needTypeWithScale,float fadeDuration,float scaleDuration)
     {
         if (typingCor != null)
         {
@@ -92,7 +92,7 @@ public class AdvancedText : TextMeshProUGUI
                 SetAllRubyTexts();
                 break;
             case E_DisplayType.Typing:
-                typingCor = StartCoroutine(TypingDisplay(needTypeWithFade, fadeDuration));
+                typingCor = StartCoroutine(TypingDisplay(needTypeWithFade, needTypeWithScale, fadeDuration, scaleDuration));
                 break;
             default:
                 break;
@@ -123,24 +123,38 @@ public class AdvancedText : TextMeshProUGUI
     /// 文本打字机显示
     /// </summary>
     /// <returns></returns>
-    IEnumerator TypingDisplay(bool needFade,float fadeDuration=0.2f, Action action = null)
+    IEnumerator TypingDisplay(bool needFade,bool needScale,float fadeDuration=0.2f,float scaleDuration=0.1f ,Action action = null)
     {
         ForceMeshUpdate();
         for (int i = 0; i < m_characterCount; i++)
         {
             SetSingleCharacterAlpha(i, 0);
+
         }
+        if(needScale)
+        {
+            for (int i = 0; i < m_characterCount; i++)
+            {
+                SetSingleCharacterScale(i, Vector2.one);
+
+            }
+        }
+
         typingIndex = 0;
         while (typingIndex < m_characterCount)
         {
             if (needFade)
-            {
                 StartCoroutine(FadeInCharacter(typingIndex, fadeDuration)); //淡入打字机效果
-            }
-            else
+
+            if(needScale)
+                StartCoroutine(ScaleInCharacter(typingIndex, scaleDuration)); //缩放打字机效果
+
+            if(!needFade && !needScale)
             {
                 SetSingleCharacterAlpha(typingIndex, 255);   //无淡入打字机效果
             }
+
+
             if (selfPreprocessor.IntervalDictionary.TryGetValue(typingIndex, out float result))
                 yield return new WaitForSecondsRealtime(result);
             else
@@ -171,6 +185,77 @@ public class AdvancedText : TextMeshProUGUI
         }
         UpdateVertexData();//更新顶点数据
     }
+
+
+    /// <summary>
+    /// 设置单个字符的缩放（基于原始顶点中心点）
+    /// </summary>
+    void SetSingleCharacterScale(int index, Vector2 scale)
+    {
+        TMP_CharacterInfo character = textInfo.characterInfo[index];
+        if (!character.isVisible) return;
+
+        int matIndex = character.materialReferenceIndex;
+        int vertexIndex = character.vertexIndex;
+        Vector3[] vertices = textInfo.meshInfo[matIndex].vertices;
+
+        // 动态计算原始包围盒（基于第一次调用时的顶点数据）
+        Vector3 min = new Vector3(float.MaxValue, float.MaxValue);
+        Vector3 max = new Vector3(float.MinValue, float.MinValue);
+
+        // 遍历所有顶点找到实际包围盒
+        for (int i = 0; i < 4; i++)
+        {
+            Vector3 vertex = vertices[vertexIndex + i];
+            min = Vector3.Min(min, vertex);
+            max = Vector3.Max(max, vertex);
+        }
+
+        Vector3 center = (min + max) / 2f; // 包围盒中心点
+        Vector3 size = max - min;          // 原始尺寸
+
+        // 应用缩放
+        for (int i = 0; i < 4; i++)
+        {
+            Vector3 offset = vertices[vertexIndex + i] - center;
+            offset.x *= scale.x;
+            offset.y *= scale.y;
+            vertices[vertexIndex + i] = center + offset;
+        }
+
+        // 更新网格
+        textInfo.meshInfo[matIndex].mesh.vertices = vertices;
+        UpdateVertexData();
+    }
+
+    /// <summary>
+    /// 改进的缩放动画协程（带缓动效果）
+    /// </summary>
+    IEnumerator ScaleInCharacter(int index, float duration)
+    {
+        float timer = 0;
+
+        while (timer < duration)
+        {
+            timer += Time.unscaledDeltaTime;
+            float t = Mathf.Clamp01(timer / duration);
+
+            // 使用缓动函数（二次缓入缓出）
+            float scaleValue = t < 0.5f ?
+                2 * t * t :
+                1 - Mathf.Pow(-2 * t + 2, 2) / 2;
+
+            SetSingleCharacterScale(index, new Vector2(scaleValue, scaleValue));
+            yield return null;
+        }
+
+        // 强制最终状态
+        SetSingleCharacterScale(index, Vector2.one);
+    }
+
+
+    //}
+
 
     /// <summary>
     /// 单字符淡入

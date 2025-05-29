@@ -57,7 +57,7 @@ public class MusicManager : BaseSingleton<MusicManager>
     }
 
     //播放背景音乐
-    public void PlayBKMusic(string resName)
+    public float PlayBKMusic(string resName,bool loop=true)
     {
         //动态创建播放背景音乐的组件 并且 不会过场景移除 
         //保证背景音乐在过场景时也能播放
@@ -71,10 +71,11 @@ public class MusicManager : BaseSingleton<MusicManager>
         //根据传入的背景音乐名字 来播放背景音乐
         AudioClip clip = Resources.Load<AudioClip>("Music/BGM/" + resName);
         bkMusic.clip = clip;
-        bkMusic.loop = true;
+        bkMusic.loop = loop;
         bkMusic.volume = bkMusicValue;
         bkMusic.Play();
-        //return bkMusic;
+
+        return clip.length;
     }
 
     //停止背景音乐
