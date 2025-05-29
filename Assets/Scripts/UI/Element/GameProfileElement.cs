@@ -127,6 +127,7 @@ public class GameProfileElement : MonoBehaviour
             //点击进入关卡选择
             Debug.Log("加载历史存档");
 
+            uiManager.HidePanel<NewMenuPanel>();
             uiManager.HidePanel<GameProfilePanel>();
 
             gameProfileSaveManager.SelectNewProfile(profileSaveData);
