@@ -33,9 +33,16 @@ public class Square : MonoBehaviour, ICanEffect
     {
         isBoss = true;
         removeTime = 5;
-        spRender.sprite = Resources.Load<Sprite>("Sprites/Boss");
-        //spRender.color = Color.white;
+        StartCoroutine(TurnBossAnim());
         GetComponent<ColorSquare>().myData = null;
+        //spRender.color = Color.white;
+    }
+
+    IEnumerator TurnBossAnim() 
+    {
+        yield return TweenHelper.MakeLerp(transform.localScale,new Vector3(transform.localScale.x,0,transform.localScale.z), 0.05f, val => transform.localScale = val);
+        spRender.sprite = Resources.Load<Sprite>("Sprites/Boss");
+        yield return TweenHelper.MakeLerp(transform.localScale,Vector3.one*1.56f, 0.05f, val => transform.localScale = val);
     }
 
     private void OnDestroy()

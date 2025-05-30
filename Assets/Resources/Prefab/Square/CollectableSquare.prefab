@@ -32,7 +32,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -0.1}
   m_LocalScale: {x: 0.45000002, y: 0.45000002, z: 0.45000002}
-  m_ConstrainProportionsScale: 1
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 9141803049810424766}
   m_Father: {fileID: 0}
@@ -185,9 +185,10 @@ MonoBehaviour:
   controller: {fileID: 0}
   slot: {fileID: 0}
   isRemoving: 0
+  removeTime: 1
+  canminusHealth: 1
   specialData: {fileID: 0}
   type: 0
-  moveTime: 1
   checkRemoveDistance: 1
 --- !u!1 &7808399190054876206
 GameObject:
