@@ -11,7 +11,8 @@ Shader "Unlit/Button"
     }
     SubShader
     {
-        Tags { "RenderType"="Opaque" "RenderPipeline"="UniversalRenderPipeline" }
+        // Tags { "RenderType"="Opaque" "RenderPipeline"="UniversalRenderPipeline" }
+        Tags { "RenderType"="Opaque"}
         LOD 100
 
         Pass
