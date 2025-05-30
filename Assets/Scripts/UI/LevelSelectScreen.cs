@@ -8,15 +8,14 @@ public class LevelSelectScreen : MonoBehaviour
 {
     [Header("关卡序号")]
     public int levelNumber = 1;
-    public Shader shader;
-    private Material material;
-
+    public Material MyMaterial;
+    private Material runtimeMat;
     [Header("关卡名字")]
     public string levelName;
     [Header("关卡名字文本")]
     public TMP_Text levelNameText;
 
-    public int levelStar = -1;
+    public float levelStar = -1;
 
     public Texture _locked;
     public Texture _0Star; 
@@ -83,15 +82,19 @@ public class LevelSelectScreen : MonoBehaviour
 
     private void Awake()
     {
-        material = new Material(shader);
-        GetComponent<MeshRenderer>().material = material;
-        material.SetTexture("_MainTex", _locked);
-        material.SetTexture("_alpha", alpha);
+
+
+         runtimeMat= new Material(MyMaterial);
+        GetComponent<MeshRenderer>().material = runtimeMat;
+        runtimeMat.SetTexture("_MainTex", _locked);
+        runtimeMat.SetTexture("_alpha", alpha);
 
         //显示关卡名字
         levelNameText.text = levelName;
         levelNameTrans = levelNameText.transform;
-        ChangeLeveState(-1);
+
+        ChangeLeveState(-1);//<<<<======================这里强行设置是可以改变sahder的
+
     }
     //void Start()
     //{
@@ -110,11 +113,11 @@ public class LevelSelectScreen : MonoBehaviour
 
     void Update()
     {
-        if (Input.mousePosition!= lastFramePos && material != null)
+        if (Input.mousePosition!= lastFramePos && GetComponent<MeshRenderer>().material != null)
         {
             lastFramePos = Input.mousePosition;
             Vector4 mousePosition = Input.mousePosition;
-            material.SetVector("_MousePos", mousePosition);
+            GetComponent<MeshRenderer>().material.SetVector("_MousePos", mousePosition);
         }
     }
     float a;
@@ -168,24 +171,29 @@ public class LevelSelectScreen : MonoBehaviour
         switch (levelStar)
         {
             case -1:
-                material.SetTexture("_LevelStatusTex", _locked);
-                material.SetInt("_levelStar", -1);
+                runtimeMat.SetTexture("_LevelStatusTex", _locked);
+                runtimeMat.SetFloat("_levelStar", -1);
+                Debug.Log("levelStar: " + runtimeMat.GetFloat("_levelStar"));
                 break;
             case 0:
-                material.SetTexture("_LevelStatusTex", _0Star);
-                material.SetInt("_levelStar", 0);
+                runtimeMat.SetTexture("_LevelStatusTex", _0Star);
+                runtimeMat.SetFloat("_levelStar", 0);
+                Debug.Log("levelStar: " + runtimeMat.GetFloat("_levelStar"));
                 break;
             case 2:
-                material.SetTexture("_LevelStatusTex", _1Star);
-                material.SetInt("_levelStar", 1);
+                runtimeMat.SetTexture("_LevelStatusTex", _1Star);
+                runtimeMat.SetFloat("_levelStar", 1);
+                Debug.Log("levelStar: " + runtimeMat.GetFloat("_levelStar"));
                 break;
             case 3:
-                material.SetTexture("_LevelStatusTex", _2Star);
-                material.SetInt("_levelStar", 2);
+                runtimeMat.SetTexture("_LevelStatusTex", _2Star);
+                runtimeMat.SetFloat("_levelStar", 2);
+                Debug.Log("levelStar: " + runtimeMat.GetFloat("_levelStar"));
                 break;
             case 4:
-                material.SetTexture("_LevelStatusTex", _3Star);
-                material.SetInt("_levelStar", 3);
+                runtimeMat.SetTexture("_LevelStatusTex", _3Star);
+                runtimeMat.SetFloat("_levelStar", 3);
+                Debug.Log("levelStar: " + runtimeMat.GetFloat("_levelStar"));
                 break;
         }
     }

@@ -1,2 +1,19 @@
 fileFormatVersion: 2
 guid: acd5b7b58997f2a40bd5a1e44ae4ca12
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - shader: {fileID: 4800000, guid: 4fd975090c0cabb4aa806ef825aae595, type: 3}
+  - levelNameText: {instanceID: 0}
+  - _locked: {fileID: 2800000, guid: 7c5d6b9fe4d45ed42adc7748202077e4, type: 3}
+  - _0Star: {fileID: 2800000, guid: 7682a966cc7a515468c11dc4ccb59b48, type: 3}
+  - _1Star: {fileID: 2800000, guid: 80c6299ca757626419f843bf8e922f62, type: 3}
+  - _2Star: {fileID: 2800000, guid: ae9e8f362df4d7c4ba2c48d2fd3506da, type: 3}
+  - _3Star: {fileID: 2800000, guid: b62b4a33ef9ac4f45b2c83db6ce87549, type: 3}
+  - alpha: {fileID: 2800000, guid: 7c5d6b9fe4d45ed42adc7748202077e4, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

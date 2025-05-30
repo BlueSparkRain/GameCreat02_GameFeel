@@ -533,7 +533,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   levelNumber: 1
-  shader: {fileID: 4800000, guid: 4fd975090c0cabb4aa806ef825aae595, type: 3}
+  MyMaterial: {fileID: 2100000, guid: 91e638fb9c1a8f547a9bacc1f6c89409, type: 2}
   levelName: test1
   levelNameText: {fileID: 3161555126186331293}
   levelStar: -1

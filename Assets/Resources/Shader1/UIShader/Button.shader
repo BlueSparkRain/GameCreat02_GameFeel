@@ -2,12 +2,12 @@ Shader "Unlit/Button"
 {
     Properties
     {
-        _MainTex ("Texture", 2D) = "while" {}
-        _LevelStatusTex ("LevelStatusTex", 2D) = "while" {}
-        _alpha("alpha", 2D) = "while"{}
+        _MainTex ("Texture", 2D) = "white" {}
+        _LevelStatusTex ("LevelStatusTex", 2D) = "white" {}
+        _alpha("alpha", 2D) = "white"{}
         _MousePos("mouse position", Vector) = (0,0,0,0)
         _R("radius", Range(0,1)) = 0.08
-        _levelStar("levelStar", int) = -1
+        _levelStar("levelStar", float) = -1
     }
     SubShader
     {
@@ -42,7 +42,7 @@ Shader "Unlit/Button"
             float4 _MainTex_ST;
             float4 _MousePos;
             float _R;
-            int _levelStar;
+            float _levelStar;
 
 
 
@@ -69,11 +69,11 @@ Shader "Unlit/Button"
                   
                 //col*=tex2D(_MainTex, i.uv);
 
-                if(_levelStar >= 1)
+                if(_levelStar >= 0.9)
                     col*=tex2D(_LevelStatusTex, scrolledUV);
                 else
                     col*=tex2D(_LevelStatusTex, i.uv);
-                if(_levelStar == -1)
+                if(_levelStar <=-0.9)
                 {
                     float noise = frac(sin(dot(i.uv, float2(12.9898,78.233))) * 43758.5453 + _Time.y );
                     float bw = step(0.5, noise);
