@@ -84,10 +84,7 @@ public class LevelSelectScreen : MonoBehaviour
     {
 
 
-         runtimeMat= new Material(MyMaterial);
-        GetComponent<MeshRenderer>().material = runtimeMat;
-        runtimeMat.SetTexture("_MainTex", _locked);
-        runtimeMat.SetTexture("_alpha", alpha);
+        SetMat();
 
         //显示关卡名字
         levelNameText.text = levelName;
@@ -144,6 +141,15 @@ public class LevelSelectScreen : MonoBehaviour
     /// <summary>
     /// 进入以解锁的关卡
     /// </summary>
+    /// 
+    void SetMat()
+    {
+        runtimeMat = new Material(MyMaterial);
+        GetComponent<MeshRenderer>().material = runtimeMat;
+        runtimeMat.SetTexture("_MainTex", _locked);
+        runtimeMat.SetTexture("_alpha", alpha);
+        return;
+    }
     void OnClickUnLockButton()
     {
         if (!isUnLock)
@@ -171,29 +177,46 @@ public class LevelSelectScreen : MonoBehaviour
         switch (levelStar)
         {
             case -1:
+
+                SetMat();
+
                 runtimeMat.SetTexture("_LevelStatusTex", _locked);
                 runtimeMat.SetFloat("_levelStar", -1);
-                //Debug.Log("levelStar: " + runtimeMat.GetFloat("_levelStar"));
+                Debug.Log("SWITCH -levelStar: " + runtimeMat.GetFloat("_levelStar")+"-1");
                 break;
             case 0:
+
+                SetMat();
+
                 runtimeMat.SetTexture("_LevelStatusTex", _0Star);
                 runtimeMat.SetFloat("_levelStar", 0);
-                //Debug.Log("levelStar: " + runtimeMat.GetFloat("_levelStar"));
+                Debug.Log("SWITCH -levelStar: " + runtimeMat.GetFloat("_levelStar")+"0");
                 break;
             case 2:
+
+                SetMat();
+
                 runtimeMat.SetTexture("_LevelStatusTex", _1Star);
                 runtimeMat.SetFloat("_levelStar", 1);
-                //Debug.Log("levelStar: " + runtimeMat.GetFloat("_levelStar"));
+                Debug.Log("SWITCH -levelStar: " + runtimeMat.GetFloat("_levelStar")+"1");
                 break;
             case 3:
+
+                SetMat();
+
                 runtimeMat.SetTexture("_LevelStatusTex", _2Star);
                 runtimeMat.SetFloat("_levelStar", 2);
-                //Debug.Log("levelStar: " + runtimeMat.GetFloat("_levelStar"));
+                Debug.Log("SWITCH -levelStar: " + runtimeMat.GetFloat("_levelStar")+"2");
                 break;
             case 4:
+
+                SetMat();
+
                 runtimeMat.SetTexture("_LevelStatusTex", _3Star);
                 runtimeMat.SetFloat("_levelStar", 3);
-                //Debug.Log("levelStar: " + runtimeMat.GetFloat("_levelStar"));
+                Debug.Log("SWITCH -levelStar: " + runtimeMat.GetFloat("_levelStar")+"3");
+                break;
+            default:
                 break;
         }
     }
