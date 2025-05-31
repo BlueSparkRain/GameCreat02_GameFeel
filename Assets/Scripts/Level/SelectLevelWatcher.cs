@@ -10,6 +10,7 @@ public class SelectLevelWatcher : MonoBehaviour
     private void Awake()
     {
         GameProfileSaveManager.Instance.UnLockNewLevel(GameLevelCheckManager.Instance.currentLevelIndex + 1);
+        //GameProfileSaveManager.Instance.UnLockNewLevel(GameProfileSaveManager.Instance.ProfileSaveData.lastestLevel+1);
         //GameProfileSaveManager.Instance.UnLockNewLevel(1);
         //GameProfileSaveManager.Instance.UnLockNewLevel(2);
         //GameProfileSaveManager.Instance.UnLockNewLevel(3);
@@ -19,6 +20,12 @@ public class SelectLevelWatcher : MonoBehaviour
         {
             tvs.Add(transform.GetChild(i).GetComponentInChildren<LevelSelectScreen>());
         }
+        //UpdateHistoryTV();
+        StartCoroutine(Wait());
+    }
+    IEnumerator Wait()
+    {
+    yield return null;
         UpdateHistoryTV();
     }
 

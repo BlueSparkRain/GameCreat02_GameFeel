@@ -15,7 +15,7 @@ public class LevelSelectScreen : MonoBehaviour
     [Header("关卡名字文本")]
     public TMP_Text levelNameText;
 
-    public float levelStar = -1;
+    public int levelStar = -1;
 
     public Texture _locked;
     public Texture _0Star; 
@@ -128,7 +128,7 @@ public class LevelSelectScreen : MonoBehaviour
     {
         //解锁动画
         isUnLock = true;
-        Debug.Log("解锁关卡" + transform.parent.GetSiblingIndex());
+        Debug.Log("*************************************UnLock******************************* level : " + transform.parent.GetSiblingIndex());
         ChangeLeveState(0);
     }
 
@@ -173,27 +173,27 @@ public class LevelSelectScreen : MonoBehaviour
             case -1:
                 runtimeMat.SetTexture("_LevelStatusTex", _locked);
                 runtimeMat.SetFloat("_levelStar", -1);
-                Debug.Log("levelStar: " + runtimeMat.GetFloat("_levelStar"));
+                //Debug.Log("levelStar: " + runtimeMat.GetFloat("_levelStar"));
                 break;
             case 0:
                 runtimeMat.SetTexture("_LevelStatusTex", _0Star);
                 runtimeMat.SetFloat("_levelStar", 0);
-                Debug.Log("levelStar: " + runtimeMat.GetFloat("_levelStar"));
+                //Debug.Log("levelStar: " + runtimeMat.GetFloat("_levelStar"));
                 break;
             case 2:
                 runtimeMat.SetTexture("_LevelStatusTex", _1Star);
                 runtimeMat.SetFloat("_levelStar", 1);
-                Debug.Log("levelStar: " + runtimeMat.GetFloat("_levelStar"));
+                //Debug.Log("levelStar: " + runtimeMat.GetFloat("_levelStar"));
                 break;
             case 3:
                 runtimeMat.SetTexture("_LevelStatusTex", _2Star);
                 runtimeMat.SetFloat("_levelStar", 2);
-                Debug.Log("levelStar: " + runtimeMat.GetFloat("_levelStar"));
+                //Debug.Log("levelStar: " + runtimeMat.GetFloat("_levelStar"));
                 break;
             case 4:
                 runtimeMat.SetTexture("_LevelStatusTex", _3Star);
                 runtimeMat.SetFloat("_levelStar", 3);
-                Debug.Log("levelStar: " + runtimeMat.GetFloat("_levelStar"));
+                //Debug.Log("levelStar: " + runtimeMat.GetFloat("_levelStar"));
                 break;
         }
     }
