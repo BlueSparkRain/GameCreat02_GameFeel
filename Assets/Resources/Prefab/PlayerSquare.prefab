@@ -854,6 +854,8 @@ MonoBehaviour:
   controller: {fileID: 0}
   slot: {fileID: 0}
   isRemoving: 0
+  removeTime: 1
+  canminusHealth: 1
   myData: {fileID: 11400000, guid: 0bd0130e2f857444094e0ecb2f6c43a9, type: 2}
 --- !u!114 &-1764890053907615121
 MonoBehaviour:
@@ -913,7 +915,7 @@ MonoBehaviour:
   whatIsEnemy:
     serializedVersion: 2
     m_Bits: 8
-  actInterval: 0.1
+  actInterval: 0.2
   isSwaping: 0
   targetSquareChecckDistance: 0.45
   targetDir: 0

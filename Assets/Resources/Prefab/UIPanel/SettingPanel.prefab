@@ -762,7 +762,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4945888224417511535, guid: 74afb4ab73d574047a2d745cd7bb8718, type: 3}
       propertyPath: m_text
-      value: "\u8FD4\u56DE\u6E38\u620F"
+      value: "\u8FD4\u56DE\n"
       objectReference: {fileID: 0}
     - target: {fileID: 4945888224417511535, guid: 74afb4ab73d574047a2d745cd7bb8718, type: 3}
       propertyPath: m_fontColor.b

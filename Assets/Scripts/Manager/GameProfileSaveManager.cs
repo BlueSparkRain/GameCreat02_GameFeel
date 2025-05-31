@@ -8,13 +8,13 @@ public class GameProfileSaveManager : MonoSingleton<GameProfileSaveManager>
 
     private void OnGUI()
     {
-        if (currentProfileData!=null)
-        {
-            GUILayout.Space(60);
-            GUILayout.Label("LastastLevel-£º" + currentProfileData.lastestLevel);
-            GUILayout.Label("LastastLevel-UnLock?£º" + currentProfileData.levelDatas[currentProfileData.lastestLevel-1].isUnLock);
-            GUILayout.Label("Level1Level-£º" + currentProfileData.levelDatas[0].levelLevel);
-        }
+        //if (currentProfileData!=null)
+        //{
+        //    GUILayout.Space(60);
+        //    GUILayout.Label("LastastLevel-£º" + currentProfileData.lastestLevel);
+        //    GUILayout.Label("LastastLevel-UnLock?£º" + currentProfileData.levelDatas[currentProfileData.lastestLevel-1].isUnLock);
+        //    GUILayout.Label("Level1Level-£º" + currentProfileData.levelDatas[0].levelLevel);
+        //}
     }
 
     [Header("´æ´¢Êý¾Ý")]
@@ -124,5 +124,12 @@ public class GameProfileSaveManager : MonoSingleton<GameProfileSaveManager>
     {
         eventCenter.EventTrigger(E_EventType.E_DataSave);
     }
- 
+
+
+    public static void CreatEmptyJsonProfile()
+    {
+        DataSaver.SaveByJson(JsonFileName.Profile1, new ProfileSaveData(JsonFileName.Profile1));
+        DataSaver.SaveByJson(JsonFileName.Profile2, new ProfileSaveData(JsonFileName.Profile2));
+        DataSaver.SaveByJson(JsonFileName.Profile3, new ProfileSaveData(JsonFileName.Profile3));
+    }
 }

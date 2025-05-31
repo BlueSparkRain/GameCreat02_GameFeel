@@ -15,4 +15,10 @@ public class GameRiser : MonoBehaviour
         UIManager.Instance.ShowPanel<NewMenuPanel>(null);
     }
 
+    public void InitButton()
+    {
+        DataSaver.SaveByJson(JsonFileName.Profile1, new ProfileSaveData(JsonFileName.Profile1));
+        DataSaver.SaveByJson(JsonFileName.Profile2, new ProfileSaveData(JsonFileName.Profile2));
+        DataSaver.SaveByJson(JsonFileName.Profile3, new ProfileSaveData(JsonFileName.Profile3));
+    }
 }
