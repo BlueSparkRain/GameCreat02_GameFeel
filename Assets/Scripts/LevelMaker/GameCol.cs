@@ -112,7 +112,7 @@ public class GameCol : MonoBehaviour
     {
         var colorSoLists = GetSubColorSOList(soList);
         var specialTypeLists = GetSubColSpecialSOList(specialSquaresSetting);
-        Debug.Log(transform.GetSiblingIndex() + "сп"+ specialTypeLists[0].Count);
+        //Debug.Log(transform.GetSiblingIndex() + "сп"+ specialTypeLists[0].Count);
 
         for (int i = subCols.Count - 1; i >= 0; i--)
         {

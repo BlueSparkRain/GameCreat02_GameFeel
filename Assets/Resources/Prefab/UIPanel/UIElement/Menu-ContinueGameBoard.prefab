@@ -228,7 +228,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8730b94447106b8458921ba9c8697957, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  transTime: 0.6
+  transTime: 0.4
   text: {fileID: 3638363118131644563}
 --- !u!95 &7175947742692844760
 Animator:

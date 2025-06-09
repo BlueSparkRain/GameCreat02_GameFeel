@@ -129,7 +129,6 @@ public class ChartCheckManager : MonoSingleton<ChartCheckManager>
         currentChartIndex = 0;
         chartTimer = 0;
         newMusic = true;
-
         player =FindAnyObjectByType<Player>().transform;
 
         while (newMusic) 
@@ -140,7 +139,6 @@ public class ChartCheckManager : MonoSingleton<ChartCheckManager>
                 chartTimer > triggerChartTimeList[currentChartIndex]-prepareTime)
             {
                 currentChartIndex++;
-
                 //在灰屏下无法出现判定
                 if(!PostProcessManager.Instance.isGrayWorld)
                 SetUpNewChart();
@@ -151,7 +149,6 @@ public class ChartCheckManager : MonoSingleton<ChartCheckManager>
             if(currentChartIndex >= triggerChartTimeList.Count)
             {
                 newMusic = false;
-                Debug.Log("生成完毕");
             }
             yield return null;
         }

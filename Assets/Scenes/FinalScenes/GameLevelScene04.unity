@@ -14881,8 +14881,11 @@ MonoBehaviour:
   ScoreUIObj: {fileID: 1254377977}
   MusicTimerUIObj: {fileID: 354113864}
   chartTimeResName: level1
-  musicResName: 4-blue skye
-  musicTime: 80
+  musicResName: "4-\u8C37\u96E8"
+  musicTime: 240
+  videoClip: {fileID: 0}
+  teachSprite: {fileID: 21300000, guid: f632005f044d02d44a00f19c0613f244, type: 3}
+  videoRT: {fileID: 0}
 --- !u!4 &1794295820
 Transform:
   m_ObjectHideFlags: 0
@@ -24071,7 +24074,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 459818944463007994, guid: 0d6f6ecb9abdab648b798fc96c6f79a2, type: 3}
       propertyPath: specialSquaresSetting.Array.data[0].taskTriggerIndex
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 459818944463007994, guid: 0d6f6ecb9abdab648b798fc96c6f79a2, type: 3}
       propertyPath: specialSquaresSetting.Array.data[1].taskTriggerIndex

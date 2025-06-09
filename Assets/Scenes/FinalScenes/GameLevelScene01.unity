@@ -14837,7 +14837,10 @@ MonoBehaviour:
   MusicTimerUIObj: {fileID: 354113864}
   chartTimeResName: level1
   musicResName: "1-\u540E\u670B\u914D\u4E50"
-  musicTime: 60
+  musicTime: 10
+  videoClip: {fileID: 32900000, guid: b43e7b9d311f16842a7f5565927df6e6, type: 3}
+  teachSprite: {fileID: 21300000, guid: 983e2b501b412974e9ed48b150c82f3c, type: 3}
+  videoRT: {fileID: 8400000, guid: 9aabcca582bdeaf4a87e516d7dd5c0cb, type: 2}
 --- !u!4 &1794295820
 Transform:
   m_ObjectHideFlags: 0

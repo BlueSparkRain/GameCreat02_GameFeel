@@ -5,27 +5,27 @@ using UnityEngine;
 
 public class ChartTTT : MonoBehaviour
 {
-   public   List<float> floatLists = new List<float>();
+   //public   List<float> floatLists = new List<float>();
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        StartCoroutine(Wait());
+   // // Start is called before the first frame update
+   // void Start()
+   // {
+   //     StartCoroutine(Wait());
 
 
-    }
+   // }
 
-    IEnumerator Wait() 
-    {
-        yield return new WaitForSeconds(5);
-        StartCoroutine(ChartCheckManager.Instance.SetUpChartsSample(floatLists));
-        yield return new WaitForSeconds(10);
-        StartCoroutine(ChartCheckManager.Instance.SetUpChartsSample(floatLists));        
+   // IEnumerator Wait() 
+   // {
+   //     yield return new WaitForSeconds(5);
+   //     StartCoroutine(ChartCheckManager.Instance.SetUpChartsSample(floatLists));
+   //     yield return new WaitForSeconds(10);
+   //     StartCoroutine(ChartCheckManager.Instance.SetUpChartsSample(floatLists));        
 
-    }
+   // }
 
-    // Update is called once per frame
-    void Update()
-    {
-    }
+   // // Update is called once per frame
+   // void Update()
+   // {
+   // }
 }

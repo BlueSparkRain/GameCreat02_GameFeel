@@ -30,24 +30,20 @@ public class GameLevelCheckManager :MonoSingleton<GameLevelCheckManager>
        if(finalScore >= S_levelScore) 
        {
             currentLevelLevel = E_LevelLevel.S;
-            //Debug.Log("达到S评级");
        }
        else if (finalScore >= S_levelScore / 2) 
         {
             currentLevelLevel = E_LevelLevel.A;
             EventCenter.Instance.EventTrigger(E_EventType.E_GetALevel);
-            //Debug.Log("达到A评级");
-
         } 
         else if (finalScore >= S_levelScore / 4 *3) 
         {
-            currentLevelLevel = E_LevelLevel.B;
-            //Debug.Log("达到B评级");
+
         }
         else 
         {
             currentLevelLevel = E_LevelLevel.C;
-            //Debug.Log("达到C评级");
+
         }
     }
 
@@ -56,8 +52,6 @@ public class GameLevelCheckManager :MonoSingleton<GameLevelCheckManager>
         Debug.Log("评级"+ currentLevelLevel);
         //结算关卡
         GameProfileSaveManager.Instance.SetProfileLevelData(currentLevelIndex,currentLevelLevel,currentFinalScore);
-        //解锁新的关卡
-        GameProfileSaveManager.Instance.UnLockNewLevel(currentLevelIndex+1);
     }
    
 }

@@ -16,9 +16,6 @@ public class PlayerInputManager : MonoSingleton<PlayerInputManager>
     public bool ColorationLeft { get; private set; }
     public bool ColorationRight { get; private set; }
 
-    //public bool SettingPause { get; private set; }
-
-    //public bool playerAct {  get; private set; }
 
     public bool MouseClick { get; private set; }
 
@@ -43,7 +40,6 @@ public class PlayerInputManager : MonoSingleton<PlayerInputManager>
 
         if (selectUIObjs.Contains(obj))
         {
-            //Debug.Log("会重复");
             return;
         }
         EventSystem.current.SetSelectedGameObject(obj);
@@ -89,64 +85,8 @@ public class PlayerInputManager : MonoSingleton<PlayerInputManager>
             playerInput.Enable();
         }
     }
-
     void Update()
     {
-        //待优化/////////////////////////////////////
-        //if (EventSystem.current.currentSelectedGameObject != currentUISelectGameObj)
-        //{
-
-        //    if (currentUISelectGameObj && currentUISelectGameObj?.GetComponentInChildren<LevelSelectScreen>())
-        //    {
-        //        currentUISelectGameObj.transform.parent.GetComponent<Image>().enabled = false;
-        //    }
-
-        //    currentUISelectGameObj = EventSystem.current.currentSelectedGameObject;
-
-
-        //    if (selectUIObjs.Count > 0)
-        //    {
-        //        selectUIObjs.Pop();
-        //        selectUIObjs.Push(currentUISelectGameObj);
-        //    }
-        //    if (currentUISelectGameObj)
-        //    {
-        //        if (currentPanel != null)
-        //            currentPanel.GetComponent<CanvasGroup>().interactable = false;
-
-        //        currentPanel = currentUISelectGameObj.transform.GetComponentInParent<BasePanel>();
-        //    }
-        //}
-
-        //if (currentPanel != null)
-        //    currentPanel.GetComponent<CanvasGroup>().interactable = true;
-
-
-        //if (currentUISelectGameObj != null)
-        //{
-        //    if (currentUISelectGameObj?.GetComponentInChildren<LevelSelectScreen>())
-        //    {
-        //        currentUISelectGameObj.transform.parent.GetComponent<Image>().enabled = true;
-        //    }
-
-        //    UISelect = playerInput.UI.UISelect.WasPressedThisFrame();
-        //    UIClose = playerInput.UI.UIClose.WasPressedThisFrame();
-        //    SliderValue = playerInput.UI.SliderAction.ReadValue<Vector2>();
-        //}
-        //else
-        //{
-        //    currentPanel = null;
-        //}
-
-        //if (currentPanel != null && UIClose)
-        //{
-        //    //currentPanel.GamePadClose();
-        //}
-        ///////////////////////////////////
-
-
-        //SettingPause = playerInput.GamePlay.SettingPause.WasPressedThisFrame();
-
         //移动操作输入检测
         MoveUp = playerInput.GamePlay.UpMove.WasPressedThisFrame();
         MoveDown = playerInput.GamePlay.DownMove.WasPressedThisFrame();
@@ -178,16 +118,7 @@ public class PlayerInputManager : MonoSingleton<PlayerInputManager>
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            //if (!isSettingOpen)
-            //{
-            //    if (FindAnyObjectByType<SettingPanel>() && !FindAnyObjectByType<SettingPanel>().GetComponent<CanvasGroup>().interactable)
-            //        return;
-            //    settingUIPanelIsOpen = !settingUIPanelIsOpen;
-            //    if (settingUIPanelIsOpen)
-                    UIManager.Instance.ShowPanel<SettingPanel>(null);
-                //else
-                //    UIManager.Instance.HidePanel<SettingPanel>();
-            
+            UIManager.Instance.ShowPanel<SettingPanel>(null);
         }
     }
 

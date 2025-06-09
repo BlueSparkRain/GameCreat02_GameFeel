@@ -13,7 +13,6 @@ public class SpawnerSlot : Slot
     SquarePoolManager squarePool;
     private void Awake()
     {
-        Debug.Log("ÉµÉµµÄÀ­µ½");
         squarePool = SquarePoolManager.Instance;
     }
 

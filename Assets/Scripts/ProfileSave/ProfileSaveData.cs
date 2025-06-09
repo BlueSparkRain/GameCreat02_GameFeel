@@ -41,7 +41,7 @@ public class ProfileSaveData
     /// <summary>
     ///当前关卡数
     /// </summary>
-    public int lastestLevel=1;
+    public int lastestLevel=0;
 
 
 
@@ -101,7 +101,6 @@ public class ProfileSaveData
         string date = currentDateTime.ToString("yyyy/MM/dd");
 
         // 获取当前时间（时:分:秒）
-        //string time = currentDateTime.ToString("HH:mm:ss");
         string time = currentDateTime.ToString("HH:mm");
 
         saveDate = date;

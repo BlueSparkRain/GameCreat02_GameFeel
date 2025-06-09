@@ -132,7 +132,7 @@ public class Square : MonoBehaviour, ICanEffect
     }
 
     public virtual IEnumerator BeRemoved()
-    { 
+    {
         yield return null;
         isBoss = false;
         canminusHealth = true;
@@ -214,7 +214,7 @@ public class Square : MonoBehaviour, ICanEffect
         canminusHealth = false;
         removeTime -= 1;
         Debug.Log("Ê£ÓàÑªÁ¿"+removeTime);
-        PostProcessManager.Instance.LenDistortionFlash(0,0.8f,0.06f,0.05f);
+        PostProcessManager.Instance.LenDistortionFlash(0,0.5f,0.1f,0);
         yield return new WaitForSeconds(0.4f);
         canminusHealth = true;
     }

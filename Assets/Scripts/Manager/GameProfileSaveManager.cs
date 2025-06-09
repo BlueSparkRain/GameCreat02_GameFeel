@@ -6,16 +6,7 @@ public class GameProfileSaveManager : MonoSingleton<GameProfileSaveManager>
 {
     EventCenter eventCenter;
 
-    private void OnGUI()
-    {
-        //if (currentProfileData!=null)
-        //{
-        //    GUILayout.Space(60);
-        //    GUILayout.Label("LastastLevel-£º" + currentProfileData.lastestLevel);
-        //    GUILayout.Label("LastastLevel-UnLock?£º" + currentProfileData.levelDatas[currentProfileData.lastestLevel-1].isUnLock);
-        //    GUILayout.Label("Level1Level-£º" + currentProfileData.levelDatas[0].levelLevel);
-        //}
-    }
+   
 
     [Header("´æ´¢Êý¾Ý")]
     [SerializeField]private ProfileSaveData currentProfileData;

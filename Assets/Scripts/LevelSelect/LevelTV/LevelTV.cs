@@ -4,35 +4,25 @@ using UnityEngine;
 
 public class LevelTV : MonoBehaviour
 {
-    public E_LevelLevel level=E_LevelLevel.None;
+    //public E_LevelLevel level=E_LevelLevel.None;
 
 
-    public bool isLocked;
+    //public bool isLocked;
 
-    public IEnumerator  UnLockSelf()
-    {
-        //LevelSelectManager.Instance.GetComponent<CanvasGroup>().interactable = false;
-        PlayerInputManager.Instance.SetCurrentSelectGameObj(transform.gameObject);
-        yield return new WaitForSeconds(3);
-        //LevelSelectManager.Instance.IntoLevelSelectScene(transform.parent.GetSiblingIndex());
-        isLocked = false;
-        //LevelSelectManager.Instance.GetComponentInParent<CanvasGroup>().interactable = true;
-        Debug.Log("解锁关卡" + transform.parent.GetSiblingIndex());
-        //ChangeLeveState(0);
-    }
+    //public IEnumerator  UnLockSelf()
+    //{
+       
+    //    PlayerInputManager.Instance.SetCurrentSelectGameObj(transform.gameObject);
+    //    yield return new WaitForSeconds(3);
 
+    //    isLocked = false;
 
-   void OnMouseEnter() 
-    {
-    
-    
-    }
+    //    Debug.Log("解锁关卡" + transform.parent.GetSiblingIndex());
+
+    //}
 
 
-    private void OnMouseExit()
-    {
-            
-    }
+  
 }
 
 

@@ -66,22 +66,10 @@ public class Chart : MonoBehaviour
         perfactDelay = new WaitForSeconds(perfactDuration);
     }
 
-    //private void OnEnable()
-    //{
-    //    eventCenter.AddEventListener(E_EventType.E_CurrentLevelOver, LevelEnd);
-    //}
-    //private void OnDisable()
-    //{
-    //    eventCenter.RemoveEventListener(E_EventType.E_CurrentLevelOver, LevelEnd);
-    //}
-
-    //void LevelEnd() 
-    //{
-    //    WholeObjPoolManager.Instance.ObjReturnPool(E_ObjectPoolType.音符池,gameObject);
-    //}
-
-
-    //private List<IEnumerator> _sceneCoroutines = new List<IEnumerator>();
+    private void OnDestroy()
+    {
+        StopAllCoroutines();
+    }
 
     /// <summary>
     /// 圆环向中心汇聚
@@ -91,14 +79,20 @@ public class Chart : MonoBehaviour
     {
         canTrigger = true;
         StartCoroutine(SetUpSample());
-        yield return TweenHelper.MakeLerp(Vector3.one * 5, Vector3.one * 2.34f, prepareTime, val =>
-            transform.localScale = val
-            );
+        Debug.Log("精准前");
+        yield return TweenHelper.MakeLerp(Vector3.one * 5, Vector3.one * 2.34f, prepareTime, val => {
+            if (gameObject != null)
+                transform.localScale = val;
+        });
+        Debug.Log("精准后");
         //缩小到精确采样点
         GetSamplePoint();
         yield return TweenHelper.MakeLerp(Vector3.one * 2.34f, Vector3.zero, prepareTime, val =>
-                transform.localScale = val
-        );
+        {
+            if (gameObject != null)
+                transform.localScale = val;
+        });
+
         wholeObjPoolManager.ObjReturnPool(E_ObjectPoolType.音符池, gameObject);
     }
 
@@ -108,7 +102,9 @@ public class Chart : MonoBehaviour
         //基于玩家的偏移数据
         yield return sampleDelay;
         //开启采样评分
+        Debug.Log("采样评分前");
         StartCoroutine(GetSample());
+        Debug.Log("采样评分后");
     }
 
     bool GoodState;

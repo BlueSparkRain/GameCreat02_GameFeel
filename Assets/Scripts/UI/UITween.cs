@@ -100,7 +100,7 @@ public class UITween : BaseSingleton<UITween>
     /// <param name="uiRoot">面板移动跟</param>
     /// <param name="transTime">动画时长</param>
     /// <returns></returns>
-    public IEnumerator UIEaseInFrom(E_Dir dir, Transform canvasGroup, Transform uiRoot, float transTime)
+    public IEnumerator UIEaseInFrom(E_Dir dir, Transform canvasGroup, Transform uiRoot, float transTime,float fadeIntensity=1)
     {
         //黑幕
         if (monoManager == null)
@@ -124,7 +124,7 @@ public class UITween : BaseSingleton<UITween>
                 moveTargetPos = new Vector2(0, 2000);
                 break;
         }
-        monoManager.StartCoroutine(UIDoFade(canvasGroup, 0, 1, transTime));
+        monoManager.StartCoroutine(UIDoFade(canvasGroup, 0, fadeIntensity, transTime));
         yield return UIDoMove(uiRoot, moveTargetPos, Vector2.zero, transTime);
     }
 
@@ -137,7 +137,7 @@ public class UITween : BaseSingleton<UITween>
     /// <param name="uiRoot">面板移动跟</param>
     /// <param name="transTime">动画时长</param>
     /// <returns></returns>
-    public IEnumerator UIEaseOutTo(E_Dir dir, Transform canvasGroup, Transform uiRoot, float transTime)
+    public IEnumerator UIEaseOutTo(E_Dir dir, Transform canvasGroup, Transform uiRoot, float transTime,float fadeIntensity=1)
     {
         //黑幕
         if (monoManager == null)
@@ -163,7 +163,7 @@ public class UITween : BaseSingleton<UITween>
         }
 
         yield return UIDoMove(uiRoot, Vector2.zero, moveTargetPos, transTime);
-        yield return UIDoFade(canvasGroup, 1, 0, transTime);
+        yield return UIDoFade(canvasGroup, fadeIntensity, 0, transTime);
     }
 
 

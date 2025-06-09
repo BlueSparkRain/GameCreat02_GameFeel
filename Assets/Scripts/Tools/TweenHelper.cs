@@ -27,8 +27,10 @@ public static class TweenHelper
     public static IEnumerator MakeLerp(Vector3 startPosition, Vector3 targetPosition, float lerpTime,
     Action<Vector3> updatePosition,AnimationCurve animCurve=null)
     {
+
         float elapsedTime = 0f;
         Vector3 currentPosition=Vector3.zero;
+
         while (elapsedTime < lerpTime)
         {
             if (animCurve == null)

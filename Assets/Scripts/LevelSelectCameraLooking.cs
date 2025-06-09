@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class LevelSelectCameraLooking : MonoBehaviour
@@ -12,12 +13,8 @@ public class LevelSelectCameraLooking : MonoBehaviour
     private bool isKeyboardRotating = false;
     float keyboardRotateY = 0f;
     public float rotSpeed = 0.1f;
-    // Start is called before the first frame update
-    void Start()
-    {
 
-    }
-
+    float offset;
     // Update is called once per frame
     void Update()
     {
@@ -45,6 +42,8 @@ public class LevelSelectCameraLooking : MonoBehaviour
             // 检查当前角度是否接近90度的倍数
             float currentAngleY = transform.eulerAngles.y;
             float nearestMultipleOf90 = Mathf.Round(currentAngleY / 90f) * 90f;
+            offset = currentAngleY - nearestMultipleOf90;
+
             float angleDifferenceY = Mathf.Abs(currentAngleY - nearestMultipleOf90);
 
             // 如果接近90度的倍数，则回弹到最近的90度的倍数
@@ -52,6 +51,7 @@ public class LevelSelectCameraLooking : MonoBehaviour
             {
                 rotationSpeedY = 0f; 
                 float snapBackDeltaY = nearestMultipleOf90 - currentAngleY;
+               
                 transform.Rotate(Vector3.up, snapBackDeltaY * 0.2f, Space.World);
             }
             lastMousePosition = Input.mousePosition;
@@ -61,11 +61,13 @@ public class LevelSelectCameraLooking : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.A)||Input.GetKeyDown(KeyCode.LeftArrow))
         {
             isKeyboardRotating = true;
+
             keyboardRotateY -= 90f;
         }
         if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
         {
             isKeyboardRotating = true;
+
             keyboardRotateY += 90f;
         }
         if(keyboardRotateY>0.5f)
@@ -83,9 +85,7 @@ public class LevelSelectCameraLooking : MonoBehaviour
             keyboardRotateY = 0;
             isKeyboardRotating = false;
         }
-
-            //
-            if ((Mathf.Abs(transform.eulerAngles.y + 1) % 90) > 10f)
+        if ((Mathf.Abs(transform.eulerAngles.y + 1) % 90) > 10f)
         {
             if (transform.GetChild(0).gameObject.activeSelf == true)
             {

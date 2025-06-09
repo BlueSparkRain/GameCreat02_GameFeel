@@ -38,14 +38,25 @@ public class Pop_Confirm_WindowPanel : BasePanel
             ReturnButton.onClick.AddListener(
                 () =>
                 {
-                    disposeAction?.Invoke();
+                    if(disposeAction!=null)
+                    disposeAction.Invoke();
+
                     uiManager.HidePanel<Pop_Confirm_WindowPanel>();
                 });
         }
         else 
         {
             confirmText.text = str;
-            Debug.Log("无法确认！");
+            Debug.Log("仅为确认！");
+            ConfirmButton.onClick.AddListener(
+               () => {
+                   uiManager.HidePanel<Pop_Confirm_WindowPanel>();
+               });
+            ReturnButton.onClick.AddListener(
+                () =>
+                {
+                    uiManager.HidePanel<Pop_Confirm_WindowPanel>();
+                });
         }
     }
 

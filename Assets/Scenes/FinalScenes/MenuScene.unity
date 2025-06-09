@@ -620,7 +620,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -24.900024, y: -17.799988}
+  m_AnchoredPosition: {x: -24.899902, y: -17.800049}
   m_SizeDelta: {x: 167.12, y: 93.433}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &738304564
@@ -1722,6 +1722,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2020761639}
   - component: {fileID: 2020761637}
+  - component: {fileID: 2020761640}
   m_Layer: 0
   m_Name: PlayerInputManager
   m_TagString: Untagged
@@ -1797,6 +1798,22 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2020761640
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2020761635}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d611243479b660749b58e034c67e65b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentUISelectGameObj: {fileID: 0}
+  currentPanel: {fileID: 0}
+  UISelect: 0
+  SliderValue: {x: 0, y: 0}
 --- !u!1 &2142167787
 GameObject:
   m_ObjectHideFlags: 0

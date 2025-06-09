@@ -17,7 +17,7 @@ public class CreditsPanel : BasePanel
 
     public override IEnumerator HidePanelTweenEffect()
     {
-        yield return uiTweener.UIEaseOutTo(E_Dir.上, transform, UIRoot, transTime);
+        yield return uiTweener.UIEaseOutTo(E_Dir.上, transform, UIRoot, transTime,0.8f);
     }
 
     public override void ShowPanel()
@@ -27,7 +27,7 @@ public class CreditsPanel : BasePanel
 
     public override IEnumerator ShowPanelTweenEffect()
     {
-        yield return uiTweener.UIEaseInFrom(E_Dir.上, transform, UIRoot, transTime);
+        yield return uiTweener.UIEaseInFrom(E_Dir.上, transform, UIRoot, transTime,0.8f);
     }
 
     protected override void Init()

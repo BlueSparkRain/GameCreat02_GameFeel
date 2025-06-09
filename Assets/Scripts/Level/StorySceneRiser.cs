@@ -16,8 +16,8 @@ public class StorySceneRiser : MonoBehaviour
 
     void Start()
     {
+        MusicManager.Instance.StopBKMusic();
         dialogueManager = DialogueManager.Instance;
-        //UIManager.Instance.ShowPanel<BlackPanel>(null);
         StartCoroutine(ShowDialogues());
 
         StartCoroutine(UnLockLevelSelect());
@@ -26,8 +26,6 @@ public class StorySceneRiser : MonoBehaviour
     IEnumerator UnLockLevelSelect() 
     {
         yield return new WaitForSeconds(2);
-        ////此时玩家可以进入关卡选择界面
-        //UIManager.Instance.HidePanel<BlackPanel>();
         yield return NoiseScreenOpen();
         EventCenter.Instance.EventTrigger(E_EventType.E_StoryOver);
     }
@@ -46,18 +44,6 @@ public class StorySceneRiser : MonoBehaviour
             dialogueManager.CreatNewUnInteractableDialogue(true,newDialogue.resID, newDialogue.trans, Vector3.one*newDialogue.scale);
             yield return new WaitForSeconds(dialogue[i].displayInterval);
         }
-
-        //yield return new WaitForSeconds(2);
-        //DialogueManager.Instance.CreatNewUnInteractableDialogue(1, new Vector2(100, 350), Vector3.one*1.5f);
-        //yield return new WaitForSeconds(2.5f);
-        //DialogueManager.Instance.CreatNewUnInteractableDialogue(2, new Vector2(250, -350), Vector3.one *2.0f);
-        //yield return new WaitForSeconds(1);
-
-        ////此时玩家可以进入关卡选择界面
-        //EventCenter.Instance.EventTrigger(E_EventType.E_StoryOver);
-
-        //DialogueManager.Instance.CreatNewUnInteractableDialogue(3, new Vector2(150, -150), Vector3.one*1.8f);
-        //yield return new WaitForSeconds(2.5f);
     }
 }
 

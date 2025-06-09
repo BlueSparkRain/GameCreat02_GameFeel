@@ -28,7 +28,6 @@ public class PostProcessManager : MonoSingleton<PostProcessManager>
     protected override void InitSelf()
     {
         base.InitSelf();
-        Debug.Log("6667777777");
         GetCurrentVolume(FindAnyObjectByType<Volume>());
     }
 

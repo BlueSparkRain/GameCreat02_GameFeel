@@ -9,8 +9,9 @@ public class SelectLevelWatcher : MonoBehaviour
 
     private void Awake()
     {
-        GameProfileSaveManager.Instance.UnLockNewLevel(GameLevelCheckManager.Instance.currentLevelIndex + 1);
-        //GameProfileSaveManager.Instance.UnLockNewLevel(GameProfileSaveManager.Instance.ProfileSaveData.lastestLevel+1);
+        StartCoroutine(MusicManager.Instance.PLayNewBK("LEVEL-Ë®µÎ"));
+        GameProfileSaveManager.Instance.UnLockNewLevel(GameProfileSaveManager.Instance.ProfileSaveData.lastestLevel+1);
+        //µ÷ÊÔ´úÂë
         //GameProfileSaveManager.Instance.UnLockNewLevel(1);
         //GameProfileSaveManager.Instance.UnLockNewLevel(2);
         //GameProfileSaveManager.Instance.UnLockNewLevel(3);

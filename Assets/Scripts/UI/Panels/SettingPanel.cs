@@ -1,11 +1,12 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class SettingPanel : BasePanel
 {
-    [Header("输入映射按钮")]
-    public Button ActionSettingButton;
+    [Header("返回菜单按钮")]
+    public Button ReturnMenuSettingButton;
     [Header("音量设置按钮")]
     public Button AudioSettingButton;
 
@@ -23,8 +24,11 @@ public class SettingPanel : BasePanel
     /// </summary>
     void OnClickExitCurrentLevelButtton()
     {
-        //返回关卡选择界面
-        SceneLoadManager.Instance.TransToLoadScene(2,E_SceneTranType.过场图过渡);
+       
+            //返回关卡选择界面
+            uiManager.HidePanel<SettingPanel>();
+            SceneLoadManager.Instance.TransToLoadScene(2, E_SceneTranType.过场图过渡);
+        
     }
 
     /// <summary>
@@ -38,11 +42,19 @@ public class SettingPanel : BasePanel
     /// <summary>
     /// 输入模式设置按钮绑定
     /// </summary>
-    void OnClickAcionSettingButton()
+    void OnClickReturnMenuButton()
     {
-        Application.Quit();
-        //uiManager.ShowPanel<ActionSettingPanel>(null, true);
-    
+        Debug.Log(SceneManager.GetActiveScene().buildIndex);
+        if (SceneManager.GetActiveScene().buildIndex == 0)
+        {
+            uiManager.ShowPanel<Pop_Confirm_WindowPanel>(panel => panel.ToConfirm("菜单已激活", null, null),true);
+            return;
+        }
+        else
+        {
+            uiManager.HidePanel<SettingPanel>();
+            SceneLoadManager.Instance.TransToLoadScene(0, E_SceneTranType.过场图过渡);
+        }
     }
     /// <summary>
     /// 音乐音效设置按钮绑定
@@ -69,7 +81,7 @@ public class SettingPanel : BasePanel
         base.Init();
         ExitCurrentLevelButton.onClick.AddListener(OnClickExitCurrentLevelButtton);
         AudioSettingButton.onClick.AddListener(OnClickAudioSettingButton);
-        ActionSettingButton.onClick.AddListener(OnClickAcionSettingButton);
+        ReturnMenuSettingButton.onClick.AddListener(OnClickReturnMenuButton);
         ShakeSettingButton.onClick.AddListener(OnClickIShakeSettingButton);
         ReturnButton.onClick.AddListener(OnClickReturnButton);
     }

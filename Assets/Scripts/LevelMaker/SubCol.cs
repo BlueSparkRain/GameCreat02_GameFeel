@@ -195,7 +195,9 @@ public class SubCol : MonoBehaviour
                 if (!newRemoveBegin && canAddNeedSquare)
                 {
                     canAddNeedSquare = false;
-                    ColAddNeededSquare();
+                    Debug.Log("卡爆了卡爆了");
+                    StartCoroutine(BornNeedToAddSquare());
+                    //ColAddNeededSquare();
                     //列生成只触发一次，等待下次消除
                 }
             }

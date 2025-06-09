@@ -9,6 +9,7 @@ public class MenuCustomButtonElement : MonoBehaviour, IPointerEnterHandler, IPoi
     [SerializeField] float transTime;
     Animator anima;
     [SerializeField] TMP_Text text;
+   
 
     private void Awake()
     {
@@ -18,13 +19,24 @@ public class MenuCustomButtonElement : MonoBehaviour, IPointerEnterHandler, IPoi
         anima = GetComponent<Animator>();
     }
 
+    private void OnEnable()
+    {
+        StopAllCoroutines();
+    }
+
+    public void InitSelfPos() 
+    {
+    transform.localPosition = startPos;
+    }
     public void SelfAppear()
     {
+
         StartCoroutine(TweenHelper.MakeLerp(startPos, readyPos, transTime, val => transform.localPosition = val));
     }
 
     public void SelfHide()
     {
+
         StartCoroutine(TweenHelper.MakeLerp(readyPos, startPos, transTime, val => transform.localPosition = val));
     }
 

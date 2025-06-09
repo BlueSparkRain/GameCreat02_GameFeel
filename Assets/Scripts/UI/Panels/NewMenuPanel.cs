@@ -18,28 +18,39 @@ public class NewMenuPanel : BasePanel
     public override IEnumerator HidePanelTweenEffect()
     {
         yield return null;
+      
         TitleElement.SelfHide();
-        StartCoroutine(HideButtons());
+        yield return HideButtons();
     }
 
     public override void ShowPanel()
     {
         base.ShowPanel();
+
     }
 
     public override IEnumerator ShowPanelTweenEffect()
     {
        yield return null;
-       TitleElement.SelfAppear();
-       StartCoroutine(ShowButtons());
+        TitleElement.SelfAppear();
+        StartCoroutine(ShowButtons());
     }
+
+
+    private void OnEnable()
+    {
+        StopAllCoroutines();
+    }
+
 
     void ShowFirstTitle() 
     {
     
     }
+
     IEnumerator ShowButtons() 
     {
+
         for (int i = 0; i < menuCustomButtonElements.Count; i++) 
         {
             yield return delay;
@@ -59,11 +70,18 @@ public class NewMenuPanel : BasePanel
     protected override void Init()
     {
         base.Init();
-        for (int i = 0; i < buttonFather.childCount; i++) 
+        if (menuCustomButtonElements.Count == 0)
         {
-            menuCustomButtonElements.Add(buttonFather.GetChild(i).GetComponent<MenuCustomButtonElement>());
+            for (int i = 0; i < buttonFather.childCount; i++)
+            {
+                menuCustomButtonElements.Add(buttonFather.GetChild(i).GetComponent<MenuCustomButtonElement>());
+            }
         }
-        //sceneLoadManager=SceneLoadManager.Instance;
+
+        for (int i = 0; i < menuCustomButtonElements.Count; i++)
+        {
+            menuCustomButtonElements[i].InitSelfPos();
+        }
     }
 
     public void OnClickContinueGameButton() 

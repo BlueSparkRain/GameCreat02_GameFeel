@@ -1,3 +1,5 @@
+using NUnit.Framework.Constraints;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -9,7 +11,7 @@ public class MusicManager : BaseSingleton<MusicManager>
     private AudioSource bkMusic = null;
 
     //背景音乐大小
-    private float bkMusicValue = 0.1f;
+    private float bkMusicValue = 0.4f;
 
     //用于音效组件依附的对象
     private GameObject soundObj = null;
@@ -83,15 +85,34 @@ public class MusicManager : BaseSingleton<MusicManager>
     {
         if (bkMusic == null)
             return;
-        bkMusic.Stop();
+        MonoManager.Instance.StartCoroutine(MusicFade());
+        //bkMusic.Stop();
     }
+
+    public  IEnumerator PLayNewBK(string resName, bool loop = true) 
+    {
+        if (bkMusic == null)
+           yield break;
+        //关掉当前音乐后
+        yield return MusicFade();
+        PlayBKMusic(resName,loop);
+
+    }
+    
 
     //暂停背景音乐
     public void PauseBKMusic()
     {
         if (bkMusic == null)
             return;
+
         bkMusic.Pause();
+    }
+
+    IEnumerator MusicFade() 
+    {
+        yield return TweenHelper.MakeLerp(bkMusicValue,0,2,val=>bkMusic.volume=val);
+        bkMusic.Stop();
     }
 
     //设置背景音乐大小

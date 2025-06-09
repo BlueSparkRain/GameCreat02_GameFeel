@@ -1,8 +1,7 @@
 using System.Collections;
-using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Video;
 
 public class GameLevelRiser : MonoBehaviour
 {
@@ -12,9 +11,9 @@ public class GameLevelRiser : MonoBehaviour
     public TMP_Text LevelIndexText;
 
     [Header("基础消除得分")]
-    public int LevelBaseScore=1000;
+    public int LevelBaseScore = 1000;
     [Header("卡点消除得分")]
-    public int LevelChartScore=2000;
+    public int LevelChartScore = 2000;
 
     [Header("相机初始位置")]
     public Transform InitCamPos;
@@ -23,7 +22,7 @@ public class GameLevelRiser : MonoBehaviour
     [Header("相机聚焦前准备")]
     public float CamWaitTime = 3;
     [Header("相机聚焦时长")]
-    public float CameraTransDuration=2;
+    public float CameraTransDuration = 2;
 
     [Header("关卡序号")]
     public GameObject LevelIndexUIObj;
@@ -47,22 +46,27 @@ public class GameLevelRiser : MonoBehaviour
     notes chartTimes;
 
 
+    //public VideoPlayer player;
+    public VideoClip videoClip;
+    public Sprite teachSprite;
+    public RenderTexture videoRT;
 
     private void OnEnable()
     {
-        EventCenter.Instance.AddEventListener(E_EventType.E_GetALevel,SetUIObjAnim);
+        EventCenter.Instance.AddEventListener(E_EventType.E_GetALevel, SetUIObjAnim);
     }
 
     private void OnDisable()
     {
-        EventCenter.Instance.RemoveEventListener(E_EventType.E_GetALevel,SetUIObjAnim);
+        EventCenter.Instance.RemoveEventListener(E_EventType.E_GetALevel, SetUIObjAnim);
     }
 
-    void InitChartSample() 
+    void InitChartSample()
     {
-        MusicManager.Instance.PlayBKMusic(musicResName);
         scoreController.SelfInit(musicTime);
-        //scoreController.SelfInit(MusicManager.Instance.PlayBKMusic(musicResName,false));
+        StartCoroutine(MusicManager.Instance.PLayNewBK(musicResName, false));
+
+
         StartCoroutine(ChartCheckManager.Instance.SetUpChartsSample(chartTimes.MusicNotes));
     }
 
@@ -76,6 +80,8 @@ public class GameLevelRiser : MonoBehaviour
 
         //设置关卡序号
         LevelIndexText.text = LevelIndex.ToString();
+        //弹出本关教学弹窗
+        UIManager.Instance.ShowPanel<Pop_Image_WindowPanel>(panel => panel.ToShow("小贴士", teachSprite, videoClip,videoRT));
 
         WholeObjPoolManager.Instance.LoadNewPool();
 
@@ -83,24 +89,24 @@ public class GameLevelRiser : MonoBehaviour
     }
 
 
-    IEnumerator CamFocusOnScreen() 
+    IEnumerator CamFocusOnScreen()
     {
-      yield return  new WaitForSeconds(CamWaitTime);
-      StartCoroutine(TweenHelper.MakeLerp(InitCamPos.localPosition, FocusCamPos.localPosition, CameraTransDuration,val=>mainCam.transform.localPosition=val));
-      StartCoroutine(TweenHelper.MakeLerp(InitCamPos.localEulerAngles, FocusCamPos.localEulerAngles, CameraTransDuration,val=>mainCam.transform.localEulerAngles=val));
-      yield return  new WaitForSeconds(1);
+        yield return new WaitForSeconds(CamWaitTime);
+        StartCoroutine(TweenHelper.MakeLerp(InitCamPos.localPosition, FocusCamPos.localPosition, CameraTransDuration, val => mainCam.transform.localPosition = val));
+        StartCoroutine(TweenHelper.MakeLerp(InitCamPos.localEulerAngles, FocusCamPos.localEulerAngles, CameraTransDuration, val => mainCam.transform.localEulerAngles = val));
+        yield return new WaitForSeconds(1);
         ////显示分数面板入场动画
         StartCoroutine(UIObjScale(ScoreUIObj, Vector3.one * 0.25f));
-        yield return  new WaitForSeconds(0.6f);
+        yield return new WaitForSeconds(0.6f);
         //显示进度入场动画
         StartCoroutine(UIObjScale(LevelIndexUIObj, Vector3.one * 0.3f));
         ProgressUIObj.GetComponent<Animator>().SetTrigger("Appear");
         StartCoroutine(UIObjScale(MusicTimerUIObj, Vector3.one));
-       //加载地图
-       InitGameMap();
-       yield return new WaitForSeconds(2);
-      //开启采样
-      InitChartSample();
+        //加载地图
+        InitGameMap();
+        yield return new WaitForSeconds(2);
+        //开启采样
+        InitChartSample();
 
     }
 
@@ -109,17 +115,17 @@ public class GameLevelRiser : MonoBehaviour
         ProgressUIObj.GetComponent<Animator>().SetTrigger("Idle");
     }
 
-    IEnumerator UIObjScale(GameObject UIObj,Vector3 endValue) 
+    IEnumerator UIObjScale(GameObject UIObj, Vector3 endValue)
     {
-       yield return TweenHelper.MakeLerp(UIObj.transform.localScale, new Vector3(0.3f, 1, 0.3f), 0.08f , val=> UIObj.transform.localScale = val);
-       yield  return TweenHelper.MakeLerp(UIObj.transform.localScale, new Vector3(0.6f, 0.4f, 0.6f), 0.06f , val=> UIObj.transform.localScale = val);
-       yield  return TweenHelper.MakeLerp(UIObj.transform.localScale, endValue, 0.06f , val=> UIObj.transform.localScale = val);
+        yield return TweenHelper.MakeLerp(UIObj.transform.localScale, new Vector3(0.3f, 1, 0.3f), 0.08f, val => UIObj.transform.localScale = val);
+        yield return TweenHelper.MakeLerp(UIObj.transform.localScale, new Vector3(0.6f, 0.4f, 0.6f), 0.06f, val => UIObj.transform.localScale = val);
+        yield return TweenHelper.MakeLerp(UIObj.transform.localScale, endValue, 0.06f, val => UIObj.transform.localScale = val);
     }
 
     /// <summary>
     /// 开始游戏
     /// </summary>
-    void InitGameMap() 
+    void InitGameMap()
     {
         map.LoadWholeMap();
     }

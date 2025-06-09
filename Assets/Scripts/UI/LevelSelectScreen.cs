@@ -28,7 +28,6 @@ public class LevelSelectScreen : MonoBehaviour
     public int historyScore;
 
 
-
     [Header("历史最高评级")]
     public E_LevelLevel level=E_LevelLevel.None;
 
@@ -37,22 +36,24 @@ public class LevelSelectScreen : MonoBehaviour
     /// </summary>
     public bool isUnLock;
 
+    bool canOpen=true;
+
     private void OnMouseEnter()
     {
         StartCoroutine(ShakeLevelNameRotAnim());
         
     }
 
-    private void OnMouseExit()
-    {
-        
 
-    }
 
     private void OnMouseUpAsButton()
     {
         //StartCoroutine(ShakeLevelNameRotAnim());
-        OnClickUnLockButton();
+        if (canOpen)
+        {
+            canOpen = false;
+            OnClickUnLockButton();
+        }
     }
 
 
@@ -93,18 +94,7 @@ public class LevelSelectScreen : MonoBehaviour
         ChangeLeveState(-1);//<<<<======================这里强行设置是可以改变sahder的
 
     }
-    //void Start()
-    //{
-    //    material = new Material(shader);
-    //    GetComponent<MeshRenderer>().material = material;
-    //    material.SetTexture("_MainTex", _locked);
-    //    material.SetTexture("_alpha", alpha);
-
-    //    //显示关卡名字
-    //    levelNameText.text = levelName;
-    //    levelNameTrans= levelNameText.transform;
-    //    ChangeLeveState(-1);
-    //}
+   
 
     Vector3 lastFramePos;
 
@@ -125,7 +115,7 @@ public class LevelSelectScreen : MonoBehaviour
     {
         //解锁动画
         isUnLock = true;
-        Debug.Log("*************************************UnLock******************************* level : " + transform.parent.GetSiblingIndex());
+        //Debug.Log("*************************************UnLock******************************* level : " + transform.parent.GetSiblingIndex());
         ChangeLeveState(0);
     }
 
@@ -158,12 +148,24 @@ public class LevelSelectScreen : MonoBehaviour
             LevelSelectManager.Instance.LockRemindShow();
             return;
         }
+        UIManager.Instance.ShowPanel<Pop_Confirm_WindowPanel>(panel=>panel.ToConfirm("进入游戏",InsideLevel, DisposeConfirm));
 
+
+        //Debug.Log("当前关卡已解锁");
+        //SceneLoadManager.Instance.TransToLoadScene(2+levelNumber,E_SceneTranType.黑屏过渡);
+        //GameLevelCheckManager.Instance.SetCurrentLevel(levelNumber);
+    }
+    void DisposeConfirm() 
+    {
+        canOpen=true;
+    }
+    void InsideLevel()
+    {
+        canOpen = true;
         Debug.Log("当前关卡已解锁");
-        SceneLoadManager.Instance.TransToLoadScene(2+levelNumber,E_SceneTranType.黑屏过渡);
+        SceneLoadManager.Instance.TransToLoadScene(2 + levelNumber, E_SceneTranType.黑屏过渡);
         GameLevelCheckManager.Instance.SetCurrentLevel(levelNumber);
     }
-
     public void ChangeLeveState(int levelStarNum)
     {
         if (levelStarNum < levelStar)
@@ -182,7 +184,7 @@ public class LevelSelectScreen : MonoBehaviour
 
                 runtimeMat.SetTexture("_LevelStatusTex", _locked);
                 runtimeMat.SetFloat("_levelStar", -1);
-                Debug.Log("SWITCH -levelStar: " + runtimeMat.GetFloat("_levelStar")+"-1");
+               
                 break;
             case 0:
 
@@ -190,7 +192,7 @@ public class LevelSelectScreen : MonoBehaviour
 
                 runtimeMat.SetTexture("_LevelStatusTex", _0Star);
                 runtimeMat.SetFloat("_levelStar", 0);
-                Debug.Log("SWITCH -levelStar: " + runtimeMat.GetFloat("_levelStar")+"0");
+                
                 break;
             case 2:
 
@@ -198,7 +200,7 @@ public class LevelSelectScreen : MonoBehaviour
 
                 runtimeMat.SetTexture("_LevelStatusTex", _1Star);
                 runtimeMat.SetFloat("_levelStar", 1);
-                Debug.Log("SWITCH -levelStar: " + runtimeMat.GetFloat("_levelStar")+"1");
+               
                 break;
             case 3:
 
@@ -206,7 +208,7 @@ public class LevelSelectScreen : MonoBehaviour
 
                 runtimeMat.SetTexture("_LevelStatusTex", _2Star);
                 runtimeMat.SetFloat("_levelStar", 2);
-                Debug.Log("SWITCH -levelStar: " + runtimeMat.GetFloat("_levelStar")+"2");
+              
                 break;
             case 4:
 
@@ -214,7 +216,7 @@ public class LevelSelectScreen : MonoBehaviour
 
                 runtimeMat.SetTexture("_LevelStatusTex", _3Star);
                 runtimeMat.SetFloat("_levelStar", 3);
-                Debug.Log("SWITCH -levelStar: " + runtimeMat.GetFloat("_levelStar")+"3");
+               
                 break;
             default:
                 break;

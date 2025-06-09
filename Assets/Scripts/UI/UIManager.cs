@@ -54,20 +54,6 @@ public class UIManager : BaseSingleton<UIManager>
     /// <param name="isSync">使用异步，未来可期</param>
     public void ShowPanel<T>(UnityAction<T> callBack, bool isSubPanel = false, bool isPopWindow=false) where T : BasePanel
     {
-        //如果不是子面板，关闭当前的面板
-        //if (!isSubPanel && currentPanel != null)
-        //{
-        //    Debug.Log("关闭"+ currentPanel.GetType().Name);
-
-        //    Debug.Log(HistoryPanels.Count+"历史父面板");
-        //    for (int i = 0; i < HistoryPanels.Count; i++) 
-        //    {
-        //        MonoManager.Instance.StartCoroutine(PanelHideEnd(HistoryPanels[i]));             
-        //    }
-        //       MonoManager.Instance.StartCoroutine(PanelHideEnd(panelDic[currentPanel.GetType().Name]));
-
-        //    MonoManager.Instance.StartCoroutine(PanelHideEnd(panelDic[currentPanel.GetType().Name]));
-        //}
        
 
         //获取面板名，预制体名和面板类名需保持一致
