@@ -79,12 +79,12 @@ public class Chart : MonoBehaviour
     {
         canTrigger = true;
         StartCoroutine(SetUpSample());
-        Debug.Log("精准前");
+        //Debug.Log("精准前");
         yield return TweenHelper.MakeLerp(Vector3.one * 5, Vector3.one * 2.34f, prepareTime, val => {
             if (gameObject != null)
                 transform.localScale = val;
         });
-        Debug.Log("精准后");
+        //Debug.Log("精准后");
         //缩小到精确采样点
         GetSamplePoint();
         yield return TweenHelper.MakeLerp(Vector3.one * 2.34f, Vector3.zero, prepareTime, val =>
@@ -102,9 +102,9 @@ public class Chart : MonoBehaviour
         //基于玩家的偏移数据
         yield return sampleDelay;
         //开启采样评分
-        Debug.Log("采样评分前");
+        //Debug.Log("采样评分前");
         StartCoroutine(GetSample());
-        Debug.Log("采样评分后");
+        //Debug.Log("采样评分后");
     }
 
     bool GoodState;
@@ -157,16 +157,16 @@ public class Chart : MonoBehaviour
         if (PerfactState)
         {
             eventCenter.EventTrigger(E_EventType.E_PlayerHit, E_ChartHitState.Perfact);
-            Debug.Log("完美");
+            //Debug.Log("完美");
         }
         else if (NiceState)
         {
             eventCenter.EventTrigger(E_EventType.E_PlayerHit, E_ChartHitState.Nice);
-            Debug.Log("优秀");
+           // Debug.Log("优秀");
         }
         else if (GoodState)
         {
-            Debug.Log("好");
+           // Debug.Log("好");
             eventCenter.EventTrigger(E_EventType.E_PlayerHit, E_ChartHitState.Good);
         }
     }
@@ -177,6 +177,6 @@ public class Chart : MonoBehaviour
     void GetSamplePoint()
     {
         //同步播放音效
-        Debug.Log("精准");
+       // Debug.Log("精准");
     }
 }

@@ -327,7 +327,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: -40.86, z: -7.38}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: -0.4109497, y: -26.74469}
+  m_AnchoredPosition: {x: -0.41088867, y: -26.74469}
   m_SizeDelta: {x: 325.1361, y: 144.4245}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &4988488431575363059
@@ -686,6 +686,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Menu-ContinueGameBoard
       objectReference: {fileID: 0}
+    - target: {fileID: 3638363118131644563, guid: 051d0b6ef299ea5438f2fa24bb06b680, type: 3}
+      propertyPath: m_text
+      value: "\u5F00\u59CB\u6E38\u620F"
+      objectReference: {fileID: 0}
     - target: {fileID: 6103082203788852978, guid: 051d0b6ef299ea5438f2fa24bb06b680, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -818,7 +822,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3638363118131644563, guid: 051d0b6ef299ea5438f2fa24bb06b680, type: 3}
       propertyPath: m_text
-      value: Credits
+      value: "\u9E23\u8C22"
       objectReference: {fileID: 0}
     - target: {fileID: 6103082203788852978, guid: 051d0b6ef299ea5438f2fa24bb06b680, type: 3}
       propertyPath: m_Pivot.x
@@ -952,7 +956,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3638363118131644563, guid: 051d0b6ef299ea5438f2fa24bb06b680, type: 3}
       propertyPath: m_text
-      value: Achievements
+      value: "\u6210\u5C31"
       objectReference: {fileID: 0}
     - target: {fileID: 6103082203788852978, guid: 051d0b6ef299ea5438f2fa24bb06b680, type: 3}
       propertyPath: m_Pivot.x
@@ -1086,9 +1090,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3638363118131644563, guid: 051d0b6ef299ea5438f2fa24bb06b680, type: 3}
       propertyPath: m_text
-      value: 'QuitGame
-
-'
+      value: "\u9000\u51FA\u6E38\u620F\n"
       objectReference: {fileID: 0}
     - target: {fileID: 6103082203788852978, guid: 051d0b6ef299ea5438f2fa24bb06b680, type: 3}
       propertyPath: m_Pivot.x

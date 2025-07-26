@@ -32,7 +32,7 @@ public class Square : MonoBehaviour, ICanEffect
     public void SetBoss() 
     {
         isBoss = true;
-        removeTime = 5;
+        removeTime = 15;
         StartCoroutine(TurnBossAnim());
         GetComponent<ColorSquare>().myData = null;
         //spRender.color = Color.white;
@@ -133,14 +133,17 @@ public class Square : MonoBehaviour, ICanEffect
 
     public virtual IEnumerator BeRemoved()
     {
-        yield return null;
-        isBoss = false;
-        canminusHealth = true;
-        removeTime = 1;
-        RemoveSelfEffect();
-        Debug.Log(canRemoved+name + "方块被消除");
-        controller.RemoveDecoratorTrigger();
-        controller.ReSetDecorator();
+        if (!isBoss)
+        {
+            yield return null;
+            //isBoss = false;
+            canminusHealth = true;
+            removeTime = 1;
+            RemoveSelfEffect();
+            Debug.Log(canRemoved + name + "方块被消除");
+            controller.RemoveDecoratorTrigger();
+            controller.ReSetDecorator();
+        }
     }
 
     /// <summary>
@@ -202,6 +205,7 @@ public class Square : MonoBehaviour, ICanEffect
             StartCoroutine(AeraCheck());
             if (removeTime <= 0)
             {
+                isBoss = false;
                 canminusHealth = false;
                 StartCoroutine(BeRemoved());
                 EventCenter.Instance.EventTrigger(E_EventType.E_KillABoss);

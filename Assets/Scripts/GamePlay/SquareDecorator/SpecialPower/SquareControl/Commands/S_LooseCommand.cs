@@ -21,6 +21,7 @@ public class S_LooseCommand : SquareCommand
     public virtual void LooseSelf()
     {
         controlSelf.SetParent(null);
+        controlSlot = null;
         controlSquare.HasFather = false;
         rb.SetLooseVelocity(looseSpeed);
     }

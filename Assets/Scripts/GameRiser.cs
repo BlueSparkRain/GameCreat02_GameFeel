@@ -9,9 +9,17 @@ public class GameRiser : MonoBehaviour
         MusicManager.Instance.PlayBKMusic("LEVEL-水滴");
         StartCoroutine(WaitOpen());
     }
+    void ConformAcion() {
+    InitButton();   
+    }
+    void DisposeAcion() {
+    
+    }
     IEnumerator WaitOpen()
     {
-        yield return new WaitForSeconds(2.6f);
+        yield return new WaitForSeconds(0.6f);
+        UIManager.Instance.ShowPanel<Pop_Confirm_WindowPanel>(panel => panel.ToConfirm("首次游戏", ConformAcion, DisposeAcion));
+        yield return new WaitForSeconds(2.0f);
 
         UIManager.Instance.ShowPanel<NewMenuPanel>(null);
     }

@@ -25,7 +25,7 @@ public class UIManager : BaseSingleton<UIManager>
     public BasePanel currentPanel;
 
 
-    private List<BasePanel> HistoryPanels=new List<BasePanel>();
+    //private List<BasePanel> HistoryPanels=new List<BasePanel>();
 
     /// <summary>
     /// 获取到目标面板
@@ -67,8 +67,8 @@ public class UIManager : BaseSingleton<UIManager>
                 panel.gameObject.SetActive(true);
 
             //如果已经存在父面板，其发出打开子面板的指令
-            if(isSubPanel)
-                HistoryPanels.Add(currentPanel);
+            //if(isSubPanel)
+                //HistoryPanels.Add(currentPanel);
 
             if(!isPopWindow)
                 currentPanel = panel;
@@ -92,8 +92,8 @@ public class UIManager : BaseSingleton<UIManager>
         panel = panelobj.GetComponent<BasePanel>();
 
 
-        if (isSubPanel)
-            HistoryPanels.Add(currentPanel);
+        //if (isSubPanel)
+            //HistoryPanels.Add(currentPanel);
 
         if (!isPopWindow)
             currentPanel = panel;

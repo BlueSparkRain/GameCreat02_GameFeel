@@ -40,6 +40,9 @@ public class SquareMoverToPlayerDecorator : SquareMoverDecorator
     }
     void UpdateTask()
     {
+        if (pathFindManager == null)
+            pathFindManager = PathFindManager.Instance;
+
         currentNodePos = pathFindManager.GetAStarNodeIndex(squareController);
         playerNodePos = pathFindManager.GetPlayerNodeIndex();
         moveTasks = pathFindManager.GetPathFindCommands(currentNodePos, playerNodePos);

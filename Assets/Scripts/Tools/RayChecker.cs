@@ -1,28 +1,44 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 
 public static class RayChecker
 {
     //static  float targetChecckDistance = 1.4f;
+    
+   static List<RaycastHit2D> hits = new List<RaycastHit2D>();
 
     public static GameObject CheckTargetLayerObj(LayerMask layer,float targetChecckDistance, Vector3 checkOriginPos, E_CustomDir targetDir) 
     {
-
+        hits.Clear();
         switch (targetDir)
         {
-            case E_CustomDir.ÉÏ:
-                return (Physics2D.Raycast(checkOriginPos, Vector2.up, targetChecckDistance, layer).collider?.gameObject);
-                
-            case E_CustomDir.ÏÂ:
-                return (Physics2D.Raycast(checkOriginPos, Vector2.down, targetChecckDistance, layer).collider?.gameObject);
-            case E_CustomDir.×ó:
-                return (Physics2D.Raycast(checkOriginPos, Vector2.left, targetChecckDistance, layer).collider?.gameObject);
-            case E_CustomDir.ÓÒ:
-                return (Physics2D.Raycast(checkOriginPos, Vector2.right, targetChecckDistance, layer).collider?.gameObject);
+            case E_CustomDir.ä¸Š:
+                hits =  Physics2D.RaycastAll(checkOriginPos, Vector2.up, targetChecckDistance, layer).ToList();
+                if(hits.Count>0)
+                return hits.Last().collider.gameObject;
+                else return null;
+            case E_CustomDir.ä¸‹:
+                        hits = Physics2D.RaycastAll(checkOriginPos, Vector2.down, targetChecckDistance, layer).ToList();
+                if (hits.Count > 0)
+                    return hits.Last().collider.gameObject;
+                else return null;
+           
+            case E_CustomDir.å·¦:
+                        hits = Physics2D.RaycastAll(checkOriginPos, Vector2.left, targetChecckDistance, layer).ToList();
+                if (hits.Count > 0)
+                    return hits.Last().collider.gameObject;
+                else return null;
+         
+            case E_CustomDir.å³:
+                        hits = Physics2D.RaycastAll(checkOriginPos, Vector2.right, targetChecckDistance, layer).ToList();
+                if (hits.Count > 0)
+                    return hits.Last().collider.gameObject;
+                else return null;
             default:
-                return null;
-        }
+                        return null;
+                    }
     }
 }

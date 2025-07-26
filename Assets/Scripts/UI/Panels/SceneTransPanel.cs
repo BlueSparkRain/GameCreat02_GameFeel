@@ -66,7 +66,9 @@ public class SceneTransPanel : BasePanel
     public override IEnumerator HidePanelTweenEffect()
     {
         yield return UITween.Instance.UIDoFade(transform, 1, 0, 0.8f);
+
         yield return new WaitForSeconds(0.5f);
+        blackTransImage.GetComponent<CanvasGroup>().alpha = 0;
         loadingBar.transform.parent.gameObject.SetActive(true);
         isSceneTransing = false;
     }
@@ -78,7 +80,6 @@ public class SceneTransPanel : BasePanel
 
     public override IEnumerator ShowPanelTweenEffect()
     {
-
         yield return UITween.Instance.UIDoFade(transform, 0, 1, 0.4f);
     }
 
@@ -113,8 +114,9 @@ public class SceneTransPanel : BasePanel
         yield return sceneLoadManager.LoadNewScene(sceneIndex);
         loadingBar.transform.parent.gameObject.SetActive(false);
         yield return delay;
+       
         //×ª³¡½áÊø
-        yield return uiTweener.UIDoFade(blackTransImage, 1, 0, _transTime);
+        //yield return uiTweener.UIDoFade(blackTransImage, 1, 0, _transTime);
         uiManager.HidePanel<SceneTransPanel>();
     }
 
